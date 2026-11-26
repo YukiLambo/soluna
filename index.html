@@ -271,17 +271,22 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 
 /* Oracle */
 .spread{display:grid;gap:12px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
-.tdeck{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px 4px;margin:18px 0 8px}
-.tback{all:unset;cursor:pointer;position:relative;aspect-ratio:7/12;transform:rotate(var(--r));transition:transform .35s cubic-bezier(.3,.7,.2,1),opacity .35s;border-radius:3px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.25)}
-.tback svg{width:100%;height:100%;display:block}
-.tback .inkf{fill:#14152a}.tback .cb{stroke:var(--gold)}.tback .cbf{fill:var(--gold)}
-.tback:hover{transform:rotate(0) translateY(-3px)}
-.tback.on{transform:rotate(0) translateY(-7px) scale(1.06);outline:1.5px solid var(--gold);outline-offset:1px;z-index:2}
-.tback b{position:absolute;inset:auto 0 3px 0;text-align:center;font:600 9px/1 var(--f-body);color:var(--hi-fg);text-shadow:none}
-.tback.on b{background:var(--gold);padding:2px 0;bottom:0}
+.tstage{position:relative;height:230px;margin:14px -16px 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.tstage::-webkit-scrollbar{display:none}
+.ttrack{position:relative;height:100%}
+.tback{all:unset;cursor:pointer;position:absolute;left:0;top:0;width:58px;aspect-ratio:7/12;border-radius:4px;overflow:hidden;transform-origin:50% 120%;box-shadow:0 2px 6px rgba(0,0,0,.35);will-change:transform}
+.tback svg,.mini svg{width:100%;height:100%;display:block}
+.tback .inkf,.mini .inkf{fill:#14152a}.tback .cb,.mini .cb{stroke:var(--gold)}.tback .cbf,.mini .cbf{fill:var(--gold)}
+.tback.gone{opacity:0;pointer-events:none;transition:opacity .3s .15s,transform .32s!important}
+.tback:not(:disabled):hover{filter:brightness(1.25)}
 .tback:focus-visible{outline:2px solid var(--gold)}
-.tdeck.shuffling .tback{animation:tshuf .8s cubic-bezier(.3,.7,.2,1) both;animation-delay:var(--d)}
-@keyframes tshuf{0%{opacity:0;transform:translate(0,-30px) rotate(calc(var(--r)*6)) scale(.8)}100%{opacity:1;transform:rotate(var(--r))}}
+.thint{text-align:center;font-size:11.5px;color:var(--mute);margin:4px 0 14px;letter-spacing:.04em}
+.tslots{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;margin-bottom:12px;min-height:20px}
+.tslot{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--mute);letter-spacing:.06em}
+.tslot .sc{width:100%;max-width:64px;aspect-ratio:7/12;border:1px dashed color-mix(in srgb,var(--gold) 45%,transparent);border-radius:4px}
+.mini{all:unset;cursor:pointer;display:block;width:100%;height:100%;border-radius:4px;overflow:hidden;animation:tpop .45s cubic-bezier(.3,1.4,.4,1)}
+@keyframes tpop{0%{transform:translateY(-40px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+:root[data-theme="light"] .tback .inkf,:root[data-theme="light"] .mini .inkf{fill:#2a2218}
 .tbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--mute);margin-bottom:12px}
 .tcard .front img{width:100%;height:100%;object-fit:cover;display:block}
 .tcard .front.rev{transform:rotateY(180deg) rotate(180deg)}
@@ -1837,20 +1842,44 @@ function orTarot(el){
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{tarotSpread=b.dataset.k;orTarot(el)});
   $("#shuffle",el).onclick=()=>{
     const deck=[...DECK];for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
-    const revs=deck.map(()=>Math.random()<.35),need=sp.pos?sp.pos.length:10,picked=[];
+    const revs=deck.map(()=>Math.random()<.35),need=sp.pos?sp.pos.length:10,picked=[],N=deck.length;
     const tb=$("#table",el);$("#spread",el).innerHTML="";$("#tAI",el).innerHTML="";
-    tb.innerHTML=`<div class="tdeck shuffling">${deck.map((c,i)=>`<button type="button" class="tback" data-i="${i}" style="--r:${((i*37)%9-4)*.6}deg;--d:${(i%13)*18}ms" aria-label="第 ${i+1} 張牌">${CARD_BACK}<b></b></button>`).join("")}</div>
-      <div class="tbar"><span id="tcount">揀咗 0 / ${sp.pos?need:"最多 10"} 張</span>${sp.pos?"":`<button class="btn small solid" type="button" id="reveal" disabled>翻牌</button>`}</div>`;
-    setTimeout(()=>tb.querySelector(".tdeck").classList.remove("shuffling"),900);
+    const CW=58,STEP=21,PAD=40,TW=PAD*2+(N-1)*STEP+CW;
+    tb.innerHTML=`<div class="tstage"><div class="ttrack" style="width:${TW}px">${deck.map((c,i)=>`<button type="button" class="tback" data-i="${i}" aria-label="第 ${i+1} 張牌" disabled>${CARD_BACK}</button>`).join("")}</div></div>
+      <p class="thint" id="thint">洗緊牌⋯</p>
+      <div class="tslots" style="--n:${sp.pos?need:5}">${(sp.pos||[]).map((p,k)=>`<div class="tslot" data-k="${k}"><span>${p}</span><div class="sc"></div></div>`).join("")}</div>
+      <div class="tbar"><span id="tcount"></span>${sp.pos?"":`<button class="btn small solid" type="button" id="reveal" disabled>翻牌</button>`}</div>`;
+    const stage=tb.querySelector(".tstage"),track=tb.querySelector(".ttrack"),cards=[...track.children],slots=tb.querySelector(".tslots");
+    const vw=stage.clientWidth;stage.scrollLeft=(TW-vw)/2;
+    const cx=stage.scrollLeft+vw/2-CW/2,fan=i=>{const x=PAD+i*STEP,t=Math.max(-1.3,Math.min(1.3,(x+CW/2-stage.scrollLeft-vw/2)/(vw/2)));return {x,y:30+t*t*62,r:t*20}};
+    const set=(c,x,y,r,ms)=>{c.style.transition=ms?`transform ${ms}ms cubic-bezier(.3,.7,.2,1)`:"none";c.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`};
+    const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    cards.forEach((c,i)=>{c.style.zIndex=i;set(c,cx,30-i*.15,0,0)});
     tb.scrollIntoView({behavior:"smooth",block:"start"});
-    const upd=()=>{$("#tcount",el).textContent=`揀咗 ${picked.length} / ${sp.pos?need:"最多 10"} 張`;const r=$("#reveal",el);if(r)r.disabled=!picked.length;
-      tb.querySelectorAll(".tback").forEach(b=>{const k=picked.indexOf(+b.dataset.i);b.classList.toggle("on",k>=0);b.querySelector("b").textContent=k>=0?(sp.pos?sp.pos[k]:k+1):""})};
-    tb.querySelectorAll(".tback").forEach(b=>b.onclick=()=>{const i=+b.dataset.i,k=picked.indexOf(i);if(k>=0)picked.splice(k,1);else if(picked.length<need)picked.push(i);upd();if(sp.pos&&picked.length===need)setTimeout(reveal,450)});
+    const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
+    (async()=>{
+      await wait(350);
+      for(let k=0;k<3;k++){ // riffle: cut into two halves, then interleave
+        cards.forEach((c,i)=>set(c,cx+(i%2?-46:46),30-i*.15+(i%2?6:0),i%2?-8:8,260));await wait(300);
+        cards.forEach((c,i)=>{c.style.zIndex=(i*7+k*13)%N;set(c,cx,30-i*.15,0,260)});await wait(320);
+      }
+      cards.forEach((c,i)=>{c.style.zIndex=i;const f=fan(i);c.style.transitionDelay=reduce?"0ms":`${i*9}ms`;set(c,f.x,f.y,f.r,700)});
+      await wait(700+N*9);cards.forEach(c=>{c.style.transitionDelay="0ms";c.disabled=false});
+      let raf=0;stage.addEventListener("scroll",()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;cards.forEach((c,i)=>{const f=fan(i);set(c,f.x,picked.includes(i)?f.y-60:f.y,f.r,0)})})},{passive:true});
+      $("#thint",el).textContent="左右掃一掃，跟感覺撳你想要嘅牌";upd();
+    })();
+    const upd=()=>{
+      $("#tcount",el).textContent=`揀咗 ${picked.length} / ${sp.pos?need:"最多 10"} 張`;const r=$("#reveal",el);if(r)r.disabled=!picked.length;
+      cards.forEach((c,i)=>{const on=picked.includes(i),f=fan(i);c.classList.toggle("gone",on);if(!c.disabled)set(c,f.x,on?f.y-60:f.y,f.r,320)});
+      if(sp.pos)slots.querySelectorAll(".tslot").forEach((s,k)=>{const sc=s.querySelector(".sc");const has=picked[k]!=null;if(has&&!sc.firstChild){sc.innerHTML=`<button type="button" class="mini" aria-label="放返呢張牌">${CARD_BACK}</button>`;sc.firstChild.onclick=()=>{picked.splice(k,1);slots.querySelectorAll(".sc").forEach(x=>x.innerHTML="");upd()}}else if(!has)sc.innerHTML=""});
+      else{slots.innerHTML=picked.map((p,k)=>`<div class="tslot"><span>${k+1}</span><div class="sc"><button type="button" class="mini" data-k="${k}" aria-label="放返呢張牌">${CARD_BACK}</button></div></div>`).join("");slots.querySelectorAll(".mini").forEach(b=>b.onclick=()=>{picked.splice(+b.dataset.k,1);upd()})}
+    };
+    cards.forEach(c=>c.onclick=()=>{const i=+c.dataset.i;if(picked.includes(i)||picked.length>=need)return;picked.push(i);upd();if(sp.pos&&picked.length===need){cards.forEach(x=>x.disabled=true);setTimeout(reveal,700)}});
     const reveal=()=>{
       const drawn=picked.map((i,k)=>({card:deck[i],rev:revs[i],pos:sp.pos?sp.pos[k]:`第 ${k+1} 張`}));
       tb.innerHTML="";const box=$("#spread",el);
       box.innerHTML=`<div class="spread" style="--n:${Math.min(drawn.length,3)}">${drawn.map((d,i)=>`<div class="tcard" data-i="${i}"><span class="pos">${d.pos}</span><div class="face"><div class="inner"><div class="side back">${CARD_BACK}</div><div class="side front${d.rev?" rev":""}">${cardImg(d.card)}</div></div></div><span class="nm">${d.card.name}${d.rev?" · 逆位":""}</span><span class="kw">${esc(d.rev?d.card.rev:d.card.up)}</span></div>`).join("")}</div>`;
-      box.querySelectorAll(".tcard").forEach((t,i)=>setTimeout(()=>t.classList.add("flipped"),250+i*350));
+      box.querySelectorAll(".tcard").forEach((t,i)=>setTimeout(()=>t.classList.add("flipped"),350+i*420));
       box.querySelectorAll(".front img").forEach((im,i)=>im.onerror=()=>{im.parentNode.innerHTML=cardFront(drawn[i].card)});
       box.scrollIntoView({behavior:"smooth",block:"start"});
       const q=$("#tq",el).value.trim(),ai=$("#tAI",el);ai.innerHTML="";

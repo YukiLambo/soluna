@@ -271,6 +271,24 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 
 /* Oracle */
 .spread{display:grid;gap:12px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
+.tdeck{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px 4px;margin:18px 0 8px}
+.tback{all:unset;cursor:pointer;position:relative;aspect-ratio:7/12;transform:rotate(var(--r));transition:transform .35s cubic-bezier(.3,.7,.2,1),opacity .35s;border-radius:3px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.tback svg{width:100%;height:100%;display:block}
+.tback .inkf{fill:#14152a}.tback .cb{stroke:var(--gold)}.tback .cbf{fill:var(--gold)}
+.tback:hover{transform:rotate(0) translateY(-3px)}
+.tback.on{transform:rotate(0) translateY(-7px) scale(1.06);outline:1.5px solid var(--gold);outline-offset:1px;z-index:2}
+.tback b{position:absolute;inset:auto 0 3px 0;text-align:center;font:600 9px/1 var(--f-body);color:var(--hi-fg);text-shadow:none}
+.tback.on b{background:var(--gold);padding:2px 0;bottom:0}
+.tback:focus-visible{outline:2px solid var(--gold)}
+.tdeck.shuffling .tback{animation:tshuf .8s cubic-bezier(.3,.7,.2,1) both;animation-delay:var(--d)}
+@keyframes tshuf{0%{opacity:0;transform:translate(0,-30px) rotate(calc(var(--r)*6)) scale(.8)}100%{opacity:1;transform:rotate(var(--r))}}
+.tbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--mute);margin-bottom:12px}
+.tcard .front img{width:100%;height:100%;object-fit:cover;display:block}
+.tcard .front.rev{transform:rotateY(180deg) rotate(180deg)}
+.tcard .side{border-radius:6px;overflow:hidden}
+:root[data-theme="light"] .tback .inkf{fill:#2a2218}
+@media (prefers-reduced-motion:reduce){.tdeck.shuffling .tback{animation:none}}
+
 .tcard{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
 .tcard .face{width:100%;max-width:150px;aspect-ratio:7/12;perspective:800px}
 .tcard .inner{width:100%;height:100%;position:relative;transition:transform .7s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
@@ -494,6 +512,7 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11px}
 .tcard .back svg .inkf{fill:#0f1013}
 .tcard .back svg g{stroke:var(--gold)!important}
 .tcard .back svg text{fill:var(--gold)!important}
+.tcard .back .cbf{fill:var(--gold);stroke:none!important}
 .sheet .panel{background:var(--surface2);border:1px solid rgba(255,255,255,.12)}
 .mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .mood-grid button{border:1px solid var(--line);color:#9b9996;background:#1a1b20;padding:13px 5px;font-size:12px;transition:.2s;border-radius:0}
@@ -1766,6 +1785,14 @@ const MAJORS=[["愚者","新開始、冒險、純真","魯莽、猶豫、逃避"
 const SUITS=[["權杖","火","行動與事業","W"],["聖杯","水","感情與關係","C"],["寶劍","風","思想與衝突","S"],["錢幣","土","金錢與實際","P"]];
 const RANKS=[["王牌","新的種子、純粹的開始"],["二","選擇與平衡"],["三","成長與合作"],["四","穩定與停頓"],["五","衝突與失去"],["六","調和與回顧"],["七","考驗與堅持"],["八","變動與專注"],["九","接近完成、獨立"],["十","圓滿或重擔"],["侍從","消息與學習"],["騎士","行動與追求"],["皇后","成熟的包容"],["國王","掌控與權威"]];
 const DECK=[...MAJORS.map((m,i)=>({id:i,major:true,name:m[0],up:m[1],rev:m[2],num:i})),...SUITS.flatMap((s,si)=>RANKS.map((r,ri)=>({id:22+si*14+ri,major:false,suit:si,rank:ri,name:s[0]+r[0],up:`${s[2]}：${r[1]}`,rev:`${s[2]}受阻：${r[1]}的反面或延遲`})))];
+const cardImg=c=>`<img src="tarot/${c.id}.webp" alt="${c.name}" loading="lazy" decoding="async">`;
+/* 小阿爾克那牌義（依偉特傳統） [正位, 逆位] */
+const MINOR_MEAN=[
+ [["新嘅熱情、靈感、創業嘅火花","衝勁冇方向、計劃延遲"],["規劃未來、想向外擴展","怕踏出舒適圈、計劃唔清"],["遠見、計劃開始有回報、向外發展","延誤、期望落空"],["慶祝、安定、家同歸屬感","過渡期、短暫嘅不安"],["競爭、意見衝突、互相角力","避開衝突、內耗"],["勝利、被認同、好消息","自滿、得唔到認同"],["企硬立場、捍衛自己","力不從心、想放棄"],["好快嘅進展、消息、行動","延誤、心急壞事"],["堅持到最後、保持警覺","疲累、防衛過度"],["重擔、責任太多","學識放低、分擔"],["好奇、新嘅點子、熱誠嘅消息","三分鐘熱度、壞消息"],["衝勁、冒險、出發","魯莽、急躁、半途而廢"],["自信、溫暖、有感染力","妒忌、要求太高"],["領導力、遠見、企業家精神","專橫、衝動決定"]],
+ [["新嘅感情、愛、情感滿溢","情緒壓抑、感情空虛"],["互相吸引、結合、伙伴","失衡、關係破裂"],["友誼、慶祝、聚會","過度放縱、三角關係"],["冷淡、厭倦、錯過眼前嘅好","重新有興趣、接受新機會"],["失落、遺憾、只睇住失去咗嘅","放低、向前行"],["童年回憶、純真、懷舊","活喺過去、唔肯長大"],["選擇太多、幻想","睇清現實、作出決定"],["離開、追尋更深嘅意義","害怕改變、留戀"],["心願達成、滿足","貪心、表面嘅快樂"],["家庭圓滿、和諧、幸福","家庭不和、期望落差"],["感性嘅消息、創意、表白","情緒化、不成熟"],["浪漫、追求、邀請","不切實際、情緒善變"],["溫柔、直覺、照顧人","情緒依賴、過度犧牲"],["情緒成熟、包容、冷靜","情緒操控、壓抑"]],
+ [["清晰、突破、真相","混亂、判斷錯誤"],["兩難、逃避決定","資訊過多、終於作決定"],["心痛、失望、分離","慢慢復原、放低傷痛"],["休息、恢復、沉澱","焦躁、未休息夠"],["衝突、輸贏、得失","和解、放下面子"],["過渡、離開困境","困住、走唔甩"],["策略、小心行事、暗中進行","被識穿、良心發現"],["困住、自我設限","解脫、睇到出路"],["焦慮、失眠、過度擔心","走出恐懼、睇開"],["低谷、結束、痛苦嘅終點","最壞已經過去、重生"],["好奇、觀察、新諗法","八卦、講嘢唔經大腦"],["果斷、急進、直接","衝動、言語傷人"],["獨立、清醒、直接坦白","冷漠、尖酸"],["理性、權威、公正","濫用權力、冷酷"]],
+ [["新嘅財源、實際機會","錯失機會、計劃不周"],["平衡收支、一心多用","應接不暇、財務失衡"],["合作、技術被認同","合作唔順、質素不足"],["守財、安全感、控制","太孤寒、怕失去"],["困難、匱乏、被排斥","走出困境、得到幫助"],["慷慨、分享、互助","施與受失衡、有條件嘅幫助"],["耐心等收成、長遠投資","心急、回報慢"],["專注、磨練技術、勤力","完美主義、做到厭"],["獨立、富足、享受成果","過度工作、物質依賴"],["家族財富、傳承、長久穩定","家庭財務糾紛"],["學習、新嘅實際機會","唔專心、拖延"],["勤懇、可靠、按部就班","停滯、太保守"],["實際、會照顧人、經濟獨立","工作同家庭失衡"],["事業有成、穩定、可靠","太在乎錢、固執"]]];
+DECK.forEach(c=>{if(!c.major){const m=MINOR_MEAN[c.suit][c.rank];c.up=m[0];c.rev=m[1]}});
 const ROMAN=["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
 function suitGlyph(si,x,y,s){
   if(si===0)return `<line class="ink" x1="${x}" y1="${y-s}" x2="${x}" y2="${y+s}" stroke-width="1.4"/><circle class="ink" cx="${x}" cy="${y-s}" r="${s*.25}"/>`;
@@ -1796,23 +1823,40 @@ function cardFront(c){
   }
   return s+"</svg>";
 }
-const CARD_BACK=`<svg viewBox="0 0 140 240" aria-hidden="true"><rect class="inkf" width="140" height="240"/><g style="stroke:var(--bg);fill:none"><rect x="9" y="9" width="122" height="222" stroke-width=".6"/><circle cx="70" cy="120" r="34" stroke-width=".8"/><circle cx="70" cy="120" r="22" stroke-width=".5"/><path d="M70 74 V166 M24 120 H116" stroke-width=".5"/></g><text x="70" y="126" font-size="16" text-anchor="middle" style="fill:var(--bg);font-family:var(--f-display);font-weight:900">玄</text></svg>`;
-const SPREADS={one:{n:"今日一張",pos:["指引"]},three:{n:"過去 · 現在 · 未來",pos:["過去","現在","未來"]},love:{n:"未來三個月感情",pos:["第一個月","第二個月","第三個月"]},work:{n:"事業抉擇",pos:["現況","阻礙","建議"]}};
+const CARD_BACK=`<svg viewBox="0 0 140 240" aria-hidden="true"><rect class="inkf" width="140" height="240"/><g class="cb" fill="none" stroke-width=".7"><rect x="8" y="8" width="124" height="224" rx="4"/><rect x="13" y="13" width="114" height="214" rx="2" stroke-width=".4"/><circle cx="70" cy="120" r="40" stroke-width=".4"/><circle cx="70" cy="120" r="26"/><path d="M70 60 V78 M70 162 V180 M30 120 H44 M96 120 H110" stroke-width=".5"/><path d="M75.8 108.6a12 12 0 1 0 5.5 17.3a10 10 0 1 1-5.5-17.3Z" class="cbf" stroke="none"/><circle cx="70" cy="34" r="1.4" class="cbf" stroke="none"/><circle cx="70" cy="206" r="1.4" class="cbf" stroke="none"/></g></svg>`;
+const SPREADS={one:{n:"今日一張",pos:["指引"]},three:{n:"過去 · 現在 · 未來",pos:["過去","現在","未來"]},love:{n:"未來三個月感情",pos:["第一個月","第二個月","第三個月"]},work:{n:"事業抉擇",pos:["現況","阻礙","建議"]},free:{n:"自由揀牌",pos:null}};
 let tarotSpread="three";
 function orTarot(el){
-  el.innerHTML=`<p class="mute">78 張完整塔羅（22 張大阿爾克那 + 56 張小阿爾克那），每張可正位或逆位。</p>
-  <div class="seg" role="group" aria-label="牌陣">${Object.entries(SPREADS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="${tarotSpread===k}">${v.n.split(" ")[0]==="過去"?"三張":v.n.replace("未來三個月","3個月")}</button>`).join("")}</div>
-  <label class="f" for="tq">你的問題（可留空）<input id="tq" placeholder="例如：我和他會有結果嗎？" maxlength="200"></label>
-  <button class="btn solid" type="button" id="draw">洗牌並抽牌</button>
-  <div id="spread"></div><div id="tAI"></div>`;
+  const sp=SPREADS[tarotSpread];
+  el.innerHTML=`<p class="mute" style="font-size:12px">一副完整 78 張偉特塔羅（22 張大阿爾克那、56 張小阿爾克那）。默念你嘅問題，洗好牌之後，跟感覺親手揀牌。</p>
+  <div class="seg" role="group" aria-label="牌陣">${Object.entries(SPREADS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="${tarotSpread===k}">${{one:"一張",three:"三張",love:"感情",work:"事業",free:"自由"}[k]}</button>`).join("")}</div>
+  <p class="mute" style="font-size:11.5px;margin-top:-4px">${sp.pos?`${sp.n}：揀 ${sp.pos.length} 張（${sp.pos.join("、")}）`:"自由揀牌：想揀幾多張都得（最多 10 張），揀好撳「翻牌」。"}</p>
+  <label class="f" for="tq">你嘅問題（可以留空）<input id="tq" placeholder="例如：我同佢會唔會有結果？" maxlength="200"></label>
+  <button class="btn solid" type="button" id="shuffle">洗牌</button>
+  <div id="table"></div><div id="spread"></div><div id="tAI"></div>`;
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{tarotSpread=b.dataset.k;orTarot(el)});
-  $("#draw",el).onclick=()=>{
-    const sp=SPREADS[tarotSpread];const deck=[...DECK];for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
-    const drawn=sp.pos.map((p,i)=>({card:deck[i],rev:Math.random()<.35,pos:p}));
-    const box=$("#spread",el);box.innerHTML=`<div class="spread" style="--n:${drawn.length}">${drawn.map((d,i)=>`<div class="tcard" data-i="${i}"><span class="pos">${d.pos}</span><div class="face"><div class="inner"><div class="side back">${CARD_BACK}</div><div class="side front" style="${d.rev?"transform:rotateY(180deg) rotate(180deg)":""}">${cardFront(d.card)}</div></div></div><span class="nm">${d.card.name}${d.rev?" · 逆位":""}</span><span class="kw">${esc(d.rev?d.card.rev:d.card.up)}</span></div>`).join("")}</div>`;
-    box.querySelectorAll(".tcard").forEach((t,i)=>setTimeout(()=>t.classList.add("flipped"),250+i*350));
-    const q=$("#tq",el).value.trim();
-    const ai=$("#tAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀這組牌",()=>prompt(`使用者抽了塔羅「${sp.n}」牌陣${q?`，問題是：「${q}」`:"（沒有指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。逐張解讀，再綜合整體故事，最後給一個具體建議。可輕輕連結使用者的星盤或八字。`,chart)));
+  $("#shuffle",el).onclick=()=>{
+    const deck=[...DECK];for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
+    const revs=deck.map(()=>Math.random()<.35),need=sp.pos?sp.pos.length:10,picked=[];
+    const tb=$("#table",el);$("#spread",el).innerHTML="";$("#tAI",el).innerHTML="";
+    tb.innerHTML=`<div class="tdeck shuffling">${deck.map((c,i)=>`<button type="button" class="tback" data-i="${i}" style="--r:${((i*37)%9-4)*.6}deg;--d:${(i%13)*18}ms" aria-label="第 ${i+1} 張牌">${CARD_BACK}<b></b></button>`).join("")}</div>
+      <div class="tbar"><span id="tcount">揀咗 0 / ${sp.pos?need:"最多 10"} 張</span>${sp.pos?"":`<button class="btn small solid" type="button" id="reveal" disabled>翻牌</button>`}</div>`;
+    setTimeout(()=>tb.querySelector(".tdeck").classList.remove("shuffling"),900);
+    tb.scrollIntoView({behavior:"smooth",block:"start"});
+    const upd=()=>{$("#tcount",el).textContent=`揀咗 ${picked.length} / ${sp.pos?need:"最多 10"} 張`;const r=$("#reveal",el);if(r)r.disabled=!picked.length;
+      tb.querySelectorAll(".tback").forEach(b=>{const k=picked.indexOf(+b.dataset.i);b.classList.toggle("on",k>=0);b.querySelector("b").textContent=k>=0?(sp.pos?sp.pos[k]:k+1):""})};
+    tb.querySelectorAll(".tback").forEach(b=>b.onclick=()=>{const i=+b.dataset.i,k=picked.indexOf(i);if(k>=0)picked.splice(k,1);else if(picked.length<need)picked.push(i);upd();if(sp.pos&&picked.length===need)setTimeout(reveal,450)});
+    const reveal=()=>{
+      const drawn=picked.map((i,k)=>({card:deck[i],rev:revs[i],pos:sp.pos?sp.pos[k]:`第 ${k+1} 張`}));
+      tb.innerHTML="";const box=$("#spread",el);
+      box.innerHTML=`<div class="spread" style="--n:${Math.min(drawn.length,3)}">${drawn.map((d,i)=>`<div class="tcard" data-i="${i}"><span class="pos">${d.pos}</span><div class="face"><div class="inner"><div class="side back">${CARD_BACK}</div><div class="side front${d.rev?" rev":""}">${cardImg(d.card)}</div></div></div><span class="nm">${d.card.name}${d.rev?" · 逆位":""}</span><span class="kw">${esc(d.rev?d.card.rev:d.card.up)}</span></div>`).join("")}</div>`;
+      box.querySelectorAll(".tcard").forEach((t,i)=>setTimeout(()=>t.classList.add("flipped"),250+i*350));
+      box.querySelectorAll(".front img").forEach((im,i)=>im.onerror=()=>{im.parentNode.innerHTML=cardFront(drawn[i].card)});
+      box.scrollIntoView({behavior:"smooth",block:"start"});
+      const q=$("#tq",el).value.trim(),ai=$("#tAI",el);ai.innerHTML="";
+      ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。逐張解讀（結合牌位意思），再綜合成一個完整故事，最後畀一個具體建議。可輕輕連結使用者嘅星盤或八字。`,chart)));
+    };
+    const rb=$("#reveal",el);if(rb)rb.onclick=reveal;
   };
 }
 /* shinjeom */
@@ -1967,7 +2011,7 @@ function renderMe(el){
   <hr class="rule">
   <div class="stack"><span class="eyebrow">${BRAND.zh}包含</span>
   <p><b>計算型</b>：西洋星盤（太陽至冥王星、上升、天頂）、四柱八字與十神、五行、十年大運、紫微斗數十四主星與四化、每日流日與月相。</p>
-  <p><b>占卜型</b>（喺呢頁）：78 張塔羅、韓國神占（擲米）、面相手相、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>（底部「夢」）：解夢同夢境日記。</p>
+  <p><b>占卜型</b>（喺呢頁）：78 張偉特塔羅（親手揀牌）、韓國神占（擲米）、面相手相、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>（底部「夢」）：解夢同夢境日記。</p>
   <p><b>運勢</b>：今日、本週、一個月、一年、十年，並可生成行動計劃。</p></div>
   ${IN_CLAUDE?"":`<hr class="rule"><div class="stack"><span class="eyebrow">AI 深入解讀</span>
   <p class="mute" style="font-size:12px">其他功能全部喺你部機計，唔使上網都用到。想用 AI 寫長篇解讀、解夢同睇相，可以貼上你自己嘅 Anthropic API key（只會存喺呢部機）。</p>

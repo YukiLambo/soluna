@@ -3893,5 +3893,5 @@ function boot(){
 }
 boot();
 </script>
-<script>if("serviceWorker" in navigator&&!window.Capacitor)addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));</script>
+<script>if("serviceWorker" in navigator&&!window.Capacitor)addEventListener("load",()=>{const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!window.__swr){window.__swr=1;location.reload()}});navigator.serviceWorker.register("sw.js")});</script>
 </body></html>

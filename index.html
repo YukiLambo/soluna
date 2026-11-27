@@ -367,6 +367,26 @@ label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu
 .rune.rev .glyph{transform:rotate(180deg)}
 .dropzone{border:1px dashed var(--fg);padding:22px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
 .dropzone img{max-height:220px;width:auto;max-width:100%}
+.fp-fig{position:relative;margin:14px 0 6px;line-height:0;background:#000;overflow:hidden}
+.fp-fig img{width:100%;height:auto;display:block}
+.fp-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 1.5px rgba(0,0,0,.75))}
+.fp-svg *{vector-effect:non-scaling-stroke}
+.fp-orbit{fill:none;stroke:rgba(255,255,255,.55);stroke-width:1}.fp-orbit.faint{stroke-dasharray:2 5;stroke:rgba(255,255,255,.35)}
+.fp-axis{stroke:rgba(255,255,255,.7);stroke-width:1;stroke-dasharray:6 4}
+.fp-ting{stroke:rgba(255,255,255,.6);stroke-width:1;stroke-dasharray:3 5}
+.fp-ring{fill:none;stroke:#fff;stroke-width:1}.fp-dot{fill:#e9c98d}
+.fp-lead{stroke:rgba(255,255,255,.75);stroke-width:1}
+.fp-badge{fill:rgba(20,18,30,.55);stroke:#fff;stroke-width:1}
+.fp-num{fill:#fff;font:600 27px/1 Manrope,sans-serif;text-anchor:middle;dominant-baseline:central}
+.fp-lab{fill:#fff;font:500 30px/1 "Noto Sans TC",sans-serif;letter-spacing:.08em;text-anchor:middle;dominant-baseline:central}
+.fp-line{fill:none;stroke:#e9c98d;stroke-width:1.6;stroke-linecap:round}.fp-line.l1{stroke:#c9c7f4}.fp-line.l2{stroke:#f2b8c0}.fp-line.l3{stroke:#fff;stroke-dasharray:5 4}
+.fp-sum{margin:12px 0 6px;line-height:1.8}
+.fp-list{margin:6px 0 10px;padding:0;list-style:none;counter-reset:fp}
+.fp-list li{counter-increment:fp;position:relative;padding:10px 0 10px 38px;border-top:1px solid var(--line);line-height:1.75;font-size:15px}
+.fp-list li::before{content:counter(fp);position:absolute;left:0;top:11px;width:24px;height:24px;border:1px solid var(--fg);border-radius:50%;font:600 12px/24px Manrope,sans-serif;text-align:center}
+.fp-list.lines li::before{content:"";top:22px;width:22px;height:0;border:0;border-top:2px solid #b5873a;border-radius:0}
+.fp-list li b{display:block;font-weight:500;margin-bottom:2px}
+
 
 /* Nav */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--fg);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
@@ -2963,20 +2983,120 @@ function orDream(el){
   };
   drawList();
 }
-/* face & palm */
+/* face & palm: landmark overlay + book-based local reading */
+let MP_V=null;const MP={};
+async function mpTask(kind){
+  if(MP[kind])return MP[kind];
+  const base=new URL(".",location.href).href;
+  if(!MP_V)MP_V=await import(base+"vendor/mediapipe/vision_bundle.mjs");
+  const fs=await MP_V.FilesetResolver.forVisionTasks(base+"vendor/mediapipe/wasm");
+  MP[kind]=kind==="face"
+    ?await MP_V.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/face_landmarker.task"},runningMode:"IMAGE",numFaces:1})
+    :await MP_V.HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/hand_landmarker.task"},runningMode:"IMAGE",numHands:1});
+  return MP[kind];
+}
+const fpD=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const fpL=(a,b,t)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
+const fpAvg=(...p)=>({x:p.reduce((s,q)=>s+q.x,0)/p.length,y:p.reduce((s,q)=>s+q.y,0)/p.length});
+/* --- face: 十二宮 positions + measurements (麻衣相法 / 柳莊相法 / 冰鑑, paraphrased) --- */
+function faceRead(P){
+  const top=P[10],chin=P[152],gl=P[9],nb=P[2],H=fpD(top,chin),Wf=fpD(P[234],P[454]);
+  const up=fpD(top,gl)/H,mid=fpD(gl,nb)/H,low=fpD(nb,chin)/H;
+  const eyeW=(fpD(P[33],P[133])+fpD(P[263],P[362]))/2,eyeH=(fpD(P[159],P[145])+fpD(P[386],P[374]))/2;
+  const yintang=fpD(P[107],P[336])/eyeW,tianzhai=(fpD(P[105],P[159])+fpD(P[334],P[386]))/2/eyeH;
+  const eyeGap=fpD(P[133],P[362])/eyeW,nose=fpD(P[64],P[294])/fpD(P[133],P[362]),mouth=fpD(P[61],P[291])/fpD(P[64],P[294]);
+  const lip=fpD(P[0],P[17])/fpD(P[61],P[291]),jaw=fpD(P[172],P[397])/Wf,fore=fpD(P[54],P[284])/Wf,ratio=Wf/H;
+  const shape=ratio<.74?["木形","面長而清，木形人重理想同原則，做事有遠見"]:fore>jaw*1.12&&jaw<.78?["火形","額闊下巴尖，火形人反應快、熱情、靈感多"]:jaw>.84&&ratio>.86?["土形","面方而厚，土形人穩重守信，做事踏實"]:jaw>.8?["金形","輪廓方正，金形人果斷、有原則、重效率"]:["水形","面圓而柔，水形人圓融、適應力強、人緣好"];
+  const sz=[up,mid,low],mx=Math.max(...sz),mn=Math.min(...sz);
+  const tingTxt=mx-mn<.05?"三停差不多平均，傳統講「三停平等，一生衣祿無虧」，人生起伏比較少。":up===mx?"上停較長：早年（大約 15 至 30 歲）運較順，思考同學習能力強。":mid===mx?"中停較長：中年（大約 31 至 50 歲）係發力期，自主心同事業心重。":"下停較長：晚運同家宅福份較厚，越大越穩。";
+  const pts=[
+    {n:"官祿宮",p:P[151],t:"額頭正中主事業同名聲。"+(up>.34?"上庭飽滿，工作上有表現機會。":"上庭較短，靠實幹多過靠運氣。")},
+    {n:"命宮（印堂）",p:gl,t:yintang>1.15?"印堂開闊（兩眉之間多過一隻眼寬），心胸廣、樂觀，壓力嚟得快去得快。":yintang<.85?"印堂較窄，心思細密、追求完美，要提醒自己放鬆。":"印堂寬窄適中，情緒穩定，做決定有分寸。"},
+    {n:"兄弟宮（眉）",p:P[105],t:"眉主兄弟朋友同交際。"+(tianzhai>2.6?"眉位高、離眼遠，待人寬和，朋友緣好。":"眉位貼近眼，重情義，對身邊人好上心。")},
+    {n:"田宅宮",p:P[159],t:tianzhai>2.6?"眉眼之間寬（田宅宮寬），性情寬厚，同家人緣份深。":"眉眼之間較窄，性子較急，做事爽快，要學識慢少少。"},
+    {n:"夫妻宮（眼尾）",p:P[263],t:"眼尾主感情。"+(eyeGap>1.1?"兩眼距離闊，包容度高，感情上俾對方空間。":eyeGap<.9?"兩眼距離近，專注、投入，感情上好認真。":"眼距適中，感情上理性同感性平衡。")},
+    {n:"子女宮（眼下）",p:P[374],t:"眼下臥蠶主子女同晚輩緣，亦反映休息狀態；睡得好，呢度自然光潤。"},
+    {n:"疾厄宮（山根）",p:P[168],t:"山根喺兩眼之間，傳統主抗壓力同中年轉折。呢度只作相學參考，唔涉及健康判斷。"},
+    {n:"財帛宮（鼻）",p:P[1],t:nose>1.05?"鼻翼豐闊（闊過兩眼內角距離），守財力強，賺到會儲。":nose<.85?"鼻翼較窄，用錢灑脫，適合定期自動儲蓄。":"鼻形適中，收支有數，財運平穩。"},
+    {n:"出納官（口）",p:P[0],t:(mouth>1.45?"口闊，表達力強、外向，適合要講嘢嘅工作。":"口形細緻，說話謹慎，信用好。")+(lip>.32?"唇厚，重感情。":"唇薄，理性、口才好。")},
+    {n:"奴僕宮（地閣）",p:chin,t:low>.36?"下巴豐長，晚運穩，下屬同朋友肯幫手。":"下巴較短，獨立、早熟，凡事靠自己。"},
+    {n:"遷移宮（額角）",p:P[54],t:fore>.72?"額角開闊，適合出外發展、經常轉換環境。":"額角收窄，喺熟悉嘅地方更易發揮。"}
+  ];
+  return {pts,shape,tingTxt,ting:[up,mid,low],m:{三停:[up,mid,low].map(v=>v.toFixed(2)).join(" : "),印堂寬對眼寬:yintang.toFixed(2),田宅對眼高:tianzhai.toFixed(2),眼距對眼寬:eyeGap.toFixed(2),鼻翼對內眼距:nose.toFixed(2),口闊對鼻翼:mouth.toFixed(2),面寬對面長:ratio.toFixed(2)},lines:{top,chin,gl,nb}};
+}
+/* --- palm: Benham hand types / mounts, four-element hand shapes --- */
+function palmRead(P,hand){
+  const W=P[0],I=P[5],M=P[9],R=P[13],K=P[17],T1=P[1],T2=P[2],C=fpAvg(W,I,M,R,K);
+  const pl=fpD(W,M),pw=fpD(I,K),fl=fpD(M,P[12]),idx=fpD(I,P[8]),ring=fpD(R,P[16]),lit=fpD(K,P[20]),th=fpD(T2,P[4]);
+  const sq=pw/pl>.82,lf=fl/pl>.84;
+  const shape=sq&&!lf?["土形手（方掌短指）","實際、可靠、肯捱，重安全感"]:sq&&lf?["金形手（方掌長指）","理性、好奇、善溝通，鍾意分析"]:!sq&&!lf?["火形手（長掌短指）","行動快、熱情、有魄力"]:["水形手（長掌長指）","敏感、直覺強、富同理心"];
+  const lerp=fpL;
+  const S=lerp(I,T2,.42),E=lerp(W,T1,.32);
+  const life=[S,lerp(lerp(S,E,.5),T1,.38),E];
+  const hs=lerp(S,M,.06),he=lerp(lerp(R,K,.6),W,.42);
+  const head=[hs,lerp(lerp(hs,he,.5),M,.08),he];
+  const hts=lerp(lerp(K,R,-.32),W,.2),hte=lerp(lerp(I,M,.3),W,.1);
+  const heart=[hts,lerp(lerp(hts,hte,.5),M,.18),hte];
+  const fs=lerp(W,M,.06),fe=lerp(M,W,.16);
+  const fate=[fs,lerp(lerp(fs,fe,.5),R,.05),fe];
+  const lines=[{n:"生命線",c:life,t:"由拇指同食指之間落向手腕，主活力同生活根基；線清晰圓潤，代表做事有底氣。"},
+    {n:"智慧線",c:head,t:"橫過掌心，主思考方式；平直偏理性實際，向下彎偏想像同創意。"},
+    {n:"感情線",c:heart,t:"喺手指下面橫過，主情感表達；越長越肯表達，越彎越熱情。"},
+    {n:"事業線",c:fate,t:"由手腕向中指上升，主人生方向同自主度；唔係人人都明顯，冇都唔代表冇事業。"}];
+  const pts=[{n:"木星丘",p:lerp(I,W,.14),t:idx/ring>1.02?"食指長過無名指，Benham 講木星指長：有領導慾、自信、想做主導。":"木星丘主野心同自信，宜多啲爭取發言機會。"},
+    {n:"土星丘",p:lerp(M,W,.12),t:"中指下面，主責任感同深思；做事有原則，鍾意想清楚先行動。"},
+    {n:"太陽丘",p:lerp(R,W,.13),t:ring/idx>1.02?"無名指長過食指，太陽指長：審美好、有藝術觸覺，亦肯冒險。":"太陽丘主才華同名聲，用作品講嘢最有說服力。"},
+    {n:"水星丘",p:lerp(K,W,.15),t:lit/ring>.82?"尾指修長，水星指長：口才好、識做生意、溝通力強。":"水星丘主溝通同商業觸覺，寫低諗法會令表達更清楚。"},
+    {n:"金星丘",p:lerp(T1,C,.4),t:"拇指根部，主愛同活力；飽滿代表熱情、親和力強。"+(th/idx>.78?"拇指長，意志力強，講得出做得到。":"")},
+    {n:"月丘",p:lerp(lerp(K,W,.68),C,.18),t:"掌邊近手腕，主想像同直覺；夢多、靈感多嘅人呢度通常較飽滿。"},
+    {n:"火星平原",p:C,t:"掌心中央，主勇氣同抗逆力；遇到挑戰時，呢份底氣會幫到你。"}];
+  return {lines,pts,shape,hand,m:{掌寬對掌長:(pw/pl).toFixed(2),中指對掌長:(fl/pl).toFixed(2),食指對無名指:(idx/ring).toFixed(2),尾指對無名指:(lit/ring).toFixed(2),拇指對食指:(th/idx).toFixed(2)},C,r:pl*.95};
+}
+function fpSVG(kind,R,iw,ih){
+  const vw=1000,vh=1000*ih/iw,X=p=>(p.x*vw).toFixed(1),Y=p=>(p.y*vh).toFixed(1);
+  const S=p=>({x:p.x*vw,y:p.y*vh});
+  let g="";
+  let side=1;
+  const mark=(p,i,cx)=>{const q=S(p);let dir=q.x<cx?-1:1;if(Math.abs(q.x-cx)<40){dir=side;side=-side}const lx=q.x+dir*120,ly=q.y-22;
+    return `<circle cx="${q.x}" cy="${q.y}" r="15" class="fp-ring"/><circle cx="${q.x}" cy="${q.y}" r="4.5" class="fp-dot"/><path d="M${q.x+dir*15} ${q.y}L${lx-dir*26} ${ly}" class="fp-lead"/><circle cx="${lx}" cy="${ly}" r="25" class="fp-badge"/><text x="${lx}" y="${ly}" class="fp-num">${i+1}</text>`};
+  if(kind==="face"){const {top,chin,gl,nb}=R.lines,a=S(top),b=S(chin),c=S(fpAvg(top,chin)),rad=Math.hypot(a.x-b.x,a.y-b.y)*.66;
+    g+=`<circle cx="${c.x}" cy="${c.y}" r="${rad}" class="fp-orbit"/><circle cx="${c.x}" cy="${c.y}" r="${rad*.82}" class="fp-orbit faint"/>`;
+    g+=`<path d="M${a.x} ${a.y-rad*.22}L${b.x} ${b.y+rad*.18}" class="fp-axis"/>`;
+    const span=rad*.78;[[top,"上停"],[gl,"中停"],[nb,"下停"],[chin,""]].forEach(([p,lab],i,arr)=>{const q=S(p);g+=`<path d="M${c.x-span} ${q.y}L${c.x+span} ${q.y}" class="fp-ting"/>`;if(lab){const q2=S(arr[i+1][0]);g+=`<text x="${c.x+span+10}" y="${(q.y+q2.y)/2}" class="fp-lab" text-anchor="start">${lab}</text>`}});
+    R.pts.forEach((o,i)=>g+=mark(o.p,i,c.x));
+  }else{const c=S(R.C),rad=R.r*vw;
+    g+=`<circle cx="${c.x}" cy="${c.y}" r="${rad}" class="fp-orbit"/>`;
+    R.lines.forEach((l,i)=>{const [p0,p1,p2]=l.c.map(S);g+=`<path d="M${p0.x} ${p0.y}Q${2*p1.x-(p0.x+p2.x)/2} ${2*p1.y-(p0.y+p2.y)/2} ${p2.x} ${p2.y}" class="fp-line l${i}"/><text x="${i===2?p0.x:p2.x}" y="${i===2?p0.y-34:p2.y+36}" class="fp-lab">${l.n}</text>`});
+    R.pts.forEach((o,i)=>g+=mark(o.p,i,c.x));
+  }
+  return `<svg class="fp-svg" viewBox="0 0 ${vw} ${vh.toFixed(0)}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${g}</svg>`;
+}
+function fpReport(kind,R){
+  const head=kind==="face"?`<p class="fp-sum"><b>${R.shape[0]}</b>：${R.shape[1]}。${R.tingTxt}</p>`:`<p class="fp-sum"><b>${R.shape[0]}</b>：${R.shape[1]}。（${R.hand==="Left"?"右手":"左手"}）</p>`;
+  const lines=kind==="palm"?`<ol class="fp-list lines">${R.lines.map(l=>`<li><b>${l.n}</b>${l.t}</li>`).join("")}</ol>`:"";
+  return head+lines+`<ol class="fp-list">${R.pts.map(o=>`<li><b>${o.n}</b>${o.t}</li>`).join("")}</ol><p class="note">定位由相片自動量度；掌紋位置係按手形推算嘅標示，深淺同分叉要睇清晰相片。只供參考同娛樂，唔涉及健康判斷。</p>`;
+}
 function orFace(el){
-  let file=null,kind="face";
-  el.innerHTML=`<p>上載一張清晰正面照（관상 面相）或手掌照（수상 手相），會分析五官輪廓、氣色或三大掌紋。</p>
+  let file=null,kind="face",R=null;
+  el.innerHTML=`<p>上載一張清晰正面照或手掌照，會喺相片上標出三停、十二宮或掌紋同掌丘位置，再逐點解說。</p>
   <div class="seg" role="group" aria-label="類別"><button type="button" data-k="face" aria-pressed="true">面相 관상</button><button type="button" data-k="palm" aria-pressed="false">手相 수상</button></div>
   <div class="dropzone" id="dz"><span class="mute" id="dzt">揀選或拖放相片（JPG / PNG）</span><input type="file" accept="image/*" id="fi" style="width:auto;border:0"></div>
-  <p class="note">相片只會用嚟做今次分析，唔會儲存。分析只供娛樂，唔涉及任何健康判斷。</p><div id="fAI"></div>`;
-  if(!IN_CLAUDE){el.innerHTML=`<p>面相（관상）同手相（수상）分析就快推出，敬請期待。</p>`;return}
-  el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{kind=b.dataset.k;el.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
-  const setFile=f=>{if(!f||!f.type.startsWith("image/"))return;file=f;const url=URL.createObjectURL(f);$("#dz",el).querySelector("img")?.remove();const im=document.createElement("img");im.src=url;im.alt="已選相片";$("#dz",el).prepend(im);$("#dzt",el).textContent=f.name};
+  <p class="note">相片只喺你部機度分析，唔會上載或儲存。</p><div id="fpOut"></div><div id="fAI"></div>`;
+  const out=$("#fpOut",el);
+  const run=async()=>{if(!file)return;R=null;out.innerHTML='<p class="thinking">正在定位五官同掌紋 ⋯</p>';
+    const url=URL.createObjectURL(file),im=new Image();im.src=url;await im.decode();
+    try{const t=await mpTask(kind);const res=t.detect(im);
+      if(kind==="face"){const L=res.faceLandmarks&&res.faceLandmarks[0];if(!L){out.innerHTML='<p class="note">搵唔到清晰嘅正面人臉，請換一張光線充足、正面、冇遮擋嘅相片。</p>';return}R=faceRead(L)}
+      else{const L=res.landmarks&&res.landmarks[0];if(!L){out.innerHTML='<p class="note">搵唔到手掌，請將手掌攤開、掌心向鏡頭，再影一次。</p>';return}R=palmRead(L,res.handednesses&&res.handednesses[0]&&res.handednesses[0][0]&&res.handednesses[0][0].categoryName)}
+      out.innerHTML=`<figure class="fp-fig"><img src="${url}" alt="你嘅相片，已標示${kind==="face"?"面相部位":"掌紋同掌丘"}">${fpSVG(kind,R,im.naturalWidth,im.naturalHeight)}</figure>${fpReport(kind,R)}`;
+    }catch(e){console.warn(e);out.innerHTML='<p class="note">定位功能未能載入，請檢查網絡之後再試。</p>'}};
+  el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{kind=b.dataset.k;el.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));run()});
+  const setFile=f=>{if(!f||!f.type.startsWith("image/"))return;file=f;$("#dzt",el).textContent=f.name;run()};
   $("#fi",el).onchange=e=>setFile(e.target.files[0]);
   const dz=$("#dz",el);dz.ondragover=e=>e.preventDefault();dz.ondrop=e=>{e.preventDefault();setFile(e.dataTransfer.files[0])};
-  $("#fAI",el).appendChild(aiBlock("開始分析",()=>{if(!file){$("#dzt",el).textContent="請先揀選一張相片";return null}
-    return prompt(kind==="face"?"根據相片做傳統面相（관상）分析：三停（上中下庭）、五官（眉眼鼻口耳）、額頭與下巴輪廓、氣色印象，分別對應性格、財運、感情與人生階段。只根據相片可見特徵，不要推測種族、健康狀況或年齡等敏感資訊；若相片不是清晰人臉，請禮貌說明。":"根據相片做手相（수상）分析：生命線、智慧線、感情線、事業線（命運線），以及掌形（木火土金水形）與主要丘位，分別對應性格、事業、感情與人生軌跡。若看不清楚掌紋，請說明並給出可見部分的解讀。",chart)},{images:()=>file?[file]:[]}));
+  $("#fAI",el).appendChild(aiBlock("面相手相深入解讀",()=>{if(!file||!R){$("#dzt",el).textContent="請先揀選一張相片";return null}
+    const nums=R.pts.map((o,i)=>`${i+1}. ${o.n}`).join("；"),meas=Object.entries(R.m).map(([k,v])=>`${k} ${v}`).join("，");
+    return prompt(kind==="face"?`用麻衣相法、柳莊相法同冰鑑嘅講法做面相深入解讀。相片已自動量度：${meas}；面形 ${R.shape[0]}。相片上標咗以下編號：${nums}。請按編號逐點解讀（每點兩三句），再總結性格、財運、感情同人生階段。只根據量度同相片可見特徵，唔好推測種族、健康或年齡。`:`用 Benham《The Laws of Scientific Hand Reading》同中國手相嘅講法做手相深入解讀。量度：${meas}；手形 ${R.shape[0]}。相片上標咗生命線、智慧線、感情線、事業線，同以下掌丘編號：${nums}。${IN_CLAUDE?"請睇相片中實際掌紋嘅長短深淺，":""}按線同編號逐點解讀，再總結性格、事業同感情。唔涉及健康判斷。`,chart)},{images:()=>IN_CLAUDE&&file?[file]:[]}));
 }
 /* Ifa */
 const ODU=[["Ogbe","IIII","光明、開始、一切順利；保持正直與耐心。"],["Oyeku","00 00".replace(/ /g,""),"結束與休息；黑夜過後才有白天，照顧祖先。"],["Iwori","0II0","洞察與轉化；看清事物的本質。"],["Odi","I00I","重生與保護；守住家庭與承諾。"],["Irosun","II00","祖先的力量；留意夢境與血緣。"],["Owonrin","00II","混亂中的機會；靈活應變。"],["Obara","I000","口才與財富；說話要真誠。"],["Okanran","000I","衝突與表達；先聆聽再發言。"],["Ogunda","III0","開路與突破；清除障礙。"],["Osa","0III","變動與風；為突如其來的轉變做準備。"],["Ika","0I00","謹慎與節制；避免捲入是非。"],["Oturupon","00I0","療癒與耐性；照顧身體。"],["Otura","I0II","靈性與和平；尋找內心的信仰。"],["Irete","II0I","堅持與穩固；腳踏實地。"],["Ose","I0I0","愛與豐盛；甜美的事情將至。"],["Ofun","0I0I","純潔與恩典；以白色、清淨回應生命。"]];

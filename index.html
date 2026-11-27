@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Soluna">
 <link rel="manifest" href="manifest.webmanifest">
+<script src="firebase-config.js"></script>
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>html,body{margin:0;padding:0}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}</style>
@@ -270,6 +271,12 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 .hua{font-family:var(--f-mono);font-size:10px;border:1px solid currentColor;padding:0 2px;margin-left:2px;font-weight:400}
 
 /* Oracle */
+body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn{display:none}
+.auth{max-width:380px;margin:40px auto 0;text-align:center;gap:16px}
+.auth .auth-mark{width:64px;height:64px;margin:0 auto;color:var(--gold)}.auth .auth-mark svg{width:100%;height:100%;overflow:visible}
+.auth h1{font-family:var(--f-display);font-weight:300;font-size:34px;margin:0}.auth h1 em{font-style:italic;color:var(--gold)}
+.auth form{text-align:left}.auth .seg{margin:4px auto}
+.linkbtn{all:unset;cursor:pointer;font-size:12px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
 .spread{display:grid;gap:12px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
 .tstage{position:relative;height:230px;margin:14px -16px 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .tstage::-webkit-scrollbar{display:none}
@@ -768,7 +775,7 @@ function rng(seed){let a=typeof seed==="number"?seed:hash(seed);return()=>{a|=0;
 const pick=(arr,r)=>arr[Math.floor(r()*arr.length)];
 const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const WD="日一二三四五六";
-function store(k,v){try{if(v===undefined){return JSON.parse(localStorage.getItem(k))}localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+function store(k,v){try{if(v===undefined){return JSON.parse(localStorage.getItem(k))}localStorage.setItem(k,JSON.stringify(v));if(window.cloudPush)cloudPush(k,v)}catch(e){return null}}
 function md(text){
   const lines=esc(text).split(/\n/);let out="",inList=false;
   const inline=s=>s.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
@@ -994,6 +1001,81 @@ function aiBlock(label,taskFn,opts={}){
     btn.disabled=false;btn.textContent="重新解讀";
   };
   return box;
+}
+
+
+/* ============ Accounts (Firebase Auth + Firestore) — standalone app only ============ */
+const FIREBASE_CONFIG=window.SOLUNA_FIREBASE||null;
+const FB_V="11.0.2",SYNC_KEY=k=>k==="xuanjing.profile.v1"||k==="soluna.dreams"||k==="soluna.theme"||k.startsWith("soluna.mood.")||k.startsWith("soluna.useful.");
+const encK=k=>k.replace(/\./g,"~"),decK=k=>k.replace(/~/g,".");
+let FB=null;
+async function fbLoad(){
+  if(FB)return FB;
+  const base=`https://www.gstatic.com/firebasejs/${FB_V}/`;
+  const [app,auth,fs]=await Promise.all([import(base+"firebase-app.js"),import(base+"firebase-auth.js"),import(base+"firebase-firestore.js")]);
+  const a=app.initializeApp(FIREBASE_CONFIG);
+  FB={app:a,A:auth,F:fs,auth:auth.getAuth(a),db:fs.initializeFirestore(a,{localCache:fs.persistentLocalCache()})};
+  return FB;
+}
+async function cloudDown(uid){
+  const {F,db}=FB,ref=F.doc(db,"users",uid);let snap=null;
+  try{snap=await F.getDoc(ref)}catch(e){console.warn(e)}
+  const data=snap&&snap.exists()?(snap.data().data||{}):null;
+  if(data&&Object.keys(data).length){
+    Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));
+    for(const [k,v] of Object.entries(data))try{localStorage.setItem(decK(k),v)}catch(e){}
+  }else{ // first login: keep what's on this device and upload it
+    const up={};Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>{up[encK(k)]=localStorage.getItem(k)});
+    if(Object.keys(up).length)await F.setDoc(ref,{data:up,updated:F.serverTimestamp()},{merge:true}).catch(console.warn);
+  }
+  let q={},t=0;
+  window.cloudPush=(k,v)=>{if(!SYNC_KEY(k))return;q[encK(k)]=JSON.stringify(v);clearTimeout(t);t=setTimeout(()=>{const d=q;q={};F.setDoc(ref,{data:d,updated:F.serverTimestamp()},{merge:true}).catch(console.warn)},1200)};
+}
+function authScreen(){
+  const m=$("#main");document.body.classList.add("locked");
+  let mode="login";
+  const draw=(msg="")=>{m.innerHTML=`<section class="view auth">
+    <div class="auth-mark">${$(".brand-mark").innerHTML}</div>
+    <h1>曜 <em>Soluna</em></h1><p class="mute">${mode==="login"?"歡迎返嚟。登入之後，你嘅命盤、夢境日記同心情記錄會喺所有裝置同步。":"開一個帳戶，你嘅命盤同日記就唔會因為換機而唔見。"}</p>
+    <div class="seg" role="group"><button type="button" data-m="login" aria-pressed="${mode==="login"}">登入</button><button type="button" data-m="signup" aria-pressed="${mode==="signup"}">註冊</button></div>
+    <form id="af" class="stack" autocomplete="on">
+      ${mode==="signup"?`<label class="f" for="an">稱呼<input id="an" maxlength="20" autocomplete="nickname" placeholder="你想點樣被稱呼"></label>`:""}
+      <label class="f" for="ae">電郵<input id="ae" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label class="f" for="ap">密碼<input id="ap" type="password" required minlength="6" autocomplete="${mode==="login"?"current-password":"new-password"}" placeholder="最少 6 個字"></label>
+      <button class="btn solid" type="submit">${mode==="login"?"登入":"建立帳戶"}</button>
+    </form>
+    <button class="btn" type="button" id="ag">用 Google 帳戶${mode==="login"?"登入":"註冊"}</button>
+    ${mode==="login"?`<button class="linkbtn" type="button" id="af2">忘記密碼？</button>`:""}
+    <p class="note" id="amsg" role="status">${esc(msg)}</p></section>`;
+    m.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mode=b.dataset.m;draw()});
+    const {A,auth}=FB,say=t=>{$("#amsg").textContent=t};
+    const err=e=>({"auth/invalid-credential":"電郵或密碼唔啱。","auth/wrong-password":"密碼唔啱。","auth/user-not-found":"搵唔到呢個帳戶，可以先註冊。","auth/email-already-in-use":"呢個電郵已經註冊咗，直接登入就得。","auth/weak-password":"密碼最少要 6 個字。","auth/invalid-email":"電郵格式唔啱。","auth/network-request-failed":"連唔到網絡，請檢查一下再試。","auth/too-many-requests":"試得太多次，請等一陣再試。","auth/popup-closed-by-user":"登入視窗閂咗。"}[e.code]||"登入未成功："+(e.code||e.message));
+    $("#af").onsubmit=async ev=>{ev.preventDefault();const em=$("#ae").value.trim(),pw=$("#ap").value;say(mode==="login"?"登入緊⋯":"建立緊帳戶⋯");
+      try{if(mode==="login")await A.signInWithEmailAndPassword(auth,em,pw);else{const c=await A.createUserWithEmailAndPassword(auth,em,pw);const nm=($("#an")||{}).value;if(nm){await A.updateProfile(c.user,{displayName:nm.trim()});const p=store("xuanjing.profile.v1");if(!p||p.demo)store("xuanjing.profile.v1",{...DEMO,name:nm.trim()})}}}catch(e){say(err(e))}};
+    $("#ag").onclick=async()=>{try{await A.signInWithPopup(auth,new A.GoogleAuthProvider())}catch(e){say(err(e))}};
+    const f2=$("#af2");if(f2)f2.onclick=async()=>{const em=$("#ae").value.trim();if(!em){say("請先輸入你嘅電郵。");return}try{await A.sendPasswordResetEmail(auth,em);say("已經寄咗重設密碼嘅電郵畀你。")}catch(e){say(err(e))}};
+  };
+  draw();
+}
+let fbUser=null;
+async function authGate(start){
+  try{await fbLoad()}catch(e){
+    if(store("soluna.signedIn")){start();return} // offline but signed in before: let them in
+    $("#main").innerHTML=`<p class="note" style="margin-top:24px">第一次登入需要網絡，請連線之後再開。</p>`;return}
+  let started=false;
+  FB.A.onAuthStateChanged(FB.auth,async u=>{
+    fbUser=u;
+    if(!u){window.cloudPush=null;try{localStorage.removeItem("soluna.signedIn")}catch(e){}started=false;authScreen();return}
+    try{localStorage.setItem("soluna.signedIn","1")}catch(e){}
+    document.body.classList.remove("locked");$("#main").innerHTML=`<p class="note" style="margin-top:40px;text-align:center">同步緊你嘅命盤⋯</p>`;
+    await cloudDown(u.uid);
+    profile=store("xuanjing.profile.v1")||{...DEMO};applyTheme(store("soluna.theme")||document.documentElement.dataset.theme||"dark");
+    if(!started){started=true;start()}else{recompute();route()}
+  });
+}
+async function signOutAll(){
+  if(!FB)return;await FB.A.signOut(FB.auth);
+  Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));profile={...DEMO};
 }
 
 /* ============ state ============ */
@@ -2042,12 +2124,14 @@ function renderMe(el){
   <p><b>計算型</b>：西洋星盤（太陽至冥王星、上升、天頂）、四柱八字與十神、五行、十年大運、紫微斗數十四主星與四化、每日流日與月相。</p>
   <p><b>占卜型</b>（喺呢頁）：78 張偉特塔羅（親手揀牌）、韓國神占（擲米）、面相手相、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>（底部「夢」）：解夢同夢境日記。</p>
   <p><b>運勢</b>：今日、本週、一個月、一年、十年，並可生成行動計劃。</p></div>
+  ${fbUser?`<hr class="rule"><div class="stack"><span class="eyebrow">帳戶</span><p style="font-size:13px">已登入：<b>${esc(fbUser.email||fbUser.displayName||"")}</b><br><span class="mute" style="font-size:12px">命盤、夢境日記同心情記錄會自動同步到雲端。</span></p><div class="row"><button class="btn" type="button" id="logout">登出</button></div></div>`:""}
   ${IN_CLAUDE?"":`<hr class="rule"><div class="stack"><span class="eyebrow">AI 深入解讀</span>
   <p class="mute" style="font-size:12px">其他功能全部喺你部機計，唔使上網都用到。想用 AI 寫長篇解讀、解夢同睇相，可以貼上你自己嘅 Anthropic API key（只會存喺呢部機）。</p>
   <label class="f" for="akey">API key<input id="akey" type="password" autocomplete="off" placeholder="sk-ant-…" value="${esc(apiKey())}"></label>
   <div class="row"><button class="btn solid" type="button" id="akeySave">儲存</button><button class="btn" type="button" id="akeyDel">刪除</button><small class="mute" id="akeyMsg"></small></div></div>`}
   <p class="note">${BRAND.zh}的內容供娛樂和自我反思之用。重要的健康、法律及財務決定，請諮詢相關專業人士。出生資料只儲存在你這部裝置的瀏覽器內。</p>`;
   el.querySelectorAll("[data-or]").forEach(b=>b.onclick=()=>{orTab=b.dataset.or;store("xuanjing.or",orTab);location.hash="#oracle"});
+  const lo=$("#logout",el);if(lo)lo.onclick=()=>signOutAll();
   const ks=$("#akeySave",el);if(ks){ks.onclick=()=>{try{localStorage.setItem(KEY_LS,$("#akey",el).value.trim())}catch(e){}$("#akeyMsg",el).textContent="已儲存"};$("#akeyDel",el).onclick=()=>{try{localStorage.removeItem(KEY_LS)}catch(e){}$("#akey",el).value="";$("#akeyMsg",el).textContent="已刪除"}}
   $("#edit",el).onclick=openEditor;const r=$("#reset",el);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
 }
@@ -2093,7 +2177,8 @@ function boot(){
   applyTheme(store("soluna.theme")||"dark");$("#themeBtn").onclick=()=>applyTheme(document.documentElement.dataset.theme==="light"?"dark":"light",true);
   drawSkyBg();addEventListener("resize",drawSkyBg);
   $("#hdrProfile").onclick=()=>{location.hash="#me"};
-  recompute();route();addEventListener("hashchange",()=>{route();window.scrollTo(0,0)});
+  const start=()=>{recompute();route();if(!boot.hc){boot.hc=1;addEventListener("hashchange",()=>{route();window.scrollTo(0,0)})}};
+  if(!IN_CLAUDE&&FIREBASE_CONFIG)authGate(start);else start();
 }
 boot();
 </script>

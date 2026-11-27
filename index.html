@@ -2511,7 +2511,7 @@ function renderToday(el){
     <h1>${esc(head[0])}${head[1]?`<br><em>${esc(head[1])}</em>`:""}</h1>
     <p class="hero-greet">${greet}，<b>${esc(uname)}</b>。</p>
     <p class="hero-body">${esc(L1h||L2)}</p>
-    <button class="primary-button" type="button" id="moodBtn">${ic("sparkle")}${mood?`今日感覺：${esc(mood)}`:"記錄今日心情"}${ic("arrow")}</button>${(()=>{const o=moodOf(store(moodKey()));return o&&o.lid&&lettersAll().some(x=>x.id===o.lid)?`<button type="button" class="ml-open" data-lopen="${esc(o.lid)}">${ENV_IC}<span>今日嘅信</span>${ic("arrow")}</button>`:o&&o.q?`<figure class="mood-q small"><blockquote>${esc(o.q[0])}</blockquote>${o.q[1]?`<figcaption>— ${esc(o.q[1])}</figcaption>`:""}</figure>`:""})()}
+    <button class="primary-button" type="button" id="moodBtn">${ic("sparkle")}${mood?`今日感覺：${esc(mood)}`:"記錄今日心情"}${ic("arrow")}</button>${(()=>{const o=moodOf(store(moodKey()));return o&&o.lid&&lettersAll().some(x=>x.id===o.lid)?"":o&&o.q?`<figure class="mood-q small"><blockquote>${esc(o.q[0])}</blockquote>${o.q[1]?`<figcaption>— ${esc(o.q[1])}</figcaption>`:""}</figure>`:""})()}
     ${particleOrb(chart)}
     <div class="cosmic-weather"><div class="wi">${ic("moon")}</div><div><span>Cosmic weather · 宇宙天氣</span><strong>${t.kw}、${TG[di.tgz].kw}、${house!=null?HOUSE_THEME[house].split("與")[0]:"內省"}</strong></div></div>
   </div>

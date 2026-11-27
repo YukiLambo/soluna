@@ -748,6 +748,13 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 .saved-list{list-style:none;padding:0;margin:0}
 .saved-list li{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,transparent);font-size:14.5px}
 .saved-list li em{margin-left:auto;font-style:normal;font-size:12px;opacity:.7;white-space:nowrap}
+.mood-letter{margin:8px 0 4px;padding:22px 22px 18px;text-align:left;background:color-mix(in srgb,var(--fg) 4%,transparent);border:1px solid var(--line,color-mix(in srgb,var(--fg) 12%,transparent));font-size:15px;line-height:1.85;color:var(--fg);animation:mlIn .5s ease both}
+.mood-letter p{margin:0 0 10px}.mood-letter .ml-to{font-family:var(--f-display);font-size:18px;margin-bottom:12px}
+.ml-q{margin:4px 0 14px;padding:4px 0 4px 16px;border-left:2px solid var(--gold,#bab8ec)}.ml-q blockquote{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.7}.ml-q figcaption{margin-top:4px;font-size:12.5px;color:var(--mute)}
+.ml-do{font-size:14px;color:var(--mute)}.ml-do span{display:block;font-size:11px;letter-spacing:.14em;color:var(--gold,var(--mute));margin-bottom:2px}
+.ml-sign{text-align:right;font-family:var(--f-display);font-style:italic;color:var(--mute);margin:14px 0 0!important}
+@keyframes mlIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.mood-letter{animation:none}}
 .mood-q{margin:6px 0 2px;padding:14px 16px;border-left:2px solid var(--gold,#bab8ec);text-align:left;background:color-mix(in srgb,var(--fg) 4%,transparent)}
 .mood-q blockquote{margin:0;font-family:var(--f-display);font-size:17px;line-height:1.7;color:var(--fg)}
 .mood-q figcaption{margin-top:6px;font-size:12.5px;color:var(--mute)}
@@ -1728,21 +1735,36 @@ const moodOf=v=>!v?null:typeof v==="string"?{m:v}:v;
 const moodName=d=>{const o=moodOf(store(moodKey(d)));return o?o.m:""};
 function pickQuote(m){const pool=MOOD_Q[m]||MOOD_Q.平靜;const K="soluna.qseen."+m;let seen=store(K)||[];if(seen.length>=pool.length)seen=seen.slice(-1);
   const opts=pool.map((_,i)=>i).filter(i=>!seen.includes(i));const i=opts[Math.floor(Math.random()*opts.length)];store(K,[...seen,i]);return pool[i]}
+/* 心情短信：承認感受 → 心理學角度 → 名句 → 小小行動 */
+const MOOD_LETTER={
+ 平靜:{o:["今日你揀咗「平靜」。喺咁多聲音嘅世界入面，可以靜落嚟其實唔容易，值得好好珍惜。","平靜唔係乜嘢都冇發生，而係發生咗嘅事冇將你拉走。你今日搵到咗呢個位置。","心理學上，平靜嘅時候腦袋最容易整理記憶同諗清楚事情。今日係一個好適合同自己對話嘅日子。"],a:["呢份安靜係屬於你嘅，唔使急住用佢做啲乜。","記住呢一刻身體嘅感覺，下次心亂嘅時候，可以返嚟呢度。"],t:["今晚瞓之前，寫低一件令你安心嘅小事。","飲杯暖水，慢慢呼吸三次，多謝今日嘅自己。"]},
+ 溫柔:{o:["你今日嘅心係軟嘅，呢種溫柔係一種力量，唔係軟弱。","溫柔嘅時候，我哋對人對己都多咗一份耐性。今日你可能特別容易感受到身邊人嘅好。","研究自我關懷嘅心理學家發現，對自己溫柔嘅人，面對失敗時反而更有勇氣再試。"],a:["記得將呢份溫柔都留一啲畀自己。","你點樣對待你最錫嘅人，今日就點樣對待自己。"],t:["傳一句多謝畀一個你掛住嘅人。","今日做一件細細嘅事去照顧自己，例如早啲瞓。"]},
+ 有希望:{o:["你今日感覺到希望，即係你心入面有一啲嘢開始郁緊。","希望唔係盲目樂觀，而係相信事情有可能變好，同埋相信自己可以出一分力。","心理學話，希望由兩樣嘢組成：知道自己想去邊，同埋相信有路可以行。你今日兩樣都有。"],a:["將呢份希望變成一個細細嘅行動，佢就會更加真實。","唔使一次過去到終點，今日行一步就已經好好。"],t:["寫低你最期待嘅一件事，同埋今個星期可以做嘅第一步。","同一個信任嘅人分享你嘅期待。"]},
+ 開放:{o:["今日你願意打開自己，呢份好奇心會帶你遇見新嘅嘢。","開放即係願意聽、願意試，唔急住判斷。你今日嘅心好有空間。","心理學上「對經驗開放」嘅人更有創意，亦更容易從改變中成長。"],a:["保持呢份好奇，唔使每樣嘢都即刻有答案。","新嘅可能性，往往就喺你平時唔會行嘅嗰條路度。"],t:["今日試一樣你未做過嘅細事，例如行另一條路返屋企。","問一個人一條你一直好想問嘅問題。"]},
+ 感恩:{o:["你今日感到感恩，代表你睇得見身邊已經擁有嘅好。","感恩唔係扮開心，而係喺平凡之中認得出幸福。","研究發現，經常寫低感恩嘅事，可以令人瞓得好啲、對生活更滿足。你今日已經喺做緊呢件事。"],a:["你感謝嘅嘢，好多時都係你自己用心經營返嚟。","將呢份感恩講出口，佢會變成兩個人嘅溫暖。"],t:["寫低三件今日令你感恩嘅事，再細都得。","同你感謝嘅人講一聲多謝。"]},
+ 疲倦:{o:["你今日好攰。辛苦晒，你已經撐咗好耐。","疲倦係身體同心喺度講：我需要休息。佢唔係懶，亦唔係唔夠努力。","心理學提醒我哋，長期唔休息會令人連快樂都感受唔到。休息唔係浪費時間，而係令自己可以繼續落去。"],a:["今日可以放低「要做得更多」嘅聲音，你做到嘅已經好夠。","休息完，你會記得自己點解出發。"],t:["今晚早半個鐘瞓，放低手機。","將今日最唔急嘅一件事搬去聽日。"]},
+ 不安:{o:["你今日覺得不安。多謝你願意承認呢份感覺，呢一步其實唔容易。","不安好多時係大腦想保護你：佢喺度諗所有可能出錯嘅事，想你準備好。只係有時佢諗得太多。","心理學有個發現：將情緒講出嚟，例如「我而家好不安」，本身已經可以令佢降溫。你啱啱就做咗。"],a:["你唔需要即刻消除不安，只需要知道佢會過去。","將注意力放返喺今日可以控制嘅一件小事上。"],t:["慢慢吸氣四秒，停四秒，呼氣六秒，做五次。","寫低你擔心嘅事，再喺旁邊寫：我而家可以做嘅係⋯"]},
+ 沉重:{o:["你今日心好重。我知道，有啲感覺唔係一兩句說話可以放得低。","沉重嘅時候，世界好似慢咗、暗咗。呢個唔係你嘅錯，係你心入面揹緊好多嘢。","心理學話，傷心同沉重都係人面對失去或者壓力嘅自然反應。容許自己感受，比硬撐更加療癒。"],a:["你唔需要一個人揹晒所有嘢。","今日唔使堅強，照顧好自己就已經足夠。"],t:["搵一個信任嘅人講幾句，或者只係傳個訊息話「今日有啲難過」。","出去行十分鐘，望吓天，曬吓太陽。如果呢份沉重持續好耐，記得搵專業人士傾吓。"]},
+ 迷惘:{o:["你今日覺得迷惘。唔知點行，其實係改變之前好常見嘅一段路。","迷惘代表舊嘅答案已經唔夠用，新嘅答案又未出現。呢個空檔好難受，但亦好重要。","心理學家話，可以忍受「未知」嘅人，最後往往搵到更適合自己嘅方向。唔使急住填滿呢個空白。"],a:["你唔需要今日就搵到答案，問啱問題已經係開始。","方向感好多時係行出嚟，唔係諗出嚟。"],t:["寫低：如果唔使理其他人點睇，我最想做嘅係⋯","今日只揀一件細事去做，做完就夠。"]}};
+function moodLetter(m,q,seed){const L=MOOD_LETTER[m];if(!L)return "";const r=k=>L[k][(seed+k.charCodeAt(0))%L[k].length];
+  const nm=(profile&&profile.name&&!profile.demo)?esc(profile.name):"你";
+  return `<article class="mood-letter"><p class="ml-to">親愛嘅${nm}：</p><p>${esc(r("o"))}</p>${q?`<p>想送一句說話畀你：</p><figure class="ml-q"><blockquote>${esc(q[0])}</blockquote>${q[1]?`<figcaption>— ${esc(q[1])}</figcaption>`:""}</figure>`:""}<p>${esc(r("a"))}</p><p class="ml-do"><span>今日可以試吓</span>${esc(r("t"))}</p><p class="ml-sign">曜 · Soluna</p></article>`}
+
 function openMood(after,day){
-  const d=day||ymd(new Date());const sh=$("#sheet");const prev=moodOf(store(moodKey(d)))||{};let pick=prev.m||"";let q=prev.q||null;let note=prev.note||"";
+  const d=day||ymd(new Date());const sh=$("#sheet");const prev=moodOf(store(moodKey(d)))||{};let pick=prev.m||"";let q=prev.q||null;let note=prev.note||"";let seed=prev.s!=null?prev.s:Math.floor(Math.random()*6);
   const isToday=d===ymd(new Date());
   const draw=()=>{sh.innerHTML=`<section class="panel" role="dialog" aria-modal="true" aria-labelledby="mt" style="text-align:center;align-items:stretch">
    <div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose" aria-label="關閉">${ic("close")}</button></div>
    <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:28px">${isToday?"而家心入面係咩感覺？":`${esc(d)} 嗰日係咩感覺？`}</h2>
    <p class="mute">唔使解釋得清楚，揀最接近嗰個就得。</p>
    <div class="mood-grid">${MOODS.map(m=>`<button type="button" aria-pressed="${pick===m}" data-m="${m}">${m}</button>`).join("")}</div>
-   ${q?`<figure class="mood-q"><blockquote>${esc(q[0])}</blockquote>${q[1]?`<figcaption>— ${esc(q[1])}</figcaption>`:""}</figure>`:""}
+   ${pick?moodLetter(pick,q,seed):""}
    ${pick?`<label class="f" for="mnote" style="text-align:left">想寫低幾句？（可以留空）<textarea id="mnote" maxlength="600" rows="3" placeholder="今日發生咗咩、諗緊咩⋯">${esc(note)}</textarea></label>`:""}
    <button class="btn solid" type="button" id="msave" ${pick?"":"disabled"} style="border-radius:0;padding:14px">記住呢一刻</button>
    <small class="mute" style="font-size:11.5px">心情會記入你嘅日記月曆 · 亦會影響今日解讀嘅語氣</small></section>`;
-   sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const n=$("#mnote");if(n)note=n.value;pick=b.dataset.m;q=pickQuote(pick);draw()});
+   sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const n=$("#mnote");if(n)note=n.value;pick=b.dataset.m;q=pickQuote(pick);seed=Math.floor(Math.random()*6);draw()});
    $("#mclose").onclick=()=>{sh.hidden=true};
-   $("#msave").onclick=()=>{const n=$("#mnote");if(n)note=n.value.trim();store(moodKey(d),{m:pick,q,note,t:Date.now()});sh.hidden=true;after&&after()};};
+   $("#msave").onclick=()=>{const n=$("#mnote");if(n)note=n.value.trim();store(moodKey(d),{m:pick,q,note,s:seed,t:Date.now()});sh.hidden=true;after&&after()};};
   draw();sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
 }
 /* ============ Daily analysis engine: real transits + 紫微 流日/流月/流年/大限 四化 ============ */
@@ -2714,7 +2736,7 @@ function drawCal(box,dreams,openDream,redraw){
   box.querySelectorAll("[data-cm]").forEach(b=>b.onclick=()=>{let m=M+Number(b.dataset.cm),y=Y;if(m<0){m=11;y--}if(m>11){m=0;y++}calYM=[y,m];drawCal(box,dreams,openDream,redraw)});
   box.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{const ds=b.dataset.day;const mo=moodOf(store(moodKey(ds)));const dr=byDay[ds]||[];
     openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title">${esc(ds)} · 星期${WDN[new Date(ds+"T12:00").getDay()]}</span><span></span></div>
-    <p class="kicker">心情</p>${mo?`<p class="sh-p" style="color:var(--fg)"><span class="jcal-dot" style="background:${MOOD_HUE[mo.m]||"#aaa"}"></span>${esc(mo.m)}</p>${mo.q?`<figure class="mood-q"><blockquote>${esc(mo.q[0])}</blockquote>${mo.q[1]?`<figcaption>— ${esc(mo.q[1])}</figcaption>`:""}</figure>`:""}${mo.note?`<p class="sh-p" style="white-space:pre-wrap">${esc(mo.note)}</p>`:""}`:`<p class="mute">呢日未有記錄心情。</p>`}
+    <p class="kicker">心情</p>${mo?`<p class="sh-p" style="color:var(--fg)"><span class="jcal-dot" style="background:${MOOD_HUE[mo.m]||"#aaa"}"></span>${esc(mo.m)}</p>${moodLetter(mo.m,mo.q,mo.s||0)}${mo.note?`<p class="sh-p" style="white-space:pre-wrap">${esc(mo.note)}</p>`:""}`:`<p class="mute">呢日未有記錄心情。</p>`}
     <button class="btn small" type="button" id="calMood" style="align-self:flex-start">${mo?"修改心情":"記錄呢日心情"}</button>
     <p class="kicker" style="margin-top:10px">夢境</p>${dr.length?dr.map(d=>`<button type="button" class="dj-row" data-did="${esc(d.id)}"><span class="dj-x"><span class="dj-txt">${esc(d.text)}</span></span></button>`).join(""):`<p class="mute">呢晚冇記低夢。</p>`}`,sh=>{
       $("#calMood",sh).onclick=()=>openMood(()=>redraw(),ds);

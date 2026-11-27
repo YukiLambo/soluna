@@ -298,11 +298,11 @@ body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn,body.locked #
 .plus{border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);border-radius:18px;padding:22px 18px;display:flex;flex-direction:column;gap:14px;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--gold) 12%,var(--surface)),var(--surface))}
 .plus h2{font-family:var(--f-display);font-weight:400;font-size:26px}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.plan,.pack{all:unset;cursor:pointer;position:relative;border:1px solid var(--line);border-radius:12px;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px;text-align:center;background:var(--bg)}
+.plan,.pack{all:unset;cursor:pointer;position:relative;border:1px solid var(--line);border-radius:4px;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px;text-align:center;background:transparent}
 .plan.best{border-color:var(--gold)}.plan b,.pack b{font-size:14px;font-weight:500}.plan .pp{font-family:var(--f-display);font-size:24px}.plan .pp small{font-size:12px;color:var(--mute)}
 .tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--gold);color:var(--hi-fg);font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:600}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pcard{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--surface);min-height:150px}
+.pcard{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:6px;background:transparent;min-height:150px}.pcard:hover{border-color:var(--mute)}.pcard:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pcard b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1.25}.pcard .mute{font-size:12.5px;line-height:1.55;flex:1}
 .pcard-en{font-family:var(--f-latin);font-style:italic;font-size:13px;color:var(--gold)}.pcard-price{font-family:var(--f-mono);font-size:12.5px;color:var(--gold)}
 .packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pack span:last-child{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
@@ -840,17 +840,17 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 .gua-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
 .gua{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}.gua svg{width:64px;height:70px;fill:var(--fg)}.gua .mv{fill:var(--gold)}
 .gua figcaption{display:flex;flex-direction:column;align-items:center;gap:2px}.gua small{font-size:11.5px;color:var(--mute)}.gua b{font-family:var(--f-display);font-weight:400;font-size:16px}
-.nw-card{text-align:center}.nwheel{width:100%;max-width:360px;margin:6px auto 0;display:block;color:var(--fg,currentColor);overflow:visible}.nwheel text{font-family:"Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif;text-anchor:middle;dominant-baseline:central;fill:currentColor}.nw-ring{fill:none;stroke:currentColor;stroke-width:.6;opacity:.45}.nw-faint{fill:none;stroke:currentColor;stroke-width:.5;opacity:.2}.nw-axis{stroke:currentColor;stroke-width:1;opacity:.6}.nw-sign{font-size:13px;opacity:.75}.nw-hn{font-size:8px;opacity:.4;font-family:Manrope,sans-serif!important}.nw-ax{font-size:8px;letter-spacing:.1em;opacity:.6;font-family:Manrope,sans-serif!important}.nw-pl{font-size:16px}.nw-deg{font-size:7.5px;opacity:.55;font-family:Manrope,sans-serif!important}.nw-tick{stroke:currentColor;stroke-width:.8;opacity:.7}.nw-star{fill:currentColor;opacity:.35}.nw-asp{stroke-width:.7;opacity:.55}.nw-asp.soft{stroke:#bab8ec}.nw-asp.hard{stroke:#e0a4a4;stroke-dasharray:3 2}:root[data-theme="light"] .nw-asp.soft{stroke:var(--gold2)}:root[data-theme="light"] .nw-asp.hard{stroke:#b5655c}.nw-cap{font-size:12px;margin:4px 0 18px}.prod-hero{position:relative;text-align:center;padding:26px 16px 22px;margin:4px 0 0;border-radius:18px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,rgba(186,184,236,.28),transparent 60%),radial-gradient(1px 1px at 12% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 78% 22%,rgba(255,255,255,.6),transparent),radial-gradient(1.2px 1.2px at 64% 70%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 28% 78%,rgba(255,255,255,.5),transparent),linear-gradient(180deg,#1a1a33,#0d0e1c);color:#ecebff;border:1px solid rgba(186,184,236,.25)}
-:root[data-theme="light"] .prod-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(214,170,90,.30),transparent 60%),linear-gradient(180deg,#fbf4e6,#f1e4c8);color:#2a2116;border-color:rgba(176,132,60,.3)}
-.prod-hero .pa{width:180px;height:108px;margin:0 auto 4px;display:block}.pa{fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.pa .pa-f{opacity:.4}.pa .pa-dot{fill:currentColor;stroke:none}
+.nw-card{text-align:center}.nwheel{width:100%;max-width:360px;margin:6px auto 0;display:block;color:var(--fg,currentColor);overflow:visible}.nwheel text{font-family:"Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols",serif;text-anchor:middle;dominant-baseline:central;fill:currentColor}.nw-ring{fill:none;stroke:currentColor;stroke-width:.6;opacity:.45}.nw-faint{fill:none;stroke:currentColor;stroke-width:.5;opacity:.2}.nw-axis{stroke:currentColor;stroke-width:1;opacity:.6}.nw-sign{font-size:13px;opacity:.75}.nw-hn{font-size:8px;opacity:.4;font-family:Manrope,sans-serif!important}.nw-ax{font-size:8px;letter-spacing:.1em;opacity:.6;font-family:Manrope,sans-serif!important}.nw-pl{font-size:16px}.nw-deg{font-size:7.5px;opacity:.55;font-family:Manrope,sans-serif!important}.nw-tick{stroke:currentColor;stroke-width:.8;opacity:.7}.nw-star{fill:currentColor;opacity:.35}.nw-asp{stroke-width:.7;opacity:.55}.nw-asp.soft{stroke:#bab8ec}.nw-asp.hard{stroke:#e0a4a4;stroke-dasharray:3 2}:root[data-theme="light"] .nw-asp.soft{stroke:var(--gold2)}:root[data-theme="light"] .nw-asp.hard{stroke:#b5655c}.nw-cap{font-size:12px;margin:4px 0 18px}.prod-hero{position:relative;text-align:center;padding:26px 16px 22px;margin:4px 0 0;overflow:hidden;background:transparent;color:var(--fg);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.prod-hero>*{position:relative}.prod-hero>.ph-cv{position:absolute;inset:0;width:100%;height:100%;color:var(--fg);opacity:.8;pointer-events:none;-webkit-mask-image:linear-gradient(#000 40%,transparent 72%);mask-image:linear-gradient(#000 40%,transparent 72%)}
+:root[data-theme="light"] .prod-hero>.ph-cv{color:#a87a32}
+.prod-hero .pa{width:180px;height:108px;margin:0 auto 4px;display:block;opacity:.0}.pa{fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.pa .pa-f{opacity:.4}.pa .pa-dot{fill:currentColor;stroke:none}
 .prod-hero .kicker{color:inherit;opacity:.7}.prod-hero .prod-h{font-size:32px;margin:4px 0 0}.prod-en{font-family:var(--f-latin);font-style:italic;font-size:15px;opacity:.75;margin:2px 0 10px}.prod-hero .prod-sig{border:0;padding:0;color:inherit;opacity:.65}
 .prod-meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 6px}.prod-meta span{font-size:12px;padding:5px 11px;border:1px solid var(--line);border-radius:99px;color:var(--mute2)}
-.pt{margin:14px 0 4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.pt-svg{width:100%;display:block;color:#bab8ec;margin-top:6px}:root[data-theme="light"] .pt-svg{color:#b5873a}.pt-line{fill:none;stroke:currentColor;stroke-width:1.4}.pt-dot{fill:var(--bg);stroke:currentColor;stroke-width:1.2}.pt-dot.best{fill:currentColor}.pt-lbl{font-size:8.5px;fill:var(--mute);text-anchor:middle;font-family:var(--f-mono)}.pt-lbl.blur{filter:blur(2.4px)}.pt-note{font-size:12.5px;color:var(--mute2);margin-top:6px;line-height:1.7}.pt-note .ic{width:12px;height:12px;vertical-align:-1px}
+.pt{margin:14px 0 4px;padding:14px 0;border-bottom:1px solid var(--line)}.pt-svg{width:100%;display:block;color:#bab8ec;margin-top:6px}:root[data-theme="light"] .pt-svg{color:#b5873a}.pt-line{fill:none;stroke:currentColor;stroke-width:1.4}.pt-dot{fill:var(--bg);stroke:currentColor;stroke-width:1.2}.pt-dot.best{fill:currentColor}.pt-lbl{font-size:8.5px;fill:var(--mute);text-anchor:middle;font-family:var(--f-mono)}.pt-lbl.blur{filter:blur(2.4px)}.pt-note{font-size:12.5px;color:var(--mute2);margin-top:6px;line-height:1.7}.pt-note .ic{width:12px;height:12px;vertical-align:-1px}
 .prod-sec h3{display:flex;align-items:center;justify-content:flex-start;gap:10px;text-align:left}.prod-sec .pn{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--gold);opacity:.8;min-width:18px}.prod-sec h3 .ic,.prod-sec h3 svg{margin-left:auto}
 .prod-sec.locked h3{color:var(--mute2)}.sk{display:flex;flex-direction:column;gap:7px;margin:12px 0 2px 28px}.sk i{display:block;height:7px;border-radius:4px;background:linear-gradient(90deg,var(--line),transparent);opacity:.9}.sk i:nth-child(2){width:86%}.sk i:nth-child(3){width:58%}
 .pcard{position:relative;overflow:hidden}.pcard .pc-art{position:absolute;right:-18px;bottom:-8px;width:130px;height:78px;opacity:.22;color:var(--gold)}
-.pcard.rep{background:radial-gradient(130% 100% at 100% 0%,rgba(186,184,236,.22),transparent 60%),var(--surface);border-color:rgba(186,184,236,.35)}:root[data-theme="light"] .pcard.rep{background:radial-gradient(130% 100% at 100% 0%,rgba(214,170,90,.25),transparent 60%),var(--surface);border-color:rgba(176,132,60,.35)}.pcard.rep .pc-art{opacity:.45}
-.cp-card{min-height:120px}.cp-rel{display:flex;gap:8px}.cp-rel label{flex:1}.cp-rel input{position:absolute;opacity:0;pointer-events:none}.cp-rel span{display:block;text-align:center;padding:10px 0;border:1px solid var(--line);border-radius:10px;font-size:14px;cursor:pointer}.cp-rel input:checked+span{background:var(--fg);color:var(--bg);border-color:var(--fg)}.cp-rel input:focus-visible+span{outline:2px solid var(--gold)}.cp-form{display:flex;flex-direction:column;gap:12px}.cp-ring{width:132px;height:132px;display:block;margin:0 auto 6px}.cp-track{fill:none;stroke:currentColor;opacity:.15;stroke-width:3}.cp-val{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}.cp-num{font-family:var(--f-display);font-size:34px;font-weight:300;text-anchor:middle;fill:currentColor}.cp-lbl{font-family:var(--f-latin);font-style:italic;font-size:11px;text-anchor:middle;fill:currentColor;opacity:.7}.prod-sec.md h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:6px 0 8px}.prod-sec.md ul{padding-left:18px;margin:6px 0 14px}.prod-sec.md li{margin:6px 0;line-height:1.8}.bz-sum{font-size:13px;color:var(--mute2);text-align:center;margin:2px 0}.flyt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.flyt{width:100%;border-collapse:collapse;font-size:12.5px;min-width:330px}.flyt th{font-weight:500;font-size:11px;color:var(--mute);padding:6px 4px;border-bottom:1px solid var(--line);text-align:center}.flyt td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}.flyt td:first-child{text-align:left;white-space:nowrap}.flyt td span{display:block;font-size:11px;color:var(--mute)}.flyt td b{font-weight:500}.flyt td.ji b{color:#e0a4a4}:root[data-theme="light"] .flyt td.ji b{color:#a5544b}.flyt td.self b{color:var(--gold)}.flyt-note{font-size:12px;margin-top:6px}.pat-chips{display:flex;flex-wrap:wrap;gap:8px}.pat-chip{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13.5px;display:inline-flex;gap:6px;align-items:center}.pat-chip i{font-style:normal;font-size:11px;color:var(--mute)}.pat-chip.g{border-color:rgba(186,184,236,.5)}:root[data-theme="light"] .pat-chip.g{border-color:rgba(176,132,60,.5)}.pat-pv{font-size:13.5px;-webkit-mask-image:linear-gradient(90deg,#000 60%,transparent);mask-image:linear-gradient(90deg,#000 60%,transparent)}.stack.cs{margin-top:26px}</style>
+.pcard.rep .pc-art{opacity:.3}
+.cp-card{min-height:120px}.cp-form{display:flex;flex-direction:column;gap:18px;margin-top:26px;padding:0;border:0;background:none}.cp-rel{display:flex;flex-wrap:wrap;gap:4px 18px;padding-bottom:4px}.cp-rel label{position:relative}.cp-rel input{position:absolute;opacity:0;pointer-events:none}.cp-rel span{display:inline-block;padding:6px 0;font-family:var(--f-display);font-size:16px;font-weight:300;color:var(--mute);border-bottom:1px solid transparent;cursor:pointer;transition:color .2s,border-color .2s}.cp-rel input:checked+span{color:var(--fg);border-bottom-color:var(--fg)}.cp-rel input:focus-visible+span{outline:1px dashed var(--gold);outline-offset:3px}.cp-form .f{font-size:11.5px;letter-spacing:.08em}.cp-form .f input,.cp-form .f select{background:transparent!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;padding:10px 0!important;font-size:16px;color:var(--fg);box-shadow:none!important}.cp-form .f input:focus,.cp-form .f select:focus{outline:none;border-bottom-color:var(--fg)!important}.cp-form .grid2{gap:22px}.cp-go{border-radius:2px!important;margin-top:6px;letter-spacing:.12em}.cp-priv{font-size:12px;margin:0;text-align:center}.cp-ring{width:132px;height:132px;display:block;margin:0 auto 6px}.cp-track{fill:none;stroke:currentColor;opacity:.12;stroke-width:1}.cp-val{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round}.cp-num{font-family:var(--f-display);font-size:34px;font-weight:300;text-anchor:middle;fill:currentColor}.cp-lbl{font-family:var(--f-latin);font-style:italic;font-size:11px;text-anchor:middle;fill:currentColor;opacity:.7}.prod-sec.md h2{font-family:var(--f-display);font-weight:400;font-size:20px;margin:6px 0 8px}.prod-sec.md ul{padding-left:18px;margin:6px 0 14px}.prod-sec.md li{margin:6px 0;line-height:1.8}.bz-sum{font-size:13px;color:var(--mute2);text-align:center;margin:2px 0}.flyt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.flyt{width:100%;border-collapse:collapse;font-size:12.5px;min-width:330px}.flyt th{font-weight:500;font-size:11px;color:var(--mute);padding:6px 4px;border-bottom:1px solid var(--line);text-align:center}.flyt td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}.flyt td:first-child{text-align:left;white-space:nowrap}.flyt td span{display:block;font-size:11px;color:var(--mute)}.flyt td b{font-weight:500}.flyt td.ji b{color:#e0a4a4}:root[data-theme="light"] .flyt td.ji b{color:#a5544b}.flyt td.self b{color:var(--gold)}.flyt-note{font-size:12px;margin-top:6px}.pat-chips{display:flex;flex-wrap:wrap;gap:8px}.pat-chip{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13.5px;display:inline-flex;gap:6px;align-items:center}.pat-chip i{font-style:normal;font-size:11px;color:var(--mute)}.pat-chip.g{border-color:rgba(186,184,236,.5)}:root[data-theme="light"] .pat-chip.g{border-color:rgba(176,132,60,.5)}.pat-pv{font-size:13.5px;-webkit-mask-image:linear-gradient(90deg,#000 60%,transparent);mask-image:linear-gradient(90deg,#000 60%,transparent)}.stack.cs{margin-top:26px}</style>
 
 <canvas id="skybg" aria-hidden="true"></canvas>
 <div class="wrap">
@@ -2323,7 +2323,7 @@ function miniOrbit(tr){
   return `<svg class="mini-orbit" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" class="o1"/><circle cx="22" cy="22" r="17" class="o2"/><circle cx="22" cy="22" r="10" class="o2"/><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ol${tr.cls==="hard"?" hard":""}"/><circle cx="22" cy="22" r="3" class="oc"/><circle cx="${x1.toFixed(1)}" cy="${y1.toFixed(1)}" r="2.4" class="ot"/><circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="2" class="on"/></svg>`;
 }
 const fmtD=d=>d?`${d.getMonth()+1}/${d.getDate()}`:"—";
-function openSheet(html,bind){const sh=$("#sheet");sh.innerHTML=`<section class="panel read-sheet" role="dialog" aria-modal="true">${html}</section>`;sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};sh.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{sh.hidden=true});bind&&bind(sh)}
+function openSheet(html,bind){setTimeout(()=>document.querySelectorAll("#sheet .ph-cv").forEach(heroParticles),30);const sh=$("#sheet");sh.innerHTML=`<section class="panel read-sheet" role="dialog" aria-modal="true">${html}</section>`;sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};sh.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{sh.hidden=true});bind&&bind(sh)}
 function openArea(c,an,k){
   const a=an.areas.find(x=>x.k===k);const cls=areaCls(an,a);
   const z=c.ziwei,pal=z?z.palaces.find(p=>p&&p.name===a.pal[0]):null;
@@ -3026,12 +3026,14 @@ function prodTeaser(k,c){
 const PEOPLE_K="soluna.people";
 const peopleAll=()=>{try{return JSON.parse(store(PEOPLE_K)||"[]")}catch(e){return []}};
 const peopleSave=a=>store(PEOPLE_K,JSON.stringify(a.slice(0,30)));
-const REL={love:{n:"愛情",en:"Love",pal:"夫妻"},friend:{n:"友情",en:"Friendship",pal:"交友"},work:{n:"事業",en:"Work",pal:"官祿"}};
+const REL={love:{n:"愛情",en:"Love",pal:"夫妻",b:"love"},crush:{n:"曖昧",en:"Something more",pal:"夫妻",b:"love"},friend:{n:"友情",en:"Friendship",pal:"交友",b:"friend"},work:{n:"事業",en:"Work",pal:"官祿",b:"work"},parent:{n:"父母",en:"Parent",pal:"父母",b:"family"},child:{n:"子女",en:"Child",pal:"子女",b:"family"},sibling:{n:"兄弟姊妹",en:"Sibling",pal:"兄弟",b:"family"}};
+const RB=r=>(REL[r]||REL.love).b;
 const PKW={Sun:"自我同方向",Moon:"情緒同安全感",Mercury:"溝通同思考",Venus:"愛同欣賞",Mars:"行動同慾望",Jupiter:"成長同支持",Saturn:"責任同承諾"};
 const PZH={Sun:"太陽",Moon:"月亮",Mercury:"水星",Venus:"金星",Mars:"火星",Jupiter:"木星",Saturn:"土星"};
 const SYN_PAIRS={
  love:[["Sun","Moon",3],["Moon","Sun",3],["Venus","Mars",3],["Mars","Venus",3],["Moon","Moon",2],["Venus","Moon",2],["Moon","Venus",2],["Venus","Venus",1.5],["Sun","Sun",1],["Saturn","Venus",1.5],["Venus","Saturn",1.5],["Saturn","Moon",1.5],["Moon","Saturn",1.5],["Mars","Mars",1]],
  friend:[["Mercury","Mercury",3],["Sun","Sun",2],["Moon","Moon",2],["Sun","Moon",2],["Moon","Sun",2],["Jupiter","Sun",2],["Sun","Jupiter",2],["Venus","Venus",1.5],["Mercury","Jupiter",1.5],["Jupiter","Mercury",1.5],["Mars","Mars",1]],
+ family:[["Moon","Moon",3],["Sun","Moon",2.5],["Moon","Sun",2.5],["Saturn","Sun",2],["Sun","Saturn",2],["Saturn","Moon",2],["Moon","Saturn",2],["Jupiter","Moon",1.5],["Moon","Jupiter",1.5],["Mercury","Mercury",1.5],["Venus","Moon",1.5],["Moon","Venus",1.5],["Mars","Mars",1]],
  work:[["Mercury","Mercury",3],["Sun","Saturn",2.5],["Saturn","Sun",2.5],["Mars","Mars",2],["Jupiter","Sun",2],["Sun","Jupiter",2],["Mercury","Saturn",2],["Saturn","Mercury",2],["Sun","Sun",1.5],["Mars","Saturn",1.5],["Saturn","Mars",1.5],["Jupiter","Jupiter",1]]};
 /* 特定組合嘅說法（自寫） */
 const SYN_TXT={
@@ -3055,18 +3057,18 @@ const synKey=(a,b)=>SYN_TXT[a+"-"+b]?a+"-"+b:SYN_TXT[b+"-"+a]?b+"-"+a:null;
 const EL_OF_SIGN=i=>["火","土","風","水"][i%4];
 function synastry(A,B,rel){
   const pa=n=>A.planets.find(x=>x.b===n),pb=n=>B.planets.find(x=>x.b===n),out=[];
-  for(const [x,y,w] of SYN_PAIRS[rel]){const a=pa(x),b=pb(y);if(!a||!b)continue;let d=Math.abs(a.lon-b.lon)%360;if(d>180)d=360-d;
+  const rb=RB(rel);for(const [x,y,w] of SYN_PAIRS[rb]){const a=pa(x),b=pb(y);if(!a||!b)continue;let d=Math.abs(a.lon-b.lon)%360;if(d>180)d=360-d;
     for(const [deg,nm,k] of ASPECTS){const mx=(/Sun|Moon/.test(x+y)?8:6)*(deg===60?.7:1);const o=Math.abs(d-deg);if(o>mx)continue;
       let v=k==="soft"?(deg===120?1:.7):k==="hard"?-.8:(/Saturn/.test(x+y)||x+y==="MarsMars"?-.3:.9);
-      if(rel==="love"&&k==="hard"&&/Venus/.test(x)&&/Mars/.test(y+x))v=.2;
-      if(rel==="work"&&deg===0&&/Saturn/.test(x+y))v=.4;
+      if(rb==="love"&&k==="hard"&&/Venus/.test(x)&&/Mars/.test(y+x))v=.2;
+      if(rb==="work"&&deg===0&&/Saturn/.test(x+y))v=.4;
       out.push({x,y,nm,k,deg,orb:o,w,v:v*w*(1-o/mx*.5)});break}}
   // ascendant contacts
   if(A.asc&&!A.p.timeUnknown)for(const n of ["Sun","Moon","Venus"]){const b=pb(n);if(!b)continue;let d=Math.abs(b.lon-A.asc.lon)%360;if(d>180)d=360-d;if(d<6)out.push({x:"ASC",y:n,nm:"合",k:"asc",orb:d,w:1.5,v:1.2})}
   const ea=EL_OF_SIGN(Math.floor(A.planets[0].lon/30)),eb=EL_OF_SIGN(Math.floor(B.planets[0].lon/30));
   const ma=EL_OF_SIGN(Math.floor(A.planets[1].lon/30)),mb=EL_OF_SIGN(Math.floor(B.planets[1].lon/30));
   const elv=(p,q)=>p===q?1:((p==="火"&&q==="風")||(p==="風"&&q==="火")||(p==="土"&&q==="水")||(p==="水"&&q==="土"))?.7:((p==="火"&&q==="水")||(p==="水"&&q==="火")||(p==="土"&&q==="風")||(p==="風"&&q==="土"))?-.4:0;
-  return {asp:out.sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)),el:elv(ea,eb)+elv(ma,mb)*(rel==="love"?1:.6),ea,eb,ma,mb}}
+  return {asp:out.sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)),el:elv(ea,eb)+elv(ma,mb)*(["love","family"].includes(RB(rel))?1:.6),ea,eb,ma,mb}}
 function baziBond(A,B,rel){
   const a=A.bazi,b=B.bazi,r=[];let s=0;if(!a||!b)return {s,r};
   const tg=tenGod(a.dm,b.dm),ysA=yongShen(a),ysB=yongShen(b),eB=ganEl(b.dm),eA=ganEl(a.dm);
@@ -3076,13 +3078,14 @@ function baziBond(A,B,rel){
   const male=A.p.gender==="M",TGT={
     love:{正官:male?"":"佢係你八字入面嘅「正官」，傳統上就係夫星：佢帶畀你穩定同歸屬感。",七殺:male?"":"佢係你嘅「七殺」，係令你心跳但亦有挑戰嘅類型。",正財:male?"佢係你八字入面嘅「正財」，傳統上就係妻星：踏實、長久。":"",偏財:male?"佢係你嘅「偏財」，相處輕鬆浪漫，但要用心經營先會長久。":"",正印:"佢好似一個照顧你嘅人，令你覺得被包容。",食神:"同佢一齊你會好放鬆、好開心，係享受型嘅關係。",比肩:"你哋好似，好易做到朋友式嘅伴侶。",劫財:"你哋性格相近但會互相比較，要防爭持。",傷官:"你會好想喺佢面前表現自己，但講嘢要留意分寸。",偏印:"佢令你諗得好深，關係帶少少靈性。"},
     friend:{比肩:"佢係你嘅「比肩」，即係同路人，最易成為知己。",食神:"佢係你嘅「食神」，一齊食飯傾偈最開心。",正印:"佢係你嘅「正印」，係會照顧你、教你嘅朋友。",偏印:"佢係你嘅「偏印」，可以同你傾好深入嘅嘢。",正財:"佢係你嘅「正財」，係實際又可靠嘅朋友。",偏財:"佢係你嘅「偏財」，識佢會帶來好多人脈同機會。",劫財:"佢係你嘅「劫財」，玩得埋，但錢銀上要分清楚。",傷官:"佢係你嘅「傷官」，你哋會互相刺激出新想法。",正官:"佢係你嘅「正官」，佢會提醒你守規矩，好似一個大哥大姐。",七殺:"佢係你嘅「七殺」，友情帶少少競爭，但會激勵你。"},
+    family:{正印:"佢係你嘅「正印」，係會無條件照顧你、包容你嘅家人。",偏印:"佢係你嘅「偏印」，佢嘅關心比較含蓄，要用心先感受到。",食神:"佢係你嘅「食神」，你好自然會想照顧佢、寵佢。",傷官:"佢係你嘅「傷官」，你會好想教佢、管佢，記住要留空間。",比肩:"佢係你嘅「比肩」，你哋好似，好易做到似朋友咁嘅家人。",劫財:"佢係你嘅「劫財」，感情深但會互相比較，資源上要分清楚。",正官:"佢係你嘅「正官」，佢對你有要求，亦令你守規矩、有方向。",七殺:"佢係你嘅「七殺」，佢嘅期望會帶畀你壓力，亦會逼你成長。",正財:"佢係你嘅「正財」，你會為佢負責任，係實際嘅照顧。",偏財:"佢係你嘅「偏財」，你哋相處輕鬆，佢會帶畀你意外嘅快樂。"},
     work:{正官:"佢係你嘅「正官」，好適合做你嘅上司或者決策者，你會因佢而有規矩同名聲。",七殺:"佢係你嘅「七殺」，壓力大但會逼你成長，適合做有挑戰嘅項目。",正印:"佢係你嘅「正印」，係你嘅貴人同導師。",偏印:"佢係你嘅「偏印」，可以帶你學到冷門但有用嘅技能。",正財:"佢係你嘅「正財」，同佢合作容易有實際收入。",偏財:"佢係你嘅「偏財」，同佢合作會打開新市場同客源。",食神:"佢係你嘅「食神」，你嘅創意同才華喺佢面前最易發揮。",傷官:"佢係你嘅「傷官」，你會想挑戰佢嘅做法，創新但要注意溝通。",比肩:"佢係你嘅「比肩」，適合做拍檔，分工要清楚。",劫財:"佢係你嘅「劫財」，合作要寫清楚分成，防利益衝突。"}};
-  const t=(TGT[rel]||{})[tg];if(t){r.push(t);s+=({正官:1,正財:1,正印:1.2,食神:1,比肩:.6,偏財:.6,偏印:.3,七殺:-.2,傷官:-.3,劫財:-.6})[tg]||0}
+  const t=(TGT[RB(rel)]||{})[tg];if(t){r.push(t);s+=({正官:1,正財:1,正印:1.2,食神:1,比肩:.6,偏財:.6,偏印:.3,七殺:-.2,傷官:-.3,劫財:-.6})[tg]||0}
   const da=ZHI.indexOf(a.pil[2][1]),db=ZHI.indexOf(b.pil[2][1]),ya=ZHI.indexOf(a.pil[0][1]),yb=ZHI.indexOf(b.pil[0][1]);
   const SANHE=(x,y)=>x!==y&&(x%4)===(y%4);
   const zr=(x,y,lbl,w)=>{if(LIUHE[x]===y){s+=1.5*w;r.push(`${lbl}${ZHI[x]}${ZHI[y]}六合，相處好自然、好易遷就對方。`)}else if(SANHE(x,y)){s+=1*w;r.push(`${lbl}${ZHI[x]}${ZHI[y]}屬三合，你哋目標同步調容易一致。`)}else if(ZHI_CHONG(x,y)){s-=1.5*w;r.push(`${lbl}${ZHI[x]}${ZHI[y]}相沖，生活習慣或者諗法有明顯分別，要多啲包容。`)}else if(ZHI_XING(x,y)){s-=.8*w;r.push(`${lbl}${ZHI[x]}${ZHI[y]}相刑，容易因小事執著，講嘢要溫和。`)}else if(ZHI_HAI[x]===y){s-=.6*w;r.push(`${lbl}${ZHI[x]}${ZHI[y]}相害，要防誤會累積，有嘢即刻講清楚。`)}};
-  if(a.pil[2]&&b.pil[2])zr(da,db,"日支（夫妻宮）",rel==="love"?1:.6);
-  zr(ya,yb,"年支（生肖）",rel==="love"?.5:1);
+  if(a.pil[2]&&b.pil[2])zr(da,db,"日支（夫妻宮）",RB(rel)==="love"?1:.6);
+  zr(ya,yb,"年支（生肖）",RB(rel)==="love"?.5:1);
   return {s,r,tg}}
 function zwBond(A,B,rel){
   const za=A.ziwei,zb=B.ziwei,r=[];let s=0;if(!za||!zb||A.p.timeUnknown||B.p.timeUnknown)return {s,r};
@@ -3100,6 +3103,7 @@ function zwBond(A,B,rel){
 const COMPAT_TIPS={
  love:{Moon:"多啲問佢今日感覺點，安全感係你哋關係嘅地基。",Venus:"用佢明白嘅方式去表達愛，細節比大禮物重要。",Mars:"有火就一齊做運動或者一齊完成一件事，將衝勁放喺同一方向。",Saturn:"承諾要講出口，亦要畀大家自由。",Sun:"互相支持大家嘅目標，唔好只做對方嘅觀眾。",Mercury:"有嘢唔開心，揀冷靜嘅時候講。"},
  friend:{Mercury:"定期約出嚟傾偈，友情靠交流保鮮。",Moon:"佢低落嘅時候，陪住就夠，唔使急住畀意見。",Sun:"欣賞對方嘅不同，唔好比較。",Mars:"一齊挑戰新嘢，最易拉近距離。",Jupiter:"一齊去旅行或者學新嘢。",Venus:"記得對方鍾意嘅細節。"},
+ family:{Moon:"家人之間最重要係被理解，聽多過講。",Saturn:"尊重大家嘅底線，責任可以分擔，唔使一個人孭晒。",Sun:"欣賞對方嘅努力，一句多謝已經好足夠。",Mercury:"有嘢唔好收埋，揀輕鬆嘅時間傾。",Jupiter:"一齊食飯、一齊去旅行，製造新嘅共同回憶。",Venus:"記得對方鍾意嘅細節，一份小禮物都可以好暖。",Mars:"意見唔同就先停一停，冷靜咗先再傾。"},
  work:{Mercury:"重要決定寫低，免得各自記憶唔同。",Saturn:"分清權責同死線，信任會跟住嚟。",Mars:"分開各自主導嘅範圍，避免同時搶方向盤。",Sun:"先對齊共同目標，再談做法。",Jupiter:"大計劃要配埋具體數字。",Moon:"留意對方嘅狀態，好嘅合作都需要情緒空間。"}};
 function localCompat(A,B,rel,nm){
   const sy=synastry(A,B,rel),bz=baziBond(A,B,rel),zw=zwBond(A,B,rel);
@@ -3114,22 +3118,22 @@ function localCompat(A,B,rel,nm){
   const s2=`## 要小心嘅地方\n${hard.length?hard.map(x=>"- "+line(x,false)).join("\n"):"- 星盤上冇明顯嘅張力相位，但都要記住，唔衝突唔代表唔使溝通。"}`;
   const s3=`## 八字：五行同緣份\n${bz.r.length?bz.r.map(x=>"- "+x).join("\n"):"- 你哋八字之間冇明顯嘅合沖，關係嘅走向主要睇你哋點樣相處。"}`;
   const s4=zw.r.length?`## 紫微：${R.pal}宮嘅緣份\n${zw.r.map(x=>"- "+x).join("\n")}`:(A.p.timeUnknown||B.p.timeUnknown?`## 紫微\n- 要有兩個人嘅出生時間先可以睇紫微合盤，補返時間會更準。`:"");
-  const tp=(hard[0]&&hard[0].x)||(soft[0]&&soft[0].x)||"Sun";const T=COMPAT_TIPS[rel];
+  const tp=(hard[0]&&hard[0].x)||(soft[0]&&soft[0].x)||"Sun";const T=COMPAT_TIPS[RB(rel)];
   const t2=[(hard[0]&&hard[0].y),(soft[1]&&soft[1].x),(soft[0]&&soft[0].y),"Mercury","Moon","Sun","Venus"].map(k=>T[k]).find(v=>v&&v!==(T[tp]||T.Sun));const s5=`## 相處建議\n- ${T[tp]||T.Sun}\n- ${t2}\n- ${score>=74?"珍惜呢份自然嘅默契，但都要記得表達感謝。":"關係唔係考試，分數只係地圖；願意了解對方，就已經行緊最重要嗰步。"}`;
   return {score,lvl,parts:[sum,s1,s2,s3,s4,s5].filter(Boolean)};
 }
 function openCompat(){
   const ppl=peopleAll();
   openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title"></span><span></span></div>
-  <div class="prod"><div class="prod-hero">${prodArt("compat")}<p class="kicker">關係合盤</p><h2 class="prod-h">你同佢</h2><p class="prod-en">You &amp; them</p><p class="prod-sig mono">愛情 · 友情 · 事業</p></div>
+  <div class="prod"><div class="prod-hero"><canvas class="ph-cv" aria-hidden="true"></canvas>${prodArt("compat")}<p class="kicker">關係合盤</p><h2 class="prod-h">你同佢</h2><p class="prod-en">You &amp; them</p><p class="prod-sig mono">愛情 · 友情 · 事業 · 家人</p></div>
   ${ppl.length?`<div class="stack" style="margin-top:16px"><span class="eyebrow">之前睇過嘅人</span><ul class="saved-list">${ppl.map(x=>`<li><button type="button" data-pp="${esc(x.id)}"><span class="mono mute">${esc(REL[x.rel].n)}</span><span><b>${esc(x.name)}</b> · ${esc(x.date)}</span><em>${owns("compat")||owns("compat:"+x.id)?"已解鎖":""}</em></button></li>`).join("")}</ul></div>`:""}
-  <form class="panel cp-form" id="cpf" autocomplete="off" style="margin-top:16px"><span class="eyebrow">加入一個人</span>
+  <form class="cp-form" id="cpf" autocomplete="off"><span class="eyebrow">你想睇同邊個嘅關係？</span>
    <div class="cp-rel" role="radiogroup" aria-label="關係">${Object.entries(REL).map(([k,v],i)=>`<label><input type="radio" name="cprel" value="${k}" ${i===0?"checked":""}><span>${v.n}</span></label>`).join("")}</div>
    <label class="f" for="cpn">佢嘅稱呼<input id="cpn" required maxlength="20" placeholder="例如：阿晴"></label>
    <div class="grid2"><label class="f" for="cpd">出生日期<input id="cpd" type="date" required min="1901-01-01" max="2099-12-31"></label><label class="f" for="cpt">出生時間<input id="cpt" type="time"></label></div>
    <label class="check" for="cpu"><input type="checkbox" id="cpu">唔知佢嘅出生時間</label>
    <div class="grid2"><label class="f" for="cpc">出生城市<select id="cpc">${cityOptions(0)}</select></label><label class="f" for="cpg">性別<select id="cpg"><option value="F">女</option><option value="M">男</option></select></label></div>
-   <button class="btn solid" type="submit">開始合盤</button><p class="mute" style="font-size:12.5px;margin:0">對方嘅資料只會儲存喺你嘅帳戶。</p></form></div>`,sh=>{
+   <button class="btn solid cp-go" type="submit">開始合盤</button><p class="mute cp-priv">對方嘅資料只會儲存喺你嘅帳戶。</p></form></div>`,sh=>{
     sh.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>openCompatReport(b.dataset.pp));
     $("#cpf",sh).onsubmit=e=>{e.preventDefault();const id="p"+Date.now().toString(36);
       const p={id,name:$("#cpn",sh).value.trim()||"佢",rel:sh.querySelector("[name=cprel]:checked").value,date:$("#cpd",sh).value,time:$("#cpt",sh).value||"12:00",timeUnknown:$("#cpu",sh).checked||!$("#cpt",sh).value,city:+$("#cpc",sh).value,gender:$("#cpg",sh).value};
@@ -3140,15 +3144,41 @@ function openCompatReport(id){
   const x=peopleAll().find(p=>p.id===id);if(!x)return openCompat();
   let B;try{B=computeChart({...x,lang:profile.lang,demo:false})}catch(e){toastMsg("對方嘅資料未能排盤，請檢查日期");return}
   const R=REL[x.rel],res=localCompat(chart,B,x.rel,x.name),has=owns("compat")||owns("compat:"+id);
-  const ring=`<svg class="cp-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" class="cp-track"/><circle cx="60" cy="60" r="50" class="cp-val" stroke-dasharray="${(res.score/100*314.2).toFixed(1)} 400" transform="rotate(-90 60 60)"/><text x="60" y="58" class="cp-num">${res.score}</text><text x="60" y="78" class="cp-lbl">${R.en}</text></svg>`;
+  const ring=`<svg class="cp-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" class="cp-track"/><circle cx="60" cy="60" r="50" class="cp-val" stroke-dasharray="${(res.score/100*314.2).toFixed(1)} 400" transform="rotate(-90 60 60)"/><text x="60" y="62" class="cp-num">${res.score}</text></svg>`;
   const secs=res.parts.slice(1).map(t=>t.split("\n")[0].replace(/^## /,""));
   openSheet(`<div class="sh-top"><button class="btn small" type="button" id="cpBack" aria-label="返回">${ic("close")}</button><span class="sh-title"></span><span></span></div>
-  <div class="prod"><div class="prod-hero">${ring}<p class="kicker">${R.n}合盤</p><h2 class="prod-h">${esc(profile.name||"你")} × ${esc(x.name)}</h2><p class="prod-en">${res.lvl}</p><p class="prod-sig mono">${esc(x.date)}${x.timeUnknown?"":" "+esc(x.time)} · ${esc((CITIES[x.city]||CITIES[0])[0])}</p></div>
+  <div class="prod"><div class="prod-hero"><canvas class="ph-cv" aria-hidden="true"></canvas>${ring}<p class="kicker">${R.n}合盤</p><h2 class="prod-h">${esc(profile.name||"你")} × ${esc(x.name)}</h2><p class="prod-en">${has?res.lvl:R.en}</p><p class="prod-sig mono">${esc(x.date)}${x.timeUnknown?"":" "+esc(x.time)} · ${esc((CITIES[x.city]||CITIES[0])[0])}</p></div>
   <div class="prod-meta"><span>西洋合盤</span><span>八字合婚</span><span>紫微緣份</span></div>
-  <div class="prod-sec open md">${md(res.parts[0])}</div>
-  ${has?`<div class="prod-sec open md">${md(res.parts.slice(1).join("\n\n"))}</div>`:secs.map((t,i)=>`<div class="prod-sec locked"><h3><i class="pn">${String(i+2).padStart(2,"0")}</i>${esc(t)}</h3><span class="sk"><i></i><i></i><i></i></span></div>`).join("")}
+  ${has?`<div class="prod-sec open md">${md(res.parts.join("\n\n"))}</div>`:["總評",...secs].map((t,i)=>`<div class="prod-sec locked"><h3><i class="pn">${String(i+1).padStart(2,"0")}</i>${esc(t)}${LOCK_IC}</h3><span class="sk"><i></i><i></i><i></i></span></div>`).join("")}
   </div>${has?"":`<div class="prod-bar"><span>解鎖你同${esc(x.name)}嘅完整合盤</span><button class="btn solid small" type="button" id="cpBuy">解鎖 HK$48</button></div><p class="mute" style="font-size:12.5px;text-align:center">每份合盤對應一個人 · Sol Pro 會員可以用會員價購買</p>`}`,sh=>{
     $("#cpBack",sh).onclick=openCompat;const bb=$("#cpBuy",sh);if(bb)bb.onclick=buyNow;});
+}
+/* 封面粒子：兩個交錯嘅星環 + 中心緩緩上升嘅漩渦（萬化冥合） */
+function heroParticles(cv){
+  if(!cv||!cv.getContext)return;const ctx=cv.getContext("2d"),dpr=Math.min(2,window.devicePixelRatio||1);
+  const RM=matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W=0,H=0;const fit=()=>{const r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};fit();
+  const col=getComputedStyle(cv).color||"#ecebff";
+  let seed=7;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+  const P=[];
+  for(let i=0;i<230;i++)P.push({k:0,a:rnd()*6.283,r:.9+rnd()*.14*(rnd()<.8?1:2.4),s:(.0011+rnd()*.0012),z:rnd(),sz:.4+rnd()*1.1});
+  for(let i=0;i<230;i++)P.push({k:1,a:rnd()*6.283,r:.9+rnd()*.14*(rnd()<.8?1:2.4),s:-(.0011+rnd()*.0012),z:rnd(),sz:.4+rnd()*1.1});
+  for(let i=0;i<110;i++)P.push({k:2,a:rnd()*6.283,h:rnd(),s:.004+rnd()*.006,sz:.3+rnd()*.9});
+  let t0=performance.now();
+  const frame=now=>{
+    if(!cv.isConnected)return;
+    if(cv.getBoundingClientRect().width!==W)fit();
+    const dt=Math.min(50,now-t0);t0=now;ctx.clearRect(0,0,W,H);ctx.fillStyle=col;
+    const cx=W/2,cy=Math.min(H*.25,100),R=Math.min(W*.34,140);
+    for(const p of P){
+      let x,y,al;
+      if(p.k<2){p.a+=p.s*dt*.06;const tilt=p.k?.24:-.24,ry=.3;const ex=Math.cos(p.a)*R*p.r,ey=Math.sin(p.a)*R*p.r*ry;
+        x=cx+ex*Math.cos(tilt)-ey*Math.sin(tilt);y=cy+ex*Math.sin(tilt)+ey*Math.cos(tilt);al=.18+.5*(Math.sin(p.a)*.5+.5)*p.z}
+      else{p.h+=p.s*dt*.012;if(p.h>1){p.h=0;p.a=rnd()*6.283}p.a+=.02*dt*.06*(1.6-p.h);const rr=R*(.08+.34*p.h);
+        x=cx+Math.cos(p.a)*rr;y=cy+R*.42-p.h*R*.9+Math.sin(p.a)*rr*.22;al=.5*Math.sin(p.h*Math.PI)}
+      {const dd=Math.hypot(x-cx,(y-cy)*1.1);if(dd<64)al*=Math.max(0,(dd-44)/20)}if(al<=0)continue;ctx.globalAlpha=al;ctx.beginPath();ctx.arc(x,y,p.sz,0,6.283);ctx.fill()}
+    ctx.globalAlpha=1;if(!RM)requestAnimationFrame(frame)};
+  requestAnimationFrame(frame);
 }
 function buyNow(){toastMsg("付款功能就快開放，多謝你嘅支持 ✦")}
 const owns=k=>ENT.owned.includes(k);
@@ -3170,7 +3200,7 @@ function openProduct(k){
   const has=owns(k);
   openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title"></span><span></span></div>
    <div class="prod">
-    <div class="prod-hero">${prodArt(k)}<p class="kicker">${p.g==="report"?"運勢報告":"深入解讀"}</p><h2 class="prod-h">${p.n}</h2><p class="prod-en">${p.en}</p><p class="prod-sig mono">${esc(profile.name||"")} · ${sig}</p></div>
+    <div class="prod-hero"><canvas class="ph-cv" aria-hidden="true"></canvas>${prodArt(k)}<p class="kicker">${p.g==="report"?"運勢報告":"深入解讀"}</p><h2 class="prod-h">${p.n}</h2><p class="prod-en">${p.en}</p><p class="prod-sig mono">${esc(profile.name||"")} · ${sig}</p></div>
     <div class="prod-meta">${(PROD_META[k]||[]).map(x=>`<span>${x}</span>`).join("")}</div>
     ${has?"":prodTeaser(k,c)}
     <div class="prod-sec open"><h3><i class="pn">01</i>${p.secs[0]}${has?"":LOCK_IC}</h3><p class="prod-pv">${esc(productPreview(k))}</p></div>

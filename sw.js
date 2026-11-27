@@ -1,5 +1,5 @@
-const V="soluna-v32";
-const SHELL=["./","index.html","manifest.webmanifest","firebase-config.js","vendor/astronomy.browser.min.js","vendor/lunar.js","vendor/iztro.min.js","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
+const V="soluna-v33";
+const SHELL=["./","index.html","manifest.webmanifest","firebase-config.js","vendor/astronomy.browser.min.js","vendor/lunar.js","vendor/iztro.min.js","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png","fonts/soluna-hand.woff2"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{

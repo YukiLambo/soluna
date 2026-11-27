@@ -933,7 +933,7 @@ function computeChart(p){
   }
   return res;
 }
-const SIHUA_T={甲:["廉貞","破軍","武曲","太陽"],乙:["天機","天梁","紫微","太陰"],丙:["天同","天機","文昌","廉貞"],丁:["太陰","天同","天機","巨門"],戊:["貪狼","太陰","右弼","天機"],己:["武曲","貪狼","天梁","文曲"],庚:["太陽","武曲","太陰","天同"],辛:["巨門","太陽","文曲","文昌"],壬:["天梁","紫微","左輔","武曲"],癸:["破軍","巨門","太陰","貪狼"]};
+const SIHUA_T={甲:["廉貞","破軍","武曲","太陽"],乙:["天機","天梁","紫微","太陰"],丙:["天同","天機","文昌","廉貞"],丁:["太陰","天同","天機","巨門"],戊:["貪狼","太陰","太陽","天機"],己:["武曲","貪狼","天梁","文曲"],庚:["太陽","武曲","天府","天同"],辛:["巨門","太陽","文曲","文昌"],壬:["天梁","紫微","天府","武曲"],癸:["破軍","巨門","太陰","貪狼"]};
 const PALACE_NAMES=["命宮","兄弟","夫妻","子女","財帛","疾厄","遷移","交友","官祿","田宅","福德","父母"];
 const NAYIN_EL="金火木土金火水土金木水土火木水金火木土金火水土金木水土火木水";
 /* ===== 八字：旺衰（藏干＋月令加權）同子平月令格局 ===== */
@@ -1165,6 +1165,9 @@ function aiBlock(label,taskFn,opts={}){
     const it=opts.save();it.text=out.innerText.trim().slice(0,6000);sid=saveReading(it);lk.setAttribute("aria-pressed","true");toastMsg("已收藏，可以喺「我的 › 收藏」重溫")};
   btn.onclick=async()=>{
     if(!canUse(label)){openPaywall(label);return}
+    if(opts.local){let t="";try{t=opts.local()}catch(e){console.warn(e)}
+      if(t===null)return;
+      if(t){note.hidden=true;out.innerHTML=md(t);btn.textContent="重新整理";if(sid){const a=savedAll();const it=a.find(x=>x.id===sid);if(it){it.text=t.slice(0,6000);store(SAVED_K,a)}}if(opts.onDone)try{opts.onDone(t)}catch(e){}return}}
     const task=typeof taskFn==="function"?taskFn():taskFn; if(task===null)return;
     note.hidden=true;btn.disabled=true;out.innerHTML='<span class="thinking">正在感應中 ⋯</span>';
     const s=await getSample();
@@ -1178,6 +1181,231 @@ function aiBlock(label,taskFn,opts={}){
   };
   return box;
 }
+
+
+/* ===================== 本地報告引擎（唔使 AI） =====================
+   全部斷語按命理規則組合：紫微（中州派星系、四化）、八字（十神、喜忌）、西洋占星、塔羅、梅花、解夢。 */
+const Q_CATS=[["love",/愛|感情|拍拖|佢|男朋友|女朋友|男友|女友|結婚|婚|復合|曖昧|暗戀|分手|桃花|伴侶|老公|老婆|對象|喜歡|戀/],["career",/工|職|事業|升|面試|轉工|老闆|上司|公司|創業|生意|offer|項目|同事/i],["money",/錢|財|投資|股|樓|賺|收入|債|借|買|賣|加人工|薪/],["study",/考|讀書|學|DSE|大學|成績|留學|課程|論文/i],["health",/健康|病|身體|手術|睡|瘦|痛|醫/],["family",/屋企|家人|父母|爸|媽|仔|囡|子女|搬屋/],["travel",/旅行|出國|移民|搬|去.{0,4}(邊|唔)/]];
+const CAT_N={love:"感情",career:"事業",money:"財運",study:"學業",health:"健康",family:"家庭",travel:"出行與變動",general:"整體"};
+function classifyQ(q){if(!q)return "general";for(const [k,re] of Q_CATS)if(re.test(q))return k;return "general"}
+const CAT_ADV={
+ love:{g:"感情方面係順嘅：對方對你有好感，或者關係有進一步嘅機會。主動表達心意，會有回應。",m:"感情處於觀望期，雙方都未完全打開心扉。唔使急，用行動慢慢建立信任。",b:"呢段關係暫時有阻力，可能係時機、距離或者心結。先照顧好自己，唔好將幸福全押喺對方身上。"},
+ career:{g:"事業有推進力，努力會被睇見，適合爭取、面試或者提出新計劃。",m:"工作平穩，未到大轉變嘅時候。打好基礎、累積實力，機會出現時就接得住。",b:"工作上壓力同阻滯較多，唔宜衝動辭職或者硬碰硬。先穩住，搵可信嘅人商量。"},
+ money:{g:"財運向好，正財穩、偏財亦有機會，但都要量力而為。",m:"收支大致平衡，適合整理財務、做預算，唔宜大額投資。",b:"財來財去，容易有意外開支。避免借貸同高風險投資，守住現金流。"},
+ study:{g:"讀書運順，理解力同記性都好，考試或申請有利。",m:"學習進度一般，要靠堅持同方法，唔好臨急抱佛腳。",b:"容易分心或者壓力大，調整作息、分段溫習，會比硬撐有效。"},
+ health:{g:"精神同體力都唔錯，保持而家嘅作息就好。",m:"身體大致平穩，但要留意疲勞累積，早啲瞓。",b:"身體發出警號，唔好忽視細微嘅不適，有需要就睇醫生。"},
+ family:{g:"家庭和睦，有喜事或者團聚嘅機會。",m:"屋企大致平靜，多啲溝通可以避免誤會。",b:"家中容易有意見分歧，退一步、講感受唔講對錯。"},
+ travel:{g:"出行同轉變都有利，新環境會帶嚟新機會。",m:"可以計劃，但要預留彈性，細節要核對清楚。",b:"變動容易有延誤或者阻滯，唔宜倉卒決定，準備充足再行。"},
+ general:{g:"整體運勢向好，適合主動推進心中嘅計劃。",m:"整體平穩，宜穩中求進，照顧好自己嘅節奏。",b:"近期阻滯較多，先守後攻，將精力放喺可以控制嘅事情上。"}};
+const pm=n=>PAL_MEAN[n]||PAL_MEAN[(n||"").replace("宮","")]||n;
+const lvlOf=v=>v>.35?"g":v<-.35?"b":"m";
+const LVL_W={g:"偏向「是」，結果向好",m:"未有定論，結果取決於你接落嚟點做",b:"暫時偏向「否」，或者要經過一番波折"};
+function catBlock(cat,v){const l=lvlOf(v);return CAT_ADV[cat][l]}
+function areasBlock(v,cats){return (cats||["love","career","money","health"]).map(k=>`- **${CAT_N[k]}**：${CAT_ADV[k][lvlOf(v[k]!=null?v[k]:v.all)]}`).join("\n")}
+function qOpen(q,cat){return q?`## 你嘅問題\n「${q}」\n呢條問題屬於**${CAT_N[cat]}**，以下解讀會圍繞呢方面回答。`:`## 整體指引\n你冇指定問題，以下會概括咁講感情、事業、財運同健康各方面。`}
+
+/* ---- 塔羅 ---- */
+const MAJ_VAL=[.4,.7,.3,.8,.5,.4,.7,.6,.6,.2,.6,.3,-.2,-.3,.5,-.6,-.9,.9,-.5,1,.6,1];
+const MAJ_CAT={love:[ "新戀情或者重新開始","主動追求、有吸引力","暗戀或者未講出口嘅情感","被愛同照顧，有孕育嘅意思","穩定但可能較理性嘅關係","傳統關係、婚姻或家長意見","真心相愛，亦要作出選擇","主動推進關係","用溫柔化解衝突","需要獨處、想清楚","緣份轉動、命中注定","關係要公平、講清楚","犧牲同等待","舊關係結束、新階段開始","慢慢調和、互相遷就","慾望強烈或者難以抽身","突變或者分開","重拾希望、心靈相通","不安、猜疑、看不清","開心、公開、溫暖","重新審視、復合嘅可能","圓滿、修成正果"],career:["新開始、轉換跑道","能力齊備，適合開展","靜觀其變，靠直覺","豐收、創作有成","領導、架構、升職","跟制度、搵前輩指導","合作同選擇","全力推進、有進展","以柔制剛","專研、獨立工作","轉機出現","合約、法律、公平","停滯、換個角度","結束舊工、轉型","協調、穩步前進","被困、壓力或誘惑","突變、架構重組","前景光明、理想","資訊不明，小心欺騙","成功、被認同","重大決定、召喚","完成、達標"]};
+const MINOR_VAL=(c)=>{const r=c.rank,s=c.suit;const neg={0:[5,10],1:[5,8],2:[3,5,7,8,9,10],3:[5]};const pos={0:[1,3,6],1:[1,2,3,6,9,10],2:[1,6],3:[1,3,6,7,9,10]};const n=r+1;if(r===0)return .6;if(r>=10)return .2;if(neg[s].includes(n))return -.6;if(pos[s].includes(n))return .6;return .1};
+const SUIT_AREA=["career","love","general","money"];
+const SUIT_SPEED=["幾日至兩三個星期內","幾個星期內","好快就有消息，但過程可能有變","幾個月，要慢慢累積"];
+function localTarot(drawn,q,sp){
+  const cat=classifyQ(q);const items=drawn.map(d=>{const c=d.card;let v=c.major?MAJ_VAL[c.num]:MINOR_VAL(c);if(d.rev)v=v>0?-v*.6:v*.5;return {d,v}});
+  const tot=items.reduce((s,x)=>s+x.v,0)/items.length;const last=items[items.length-1].v;const verdict=tot*.6+last*.4;
+  const L=[qOpen(q,cat),"## 逐張解讀"];
+  for(const {d,v} of items){const c=d.card;const mean=d.rev?c.rev:c.up;
+    const angle=c.major?(MAJ_CAT[cat]?`放喺${CAT_N[cat]}嚟睇，代表「${MAJ_CAT[cat][c.num]}」。`:`大牌出現，代表呢件事背後有人生課題：感情上係「${MAJ_CAT.love[c.num]}」，事業上係「${MAJ_CAT.career[c.num]}」。`):(SUIT_AREA[c.suit]===cat?`呢張${SUITS[c.suit][0]}牌正正對應你問嘅${CAT_N[cat]}，份量更重。`:`${SUITS[c.suit][0]}屬${SUITS[c.suit][1]}元素，講嘅係${SUITS[c.suit][2]}。`);
+    L.push(`**${d.pos} · ${c.name}${d.rev?"（逆位）":""}**　${mean}。${angle}${d.rev?"逆位代表呢股能量受阻、延遲或者要向內調整。":""}${v>.4?"呢張牌對你有利。":v<-.4?"呢張牌提你要小心。":""}`)}
+  L.push("## 綜合答案");
+  L.push(`${q?`對於你問嘅「${q}」，牌面${LVL_W[lvlOf(verdict)]}。`:`牌面整體${verdict>.35?"偏向順利":verdict<-.35?"提醒你要謹慎":"平穩，關鍵在你嘅選擇"}。`}${catBlock(cat,verdict)}`);
+  const sc={};drawn.forEach(d=>{if(!d.card.major)sc[d.card.suit]=(sc[d.card.suit]||0)+1});const dom=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  const maj=drawn.filter(d=>d.card.major).length;
+  L.push(`**時間**：${maj>=drawn.length/2?"大牌多，事情跟住你嘅成長而變，未必有固定日子；":""}${dom?`以${SUITS[dom[0]][0]}為主，變化大約喺${SUIT_SPEED[dom[0]]}。`:"留意未來一個月嘅變化。"}`);
+  if(!q){const v={all:verdict};drawn.forEach(d=>{if(!d.card.major){const a=SUIT_AREA[d.card.suit];const x=items.find(i=>i.d===d).v;v[a]=(v[a]||0)+x}});L.push("## 各方面",areasBlock(v))}
+  const lc=drawn[drawn.length-1];L.push("## 建議",`跟住最後一張「${lc.card.name}」嘅提示：${lc.rev?lc.card.rev:lc.card.up}。${verdict<-.35?"先處理好眼前最令你不安嘅一件事，再諗下一步。":"把握呢股能量，今個星期就踏出第一步。"}`);
+  return L.join("\n\n");
+}
+/* ---- 梅花 ---- */
+function localMeihua(r,cat,q,main,hu,bi,T,good,endGood){
+  const qc0=cat!=="general"?cat:classifyQ(q);const qc=MH_CAT_T[qc0]?qc0:"general";const v=(good?.6:-.6)*.5+(endGood?.6:-.6)*.5;
+  const tiG=BAGUA[r.ti],yG=BAGUA[r.yong];
+  return [q?`## 你嘅問題\n「${q}」（${MH_CAT.find(x=>x[0]===cat)[1]}）`:`## 整體指引\n冇指定問題，以下概括講各方面。`,
+  `## 卦象\n本卦**${GUA64[main]}**：${GUA_T[gShort(main)]}。互卦**${GUA64[hu]}**：${GUA_T[gShort(hu)]}。變卦**${GUA64[bi]}**：${GUA_T[gShort(bi)]}。`,
+  `## 體用\n體卦${tiG.n}屬${EL[tiG.el]}，象徵${tiG.img.split("、").slice(0,2).join("、")}，代表你；用卦${yG.n}屬${EL[yG.el]}，象徵${yG.img.split("、").slice(0,2).join("、")}，代表事情。兩者係「${r.key}」：${T[1]}體卦${r.tiS==="旺"?"當令有力":r.tiS==="相"?"得時令相生":"唔當令，要靠外助"}。`,
+  `## 過程同結果\n過程（互卦）對你係${relWord(r.huR[0])}同${relWord(r.huR[1])}；結果（變卦）${endGood?"對你有利":"仍有阻力"}。${good!==endGood?(endGood?"先難後易，堅持會轉好。":"先易後難，後段要留神。"):good?"由頭到尾都算順。":"整個過程都要小心應對。"}`,
+  `## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${MH_CAT_T[qc][v>0?"吉":"凶"]}${CAT_ADV[qc]?CAT_ADV[qc][lvlOf(v)]:""}`,
+  q?"":`## 各方面\n${areasBlock({all:v})}`,
+  `## 應期同建議\n${["乾","兌"].includes(tiG.n)?"金旺於秋，應期多在申酉月或者金日。":tiG.n==="離"?"火旺於夏，應期多在巳午月或者火日。":["震","巽"].includes(tiG.n)?"木旺於春，應期多在寅卯月或者木日。":tiG.n==="坎"?"水旺於冬，應期多在亥子月或者水日。":"土旺於四季末，應期多在辰戌丑未月。"}${r.key==="用克體"?"宜守唔宜攻，或者改變策略。":r.key==="體生用"?"量力而為，唔好過度付出。":"把握時機，主動行動。"}`].filter(Boolean).join("\n\n");
+}
+/* ---- 神占 / Ifá / 盧恩 ---- */
+const ODU_VAL={Ogbe:1,Oyeku:-.5,Iwori:.3,Odi:-.5,Irosun:-.3,Owonrin:-.3,Obara:.5,Okanran:-.5,Ogunda:.3,Osa:-.5,Ika:-.3,Oturupon:-.3,Otura:.5,Irete:.3,Ose:.6,Ofun:.5};
+const RUNE_VAL={Fehu:.7,Uruz:.6,Thurisaz:-.4,Ansuz:.6,Raidho:.5,Kenaz:.6,Gebo:.8,Wunjo:.9,Hagalaz:-.7,Nauthiz:-.5,Isa:-.4,Jera:.7,Eihwaz:.2,Perthro:0,Algiz:.5,Sowilo:.9,Tiwaz:.6,Berkano:.6,Ehwaz:.5,Mannaz:.4,Laguz:.4,Ingwaz:.7,Dagaz:.8,Othala:.6};
+function localShin(q,N,odd,center,zones,msg){
+  const cat=classifyQ(q);const v=(odd?.3:-.1)+(center>=N*.2?.3:center<N*.08?-.3:0);
+  const dir=["東","南","西","北"];const mx=zones.slice(1).indexOf(Math.max(...zones.slice(1)));
+  return [qOpen(q,cat),`## 米卦\n擲米 ${N} 粒，${odd?"單數屬陽，事情有動力":"雙數屬陰，宜靜觀其變"}；中心聚米 ${center} 粒，${center>=N*.2?"心神集中，神明有回應":center<N*.08?"米散心散，先定心神再問":"心意一般，要多啲耐性"}；米最多落喺${dir[mx]}方，${dir[mx]}方位或者嗰個方向嘅人同事，同你呢件事有關。`,
+  `## 神明開示\n「${msg}」`,`## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${catBlock(cat,v)}`,q?"":`## 各方面\n${areasBlock({all:v})}`,`## 建議\n${odd?"可以行動，但唔好一個人扛，搵信得過嘅人幫手。":"先停一停，三日內唔好做重大決定。"}記得向祖先或者守護你嘅人道聲多謝。`].filter(Boolean).join("\n\n");
+}
+function localIfa(name,fR,fL,q){
+  const cat=classifyQ(q);const v=((ODU_VAL[fR[0]]||0)+(ODU_VAL[fL[0]]||0))/2+(fR===fL?.1:0);
+  return [qOpen(q,cat),`## Odu ${name}\n右腿 **${fR[0]}**：${fR[2]}${fR!==fL?`\n\n左腿 **${fL[0]}**：${fL[2]}`:"\n\n雙腿相同（Meji），訊息加倍清晰。"}`,
+  `## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${catBlock(cat,v)}`,q?"":`## 各方面\n${areasBlock({all:v})}`,`## 小儀式\n${v>0?"點一支白蠟燭，講出三件你感恩嘅事。":"為長輩或者祖先準備一杯清水，靜心祈求指引；今個星期做一件善事。"}（簡化體驗，正式占卜請請教 Babaláwo。）`].filter(Boolean).join("\n\n");
+}
+function localRunes(bag,pos,q){
+  const cat=classifyQ(q);const vs=bag.map(b=>{let v=RUNE_VAL[b.r[1]]??0;if(b.rev)v=v>0?-v*.6:v;return v});const v=(vs[0]*.2+vs[1]*.35+vs[2]*.45);
+  return [qOpen(q,cat),"## 三女神",bag.map((b,i)=>`**${pos[i]} · ${b.r[0]} ${b.r[1]}${b.rev?"（逆位）":""}**　${b.r[2]}${b.rev?"；逆位代表呢股力量受阻或者向內":""}。${vs[i]>.4?"有利。":vs[i]<-.3?"要留神。":""}`).join("\n\n"),
+  `## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${catBlock(cat,v)}`,q?"":`## 各方面\n${areasBlock({all:v})}`,`## 小儀式\n喺${v>0?"漸盈":"漸虧"}月嘅晚上，點一支${v>0?"綠色":"白色"}蠟燭，將「${bag[2].r[1]}」符文畫喺紙上，${v>0?"寫低你想吸引嘅事":"寫低你想放低嘅事，然後安全咁燒掉"}。`].filter(Boolean).join("\n\n");
+}
+/* ---- 解夢：周公解夢 + 西方古夢書 + 心理 ---- */
+const DREAM_DB=[
+ [["蛇"],"夢蛇多主財運或者桃花；蛇入屋主得財，被蛇咬主有意外之財或者新戀情。","蛇代表暗中嘅對手，打死蛇就戰勝對手。","蛇象徵轉化、性能量同潛意識嘅恐懼。"],
+ [["牙","掉牙","甩牙"],"掉牙多主家人健康要留意；上牙關長輩，下牙關晚輩。","掉牙代表失去朋友；長新牙代表家添新丁。","反映對形象、衰老或者失去控制嘅焦慮。"],
+ [["水","河","湖"],"清水主吉、得財；濁水主煩惱；水入屋主財至。","清澈平靜嘅河主幸福成功，湍急嘅河主困難。","水代表情緒，水嘅狀態就係你內心嘅狀態。"],
+ [["海"],"夢見大海主心胸開闊，事業有大發展。","海對旅人有利，風平浪靜主事事順利。","大海象徵無限嘅潛意識同未知。"],
+ [["洪水","水浸"],"洪水主財運大來，但亦要防情緒失控。","大水氾濫主有大變動。","情緒快要滿瀉，需要出口。"],
+ [["雨"],"細雨主吉、有財；暴雨主有阻滯。","細雨主成功，暴雨主麻煩。","雨代表情緒釋放同洗滌。"],
+ [["雪"],"夢雪主吉，有喜事或者好收成。","雪預示富足快樂嘅將來。","雪象徵純淨、冷靜或者情感凍結。"],
+ [["火","火燒","失火"],"火旺主事業興旺、財運亨通；屋起火主發達。","火光猛烈主危險，有火花飛濺主好消息。","火代表熱情、憤怒或者轉化嘅力量。"],
+ [["飛","飛翔"],"夢自己飛上天主地位上升、心願得償。","飛翔預示遠行。","渴望自由、突破限制；飛唔起代表現實壓力。"],
+ [["跌","墮落","跌落"],"從高處跌落主地位或者運勢有波動，要穩陣。","跌入深淵主病或者失去朋友。","失控感、對失敗嘅擔憂。"],
+ [["死","死亡","過身"],"夢見自己死主長壽、運轉；夢見別人死多主對方健康轉好。","死亡反主富貴婚姻或者合夥。","代表一個階段嘅結束同重生。"],
+ [["棺材","棺"],"棺材諧音「官財」，主升官發財。","見棺主有變。","對結束、轉變嘅思考。"],
+ [["葬禮","喪禮","出殯"],"夢見喪事反主喜事將至。","見葬禮主有人遠行或者音訊。","同過去道別，放低舊嘅自己。"],
+ [["鬼"],"夢鬼主心中有掛慮，要防小人。","見鬼主煩惱、敵人同欺騙。","未處理嘅恐懼或者內疚。"],
+ [["血"],"見血主得財，流血多主破財消災。","見血主得到遺產。","生命力，或者情感上嘅受傷。"],
+ [["錢","金錢","執到錢"],"執到錢主有小財但要防破財；畀錢人主財運通。","執到錢大吉，失錢不順。","代表自我價值同安全感。"],
+ [["金","黃金"],"得黃金主富貴，戴金飾主有喜。","收到黃金係好兆頭。","重視嘅價值、成就感。"],
+ [["戒指","指環"],"夢戒指多主婚事、感情有承諾。","見到或者得到戒指，必主婚事。","承諾、關係同自我認同。"],
+ [["婚禮","結婚"],"夢結婚主有喜事，但亦可能係壓力大嘅反映。","婚禮反主有變，要小心。","新嘅結合，內在兩面嘅整合。"],
+ [["懷孕","有咗","bb","嬰兒","BB"],"夢懷孕主有新計劃、新收穫，亦可能係胎夢。","見嬰兒主有好消息。","新開始、正在孕育嘅想法。"],
+ [["屋","房子","新屋"],"起新屋主安穩、家業興旺；屋塌主要防變動。","起屋主舒適，見屋主好運。","屋代表自己，唔同房間代表內心唔同部分。"],
+ [["門"],"開門主有新機會；門鎖住主暫時受阻。","見門主有新路。","新機會、或者對界線嘅感受。"],
+ [["鎖匙","鑰匙"],"得鎖匙主得權或者解決難題。","搵到鎖匙主發現秘密，跌咗主失望。","解決問題嘅方法，打開心房。"],
+ [["鏡"],"照鏡清楚主有好消息；鏡破主關係有變。","照鏡主有虛假嘅朋友。","自我審視、想睇清自己。"],
+ [["橋"],"過橋主順利渡過難關。","過橋主轉變。","人生過渡期，由一個階段去另一個。"],
+ [["路"],"大路平坦主前程順利；迷路主方向未明。","平坦嘅路主順利，崎嶇主困難。","人生方向。"],
+ [["船"],"坐船主遠行或者財運；船沉主要防失財。","同人坐船主好運，船駛向你主歡樂。","情緒旅程。"],
+ [["車","汽車","巴士"],"坐車順利主事業有進展；車壞主有阻滯。","駕車主有變動。","對人生方向嘅掌控程度。"],
+ [["火車","地鐵","鐵路"],"搭火車主有遠行或者事業轉變。","見火車主遠行。","跟住既定軌道前進，或者錯過機會嘅焦慮。"],
+ [["考試","測驗"],"考試順利主事業有進；答唔到主壓力大。","考試主被評價。","被評價、準備不足嘅焦慮。"],
+ [["遲到","趕唔切"],"遲到主心中有掛慮，要做好計劃。","遲到主錯失機會。","害怕錯過、時間壓力。"],
+ [["裸","赤裸","冇着衫"],"夢裸體主有坦白或者身份轉變。","赤裸主有羞恥之事。","怕被看穿、或者想做返真實嘅自己。"],
+ [["追","被追"],"被人追主有壓力或者逃避中嘅事。","被追主有麻煩跟住。","正在逃避某種情緒或者責任。"],
+ [["打架","打交","吵架"],"同人打架主有爭拗但可化解。","同熟人吵架主有損失。","壓抑嘅憤怒或者內心衝突。"],
+ [["哭","喊"],"夢中大哭反主有喜事、煩惱解除。","哭主有喜。","情緒釋放。"],
+ [["笑"],"夢中大笑反主有煩惱，要低調。","笑主有失。","渴望輕鬆同快樂。"],
+ [["吻","錫","親嘴"],"同人親吻主感情增進，亦要防口舌。","吻主有好消息或者愛情。","渴望親密同連結。"],
+ [["前度","前任","ex"],"夢見前度多主心中仍有未放低嘅部分。","見舊情人主舊事重提。","過去嘅情感模式，未完成嘅課題。"],
+ [["狗"],"狗主有朋友相助；被狗咬主防小人。","狗代表忠誠朋友。","忠誠、保護，或者被背叛嘅恐懼。"],
+ [["貓"],"貓主有小人或者桃花，貓抓主口舌。","貓主有虛偽嘅朋友。","女性能量、獨立同直覺。"],
+ [["魚"],"見魚主有財有餘；釣到魚主得財。","見魚主好運，捉魚主成功。","潛意識嘅訊息、豐盛。"],
+ [["鳥","雀"],"見鳥飛主有好消息。","鳥鳴主歡樂。","自由同靈性嘅訊息。"],
+ [["老虎","虎"],"見虎主得權勢或者貴人，被虎追要防小人。","見虎主背叛，虎睡要小心。","強大嘅力量或者威脅。"],
+ [["獅子","獅"],"見獅主得貴人、有權勢。","獅子一般主財富。","自信、權力。"],
+ [["龍"],"夢龍大吉，主得貴人、事業騰飛。","—","強大嘅創造力同潛能。"],
+ [["蜘蛛"],"見蜘蛛主有喜事。","見蜘蛛主收到錢。","耐心編織，或者被困嘅感覺。"],
+ [["蜜蜂"],"蜜蜂主勤勞得財。","被蜂叮主名聲或者愛人有損。","勤勞同群體合作。"],
+ [["老鼠","鼠"],"見鼠主有小人或者小損失。","見鼠主有敵人。","細小但纏擾嘅煩惱。"],
+ [["狼"],"見狼主防小人同欺騙。","狼警告有盜竊或者欺騙。","本能、孤獨或者威脅。"],
+ [["狐狸"],"見狐主防小人或者桃花糾纏。","狐狸主有偷竊或者假朋友。","狡猾、聰明。"],
+ [["貓頭鷹"],"見貓頭鷹要留意健康。","貓頭鷹主病或者困難。","智慧同直覺。"],
+ [["烏鴉"],"見烏鴉主要防口舌是非。","見烏鴉主不順。","陰影同轉變。"],
+ [["馬"],"騎馬主事業騰達、出行順利。","白馬主好運。","前進嘅動力。"],
+ [["牛"],"見牛主勤勞得財、家業興旺。","牛主富足。","踏實同耐力。"],
+ [["豬"],"見豬主財運亨通。","豬主豐收。","滿足同物質。"],
+ [["猴","馬騮"],"見猴主有小人或者被戲弄。","見猴主會遇到愚人。","頑皮、好動。"],
+ [["花"],"花開主喜事、桃花；花謝主要珍惜眼前。","應節鮮花主成功，過時花主失望。","美麗、愛同短暫。"],
+ [["樹"],"大樹茂盛主家業興旺；樹倒主有變。","樹木茂盛主興旺。","成長同生命力。"],
+ [["山","爬山"],"登山主步步高升。","爬山主有困難後成功。","目標同挑戰。"],
+ [["太陽","日出"],"見日出主前程光明、得貴人。","陽光普照主富貴，被雲遮主不順。","意識、生命力同希望。"],
+ [["月亮","月"],"見明月主有喜事、願望成真。","月亮主財富同幸福。","直覺、女性能量同情緒。"],
+ [["星","星星"],"見星光主有好運。","明亮嘅星主成功。","希望同指引。"],
+ [["雷","閃電"],"打雷主有好消息或者突變。","雷主有驚。","突如其來嘅覺醒。"],
+ [["蛋"],"見蛋主有新開始、有財。","蛋主有收穫。","潛能同新生命。"],
+ [["奶","牛奶"],"飲奶主有福氣。","牛奶大吉，飲奶主大成功。","滋養同照顧。"],
+ [["鞋"],"買新鞋主有新開始；鞋唔見主有阻滯。","失鞋主有痛苦同責備。","人生道路同身份。"],
+ [["頭髮","剪頭髮","甩頭髮"],"剪髮主煩惱解除；甩髮主擔憂健康。","頭髮濃密主富貴，稀疏主困難。","力量同自我形象。"],
+ [["醫院","病"],"夢見生病反主身體轉好。","見病主有變。","需要照顧同療癒。"],
+ [["墳","墓"],"見墳墓主得祖先庇蔭。","見墓主不穩定。","過去同根源。"],
+ [["天使"],"見天使主有貴人。","見天使係好兆頭。","保護同靈性指引。"],
+ [["花園"],"喺花園散步主心情愉快、運勢上升。","喺花園行主歡樂同財運增加。","內心嘅和平。"],
+ [["鐘","時鐘"],"見鐘主要珍惜時間。","鐘行主好運，聽到報時主成功。","時間壓力。"],
+ [["蠟燭"],"燭光明亮主有好消息。","燭光明亮主有信件。","希望同指引。"],
+ [["樓梯","梯"],"上梯主升職，落梯主要小心。","上梯主有名但未必富。","進步同層次。"],
+ [["戰爭","打仗"],"夢戰爭主有競爭或者爭拗。","戰爭主麻煩同爭吵。","內心衝突。"]];
+function localDream(t,feel){
+  const hits=DREAM_DB.filter(e=>e[0].some(k=>t.includes(k)));const old=DREAM_DICT.filter(([k])=>t.includes(k)&&!hits.some(h=>h[0].includes(k)));
+  const bad=feel.some(f=>["驚慌","悲傷"].includes(f));const L=[`## 夢的核心\n「${t.slice(0,80)}${t.length>80?"⋯":""}」${feel.length?`\n\n醒來感覺：${feel.join("、")}。`:""}`];
+  if(hits.length||old.length){L.push("## 夢中的象徵",...hits.slice(0,6).map(e=>`**${e[0][0]}**\n- 周公解夢：${e[1]}\n- 古夢書：${e[2]}\n- 心理角度：${e[3]}`),...old.slice(0,3).map(([k,v])=>`**${k}**　${v}`))}
+  else L.push("## 夢中的象徵","夢入面冇常見嘅傳統象徵。解夢時，最重要係夢中嘅感覺同你最近嘅生活：邊樣嘢令你印象最深，就係潛意識最想講嘅。");
+  if(feel.includes("胎夢"))L.push("## 胎夢","韓國꿈해몽同中國傳統都重視胎夢：動物、果實、珠寶多主好消息；龍、虎主男，花、蛇（細）多主女，僅供參考。");
+  if(feel.includes("重複夢"))L.push("## 重複夢","同一個夢重複出現，代表有件事你未處理。試吓寫低夢醒之後第一個諗到嘅人或者事。");
+  L.push("## 整體",bad?"夢中情緒偏負面，但傳統上好多「凶夢」其實係反兆。佢更似係提醒你近期壓力大，要照顧好自己。":"夢中情緒平和或者正面，整體係好兆頭，代表你內心正在整合同成長。");
+  L.push("## 建議",`今日留意同「${(hits[0]||[[t.slice(0,2)]])[0][0]}」有關嘅事。可以喺日記寫低：呢個夢令我諗起邊個人、邊件事？`);
+  return L.join("\n\n");
+}
+/* ---- 紫微：中州派星系斷語（自寫，按講義規則） ---- */
+const ZW_MING={紫微:"紫微係帝星，你自尊心強、有領導慾。中州派重視紫微要得「百官朝拱」：見左輔右弼、天魁天鉞等吉曜，就有實權同成就；若孤立無輔，就變成主觀固執、曲高和寡。",天機:"天機主智慧同變動，思想靈活、善於策劃。天機最喜化權、化科，代表才智能用於世；若見煞忌，就容易思慮過多、浮動唔定。",太陽:"太陽主貴、主付出，你熱心、重名聲，鍾意照顧人。太陽要睇廟陷：入廟光明磊落；落陷就要防付出多、回報少，或者為名所累。",武曲:"武曲係財星，剛毅果斷、執行力強。武曲化祿化權會加強物質同財富嘅追求；化忌就要防財務波折同孤剋。",天同:"天同係福星，性格溫和、知足、識享受。天同要經過磨練先有成就，所以見少少煞反而激發佢嘅鬥志；太過順境就容易懶散。",廉貞:"廉貞係次桃花，感情豐富、有手腕，亦有原則。廉貞屬感性星曜，化祿主精神享受多於物質；化忌最怕見煞，主是非或者情緒困擾。",天府:"天府係庫星，穩重、保守、善於守成。中州派重視天府「實」定「空露」：會祿、見吉就氣度大、腳踏實地；若空露無祿，就容易變成權術。",太陰:"太陰主田宅財富同陰柔之美，細膩、內斂、重感情。太陰喜入廟於夜生人；卯宮落陷稱「反背」，見吉反而主大富。",貪狼:"貪狼多才多藝、善交際、慾望強。貪狼化祿主享受同人緣；見火星鈴星成「火貪」「鈴貪」格，主突發。慾望要有節制先有成就。",巨門:"巨門主口才同分析力，亦主是非。巨門化祿化權利於以口求財，例如法律、教學、傳媒；化忌就要防口舌是非。",天相:"天相化氣為印，有協調能力、重形象、講公道。中州派重視天相受夾：「財蔭夾印」主得助力，「刑忌夾印」就要防受牽連。",天梁:"天梁係蔭星，老成、有原則、鍾意照顧人，有化解困難嘅能力。天梁喜化科，主清名；但太過孤高，就容易同人格格不入。",七殺:"七殺係將星，獨立、果斷、敢衝。七殺要見紫微或者吉曜先化殺為權；見煞就容易衝動冒險，人生多起伏。",破軍:"破軍主開創同破舊立新，你唔怕改變、勇於冒險。破軍喜化祿化權，主開創成功；見煞忌就要防破耗同反覆。"};
+const ZW_PAL={夫妻:{紫微:"伴侶有主見或者地位，你要學識尊重對方",天機:"伴侶聰明善變，關係需要溝通同新鮮感",太陽:"伴侶熱心外向；太陽落陷則要防聚少離多",武曲:"伴侶性格剛強獨立，宜遲婚或者年紀有差距",天同:"伴侶溫和體貼，感情和諧，但要防太過安逸",廉貞:"感情濃烈，有愛有恨，要學識處理佔有慾",天府:"伴侶穩重顧家，關係踏實",太陰:"伴侶溫柔細膩，感情深厚，重視家庭",貪狼:"桃花多、伴侶有魅力，要防第三者",巨門:"關係容易有口角誤會，多溝通、少猜疑",天相:"伴侶講道理、重承諾，婚姻多得助力",天梁:"伴侶年紀較大或者成熟，懂得照顧你",七殺:"感情來得快、變化大，宜遲婚",破軍:"感情多變、反覆，要學識經營同包容"},財帛:{紫微:"財運有格局，適合管理或者自己做主",天機:"靠頭腦、策劃賺錢，收入起伏",太陽:"財從名聲同付出而來，宜正當經營",武曲:"財星坐財帛，賺錢能力強，宜金融或者實業",天同:"白手興家，先苦後甜",廉貞:"財由手腕同人脈而來，宜從政或者企業",天府:"善於守財、理財，財庫穩",太陰:"財運穩定，宜置業、儲蓄",貪狼:"偏財運好，交際同才藝帶財",巨門:"以口才求財，宜專業服務",天相:"財來自服務同協調，收入穩定",天梁:"財來得穩，多得長輩或者保險、醫療相關",七殺:"財運起伏大，宜冒險但要有計劃",破軍:"財來財去，宜開創但要守住"},官祿:{紫微:"適合管理、領導嘅位置",天機:"適合策劃、顧問、設計、科技",太陽:"適合公職、教育、傳播，需要被睇見",武曲:"適合金融、工程、實業，執行力強",天同:"適合服務、福利、輕鬆嘅環境",廉貞:"適合政治、企業、法律或者需要手腕嘅工作",天府:"適合穩定機構、行政、財務管理",太陰:"適合地產、財務、文化藝術",貪狼:"適合娛樂、公關、銷售、多元發展",巨門:"適合法律、教學、傳媒、研究",天相:"適合協調、秘書、公關、服務業",天梁:"適合醫療、保險、教育、社福",七殺:"適合軍警、創業、需要衝鋒嘅工作",破軍:"適合開創、改革、變化大嘅行業"},福德:{紫微:"精神上追求被尊重，要學識放鬆",天機:"思慮多、難以靜落嚟，宜冥想",太陽:"樂於付出，從幫人中得到滿足",武曲:"務實，享受靠自己努力得嚟嘅成果",天同:"知足常樂，懂得享受生活",廉貞:"情緒起伏，追求精神上嘅刺激",天府:"心境穩定，享受安穩",太陰:"心思細膩，重視內心世界",貪狼:"興趣廣泛，慾望多，要懂節制",巨門:"容易鑽牛角尖，宜多分享",天相:"重視和諧，怕衝突",天梁:"有宗教或哲學傾向，精神境界高",七殺:"內心不安於現狀，追求挑戰",破軍:"思想前衛，常想改變"},疾厄:{紫微:"留意脾胃同消化",天機:"留意肝膽、神經同四肢",太陽:"留意心臟、血壓、眼睛",武曲:"留意肺部、呼吸同骨骼",天同:"留意泌尿、腎同水腫",廉貞:"留意血液循環、心血管",天府:"留意脾胃，體質一般較好",太陰:"留意腎、婦科或者眼睛",貪狼:"留意肝腎、生殖系統",巨門:"留意腸胃同口腔",天相:"留意皮膚、泌尿",天梁:"留意脾胃，有逢凶化吉之力",七殺:"留意呼吸系統同意外傷",破軍:"留意生殖、泌尿系統同意外"}};
+function palStars(z,name){const p=z.palaces.find(x=>x&&x.name.replace("宮","")===name.replace("宮",""));if(!p)return {p:null,stars:[]};const st=p.stars.length?p.stars:z.palaces[(p.b+6)%12].stars;return {p,stars:st,borrow:!p.stars.length}}
+function zwPalText(z,name){const {p,stars,borrow}=palStars(z,name);if(!p)return "";const T=ZW_PAL[name];
+  const hua=[...p.q.majorStars,...p.q.minorStars].filter(s=>s.mutagen).map(s=>`${s.name}化${s.mutagen}`);
+  return `${name}宮${borrow?"無主星，借對宮":""}${stars.join("、")||"—"}：${stars.map(s=>T&&T[s]).filter(Boolean).join("；")}。${hua.length?`生年${hua.join("、")}在此，${hua.map(h=>HUA_MEAN[h.slice(-1)]).join("、")}集中喺呢方面。`:""}`}
+function localZiwei(c){
+  const z=c.ziwei;if(!z)return "未有出生時辰，未能排紫微盤。";const M=z.palaces[z.ming],S=z.palaces[z.shen];const st=M.stars.length?M.stars:z.palaces[(z.ming+6)%12].stars;
+  const L=[`## 命宮\n命宮在${ZHI[z.ming]}，${M.stars.length?`主星${M.stars.join("、")}`:`無主星，借對宮${st.join("、")}`}。${z.bureauName}，命主${z.soul}，身主${z.body}。\n\n${st.map(s=>ZW_MING[s]).filter(Boolean).join("\n\n")}`];
+  const bri=M.q.majorStars.map(s=>s.brightness?`${s.name}${s.brightness}`:"").filter(Boolean);if(bri.length)L.push(`主星亮度：${bri.join("、")}。${M.q.majorStars.some(s=>["廟","旺"].includes(s.brightness))?"主星廟旺，本質嘅優點容易發揮。":M.q.majorStars.some(s=>s.brightness==="陷")?"主星落陷，要靠後天修養同吉曜扶持。":""}`);
+  L.push(`## 身宮\n身宮落${S.name}，代表你中年之後嘅重心會轉向「${pm(S.name)}」。`);
+  L.push("## 生年四化",HUA.map((h,i)=>{const p=zwStarPal(z,z.sihua[i]);return p?`- ${z.sihua[i]}化${h}入${p.name}：${HUA_MEAN[h]}落喺「${pm(p.name)}」。`:""}).filter(Boolean).join("\n"));
+  L.push("## 飛化重點",zwFlyNotes(z).map(([t,b])=>`- **${t}**：${b}`).join("\n"));
+  const ps=c._pats||zwPatterns(z);if(ps.length)L.push("## 格局",ps.map(p=>`- **${p.n}**（${p.good>0?"吉":"要留意"}）：${p.d}`).join("\n"));
+  L.push("## 各宮",["夫妻","財帛","官祿","福德","疾厄"].map(n=>`- ${zwPalText(z,n)}`).join("\n"));
+  const o=zwHoro(z);if(o){const pal=z.palaces[(o.lv.index+2)%12];L.push(`## 所選${o.label}`,`${o.desc}：${o.label}命宮落本命${pal.name}，呢段時間嘅重心係「${pm(pal.name)}」。${o.label}四化：${o.lv.mutagen.map((n,i)=>{const p=zwStarPal(z,n);return `${n}化${HUA[i]}${p?`入${p.name}`:""}`}).join("、")}。${(()=>{const ji=zwStarPal(z,o.lv.mutagen[3]);const lu=zwStarPal(z,o.lv.mutagen[0]);return `${lu?`機會喺${lu.name}（${pm(lu.name)}）`:""}${ji?`；要小心${ji.name}（${pm(ji.name)}）`:""}。`})()}`)}
+  return L.join("\n\n");
+}
+function localChart(c){
+  const b=c.bazi;const L=[];
+  if(c.planets)L.push(`## 星盤\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。月亮${c.planets[1].sign}座，情緒需要${SIGN_KW[c.planets[1].sign]}。${c.asc?`上升${c.asc.sign}座，畀人第一印象係${SIGN_KW[c.asc.sign]}。`:""}${c.mc?`天頂${c.mc.sign}座：${MC_T[c.mc.sign]}`:""}`);
+  const D=deepPoints(c);if(D)L.push(`北交點${SIGNS[Math.floor(D.nn/30)]}座：${NODE_T[SIGNS[Math.floor(D.nn/30)]]}`);
+  if(b)L.push(`## 八字\n日主${b.dm}（${EL[ganEl(b.dm)]}），${b.strong?"身強":"身弱"}，${b.geju}。${DM_DESC[b.dm]}\n\n${b.gejuD}`);
+  if(c.ziwei)L.push(localZiwei(c));
+  const agree=[];if(c.planets&&b){const fire=["白羊","獅子","射手"].includes(c.planets[0].sign);if(fire&&ganEl(b.dm)===1)agree.push("星盤太陽火象同八字日主屬火互相印證：熱情主動係你嘅核心");}
+  L.push("## 三個系統點樣互相印證",agree.length?agree.join("。")+"。":"三個系統從唔同角度睇你：星盤講心理同性格，八字講五行能量同時運，紫微講人生各範疇嘅結構。重複出現嘅特質，就係你最核心嘅部分。");
+  return L.join("\n\n");
+}
+/* ---- 運勢報告 ---- */
+function avgAreas(list){const k={};const n={};for(const an of list){if(!an)continue;for(const a of an.areas){k[a.k]=(k[a.k]||0)+a.net;n[a.k]=(n[a.k]||0)+1}}const o={};for(const x in k)o[x]=k[x]/n[x];return o}
+const AREA2CAT={love:"love",work:"career",money:"money",routine:"health",home:"family",study:"study",travel:"travel"};
+function areasFromAn(av){const v={};for(const [a,c] of Object.entries(AREA2CAT))if(av[a]!=null)v[c]=av[a]*.8;v.all=0;return v}
+function tgBlock(tg){const t=TG[tg];return `${t.life}\n\n宜：${t.yi.join("、")}。忌：${t.ji.join("、")}。`}
+function localToday(c){const now=new Date();const an=analyzeDay(c,now);if(!an)return "";const P=readingParas(c,an);const v=areasFromAn(Object.fromEntries(an.areas.map(a=>[a.k,a.net])));
+  return [`## 今日總論\n${an.headline}（綜合 ${an.dayScore.toFixed(1)}/5）`,...P.map(p=>`## ${p.k}\n${p.t}`),`## 各方面\n${areasBlock(v,["love","career","money","health","family"])}`,`## 今日旺\n${an.power.map(a=>`- ${a.n}：${areaText(a,"power")}`).join("\n")}`,`## 要留神\n${an.trouble.map(a=>`- ${a.n}：${areaText(a,"trouble")}`).join("\n")}`].join("\n\n")}
+function localWeek(c,days){const sorted=[...days].sort((a,b)=>(b.total||0)-(a.total||0));const av=avgAreas(days.map(d=>d.an));
+  return [`## 本週主題\n最順係 ${fmtD(sorted[0].date)}（${TG[sorted[0].tg].kw}），最需要放慢係 ${fmtD(sorted[sorted.length-1].date)}（${TG[sorted[sorted.length-1].tg].kw}）。`,`## 逐日計劃\n${days.map(d=>`- **${fmtD(d.date)} 週${WDN[d.date.getDay()]} · ${d.gz} ${d.tg}**：${TG[d.tg].head} 宜${TG[d.tg].yi[0]}，忌${TG[d.tg].ji[0]}。${d.an?`旺${d.an.power[0].n}。`:""}`).join("\n")}`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health"])}`].join("\n\n")}
+function localMonth(c){const now=new Date();const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();const mgz=L0.getMonthInGanZhiExact(),tg=tenGod(c.bazi.dm,mgz[0]),tgz=tenGod(c.bazi.dm,ZHI_MAIN[ZHI.indexOf(mgz[1])]);
+  const cells=[];for(let i=0;i<30;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);const an=analyzeDay(c,d,{light:true});cells.push({d,an})}
+  const ok=cells.filter(x=>x.an).sort((a,b)=>b.an.dayScore-a.an.dayScore);const av=avgAreas(cells.map(x=>x.an));const zw=zwFlows(c,now);
+  return [`## 本月總論\n流月${mgz}，對你係「${tg}」月，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流月\n${huaSentence(zw.monthly)}`:"",`## 最好嘅日子\n${ok.slice(0,5).map(x=>`${fmtD(x.d)}（${x.an.power[0].n}）`).join("、")}：適合主動爭取、見重要嘅人。`,`## 宜低調嘅日子\n${ok.slice(-4).map(x=>fmtD(x.d)).join("、")}：避免重大決定，多休息。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family"])}`,`## 本月行動\n1. ${TG[tg].yi[0]}\n2. ${TG[tg].yi[1]||TG[tgz].yi[0]}\n3. 避免${TG[tg].ji[0]}`].filter(Boolean).join("\n\n")}
+function localYear(c){const now=new Date();const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();const ygz=L0.getYearInGanZhiByLiChun(),tg=tenGod(c.bazi.dm,ygz[0]),tgz=tenGod(c.bazi.dm,ZHI_MAIN[ZHI.indexOf(ygz[1])]);
+  const months=[];for(let i=0;i<12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,15);months.push({d,an:analyzeDay(c,d,{light:true,scope:"month"})})}
+  const ok=months.filter(m=>m.an).sort((a,b)=>b.an.dayScore-a.an.dayScore);const av=avgAreas(months.map(m=>m.an));const zw=zwFlows(c,now);const mt=majorTransits(c).slice(0,5);
+  return [`## 今年總論\n${ygz}年對你係「${tg}」年，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流年\n${huaSentence(zw.yearly)}${zw.yearly.hua.length?`四化落點：${zw.yearly.hua.map(x=>`${x.star}化${x.h}入${x.pal}`).join("、")}。`:""}`:"",mt.length?`## 重大行運\n${mt.map(r=>`- **${r.n}${r.an}${r.np}**（${fmtD(r.s)}–${fmtD(r.e)}）：${OUTER_T[r.n][r.cls]}。`).join("\n")}`:"",`## 最旺月份\n${ok.slice(0,3).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：把握呢幾個月推進重要計劃。`,`## 要小心嘅月份\n${ok.slice(-2).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：穩守為主，注意健康同人際。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family","study"])}`,`## 逐月重點\n${months.map(m=>`- ${m.d.getFullYear()%100}/${m.d.getMonth()+1}：${m.an?`旺${m.an.power.slice(0,2).map(a=>a.n).join("、")}，留意${m.an.trouble[0].n}`:"—"}`).join("\n")}`].filter(Boolean).join("\n\n")}
+function localDecade(c){const b=c.bazi,now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0];const nx=b.yun[b.yun.indexOf(cur)+1];const t=tenGod(b.dm,cur.gz[0]);
+  const yrs=[];for(let y=cur.startYear;y<=cur.endYear;y++){const gz=Solar.fromYmd(y,6,1).getLunar().getYearInGanZhiByLiChun();yrs.push({y,gz,tg:tenGod(b.dm,gz[0])})}
+  const zw=c.ziwei?zwFlows(c,new Date()):null;
+  return [`## 呢十年嘅主題\n大運${cur.gz}（${cur.startYear}–${cur.endYear}），對你係「${t}」運。\n\n${tgBlock(t)}`,zw?`## 紫微大限\n${huaSentence(zw.decadal)}`:"",`## 事業同財富\n${TG[t].s.work>0?"事業有上升空間，適合爭取更大嘅舞台。":TG[t].s.work<0?"事業要穩紮穩打，避免冒進。":"事業平穩發展。"}${TG[t].s.money>0?"財運向好，宜長線投資同置業。":TG[t].s.money<0?"財務要保守，防破耗。":"財運平穩，量入為出。"}`,`## 感情同家庭\n${TG[t].s.love>0?"感情有好發展，有利結婚或者關係升溫。":TG[t].s.love<0?"感情要多啲包容同溝通。":"感情平穩，用心經營。"}`,`## 健康\n${TG[t].s.health>=0?"整體精神唔錯，保持運動習慣。":"要留意作息同壓力，定期檢查。"}`,`## 逐年關鍵字\n${yrs.map(x=>`- ${x.y} ${x.gz}（${x.tg}）：${TG[x.tg].kw}，宜${TG[x.tg].yi[0]}`).join("\n")}`,nx?`## 下一步\n${nx.startYear} 年起轉入${nx.gz}大運（${tenGod(b.dm,nx.gz[0])}運），提早準備：${TG[tenGod(b.dm,nx.gz[0])].yi[0]}。`:""].filter(Boolean).join("\n\n")}
+function localArea(c,an,a){const cls=an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":"pressure";const cat=AREA2CAT[a.k]||"general";
+  return [`## ${a.n}`,areaText(a,cls),`## 點樣做\n${CAT_ADV[cat][a.net>.25?"g":a.net<-.25?"b":"m"]}`].join("\n\n")}
+function localTransit(c,tr){const d=TR_DO[tr.tp]||["",""];return [`## ${tr.tp}${tr.asp}你嘅${tr.np}`,tr.text,tr.more||"",`## 可以做\n${d[0]}`,`## 要避免\n${d[1]}`,`**時間**：${fmtD(tr.start)} 開始，${fmtD(tr.exact)} 最準，${fmtD(tr.end)} 結束。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}`].filter(Boolean).join("\n\n")}
+function localProduct(p){const c=chart;const z=c.ziwei;const D=deepPoints(c);
+  const venus=c.planets&&c.planets.find(x=>x.n==="金星"),sat=c.planets&&c.planets.find(x=>x.n==="土星");
+  const S={love:()=>[`## 你點樣去愛\n金星${venus.sign}座：你喺愛入面${SIGN_KW[venus.sign]}。`,z?`## 夫妻宮\n${zwPalText(z,"夫妻")}`:"",c.asc?`## 第七宮\n你嘅伴侶宮落${SIGNS[(Math.floor(c.asc.lon/30)+6)%12]}座，你會被${SIGN_KW[SIGNS[(Math.floor(c.asc.lon/30)+6)%12]]}嘅人吸引。`:"",`## 八字感情\n日支${c.bazi.pil[2][1]}係你嘅夫妻宮，${c.bazi.strong?"你身強，感情上較主導":"你身弱，感情上需要被照顧"}。`,`## 建議\n${LILITH_T[SIGNS[Math.floor(D.lil/30)]]}`],
+   career:()=>[c.mc?`## 你嘅天職\n${MC_T[c.mc.sign]}`:"",z?`## 官祿宮\n${zwPalText(z,"官祿")}`:"",`## 八字格局\n${c.bazi.geju}：${c.bazi.gejuD}`,`## 天賦\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。`],
+   money:()=>[z?`## 財帛宮\n${zwPalText(z,"財帛")}`:"",c.asc?`## 第二宮\n你嘅財帛宮落${SIGNS[(Math.floor(c.asc.lon/30)+1)%12]}座，賺錢方式偏向${SIGN_KW[SIGNS[(Math.floor(c.asc.lon/30)+1)%12]]}。`:"",`## 八字財星\n日主${c.bazi.dm}${c.bazi.strong?"身強能任財，宜主動求財":"身弱，財多身弱，宜穩健理財、借力合作"}。`],
+   soul:()=>[`## 靈魂方向\n${NODE_T[SIGNS[Math.floor(D.nn/30)]]}`,c.asc?`## 冥王星\n${PLUTO_H[houseOf(c,c.planets.find(x=>x.n==="冥王星").lon)-1]}`:"",z?`## 福德宮\n${zwPalText(z,"福德")}`:"",`## 土星課題\n土星${sat.sign}座：你要喺「${SIGN_KW[sat.sign]}」呢方面學識承擔同成熟。`],
+   year:()=>[localYear(c)],decade:()=>[localDecade(c)]};
+  return (S[p.k]?S[p.k]():[]).filter(Boolean).join("\n\n")}
 
 
 /* ============ Accounts (Firebase Auth + Firestore) — standalone app only ============ */
@@ -1880,7 +2108,7 @@ function openArea(c,an,k){
    ${pal?`<div class="sh-zw"><p class="kicker">紫微 · 本命${pal.name}（${ZHI[pal.b]}宮）</p><p>主星：${pal.stars.length?pal.stars.join("、"):"空宮（借對宮）"}${pal.minor.length?` · 輔星：${pal.minor.slice(0,6).join("、")}`:""}</p>${a.hua.length?`<p>${a.hua.map(h=>`${h.label}${h.star}化${h.h}`).join(" · ")}</p>`:"<p class='mute'>今日冇流日四化飛入呢個宮位。</p>"}</div>`:""}
    ${a.trs.length?`<p class="kicker" style="margin-top:6px">相關行運 · Transits</p>${a.trs.map(trRow).join("")}`:""}
    <div id="areaAI"></div>`,sh=>{
-     $("#areaAI",sh).appendChild(aiBlock(`深入了解「${a.n}」`,()=>prompt(`詳細分析使用者今日（${ymd(an.date)}）「${a.n}」範疇。已計算嘅事實：${areaText(a,cls)} ${pal?`紫微本命${pal.name}主星${pal.stars.join("、")||"空宮"}。`:""}${a.k==="love"?"愛情範疇包括感情、桃花、親密關係同性（以成熟、尊重嘅語氣講）。":""}請結合西洋行運同紫微斗數，分「現況」「點解」「點做」三段，具體、溫柔但直接。`,c)))});
+     $("#areaAI",sh).appendChild(aiBlock(`深入了解「${a.n}」`,()=>prompt(`詳細分析使用者今日（${ymd(an.date)}）「${a.n}」範疇。已計算嘅事實：${areaText(a,cls)} ${pal?`紫微本命${pal.name}主星${pal.stars.join("、")||"空宮"}。`:""}${a.k==="love"?"愛情範疇包括感情、桃花、親密關係同性（以成熟、尊重嘅語氣講）。":""}請結合西洋行運同紫微斗數，分「現況」「點解」「點做」三段，具體、溫柔但直接。`,c),{local:()=>localArea(c,an,a)}))});
 }
 function sixScore(a){return Math.max(1,Math.min(5,Math.round(3+a.net*.9)))}
 function sixHTML(c,an){
@@ -1901,7 +2129,7 @@ function openTransit(c,an,i){
    ${(()=>{const ars=an.areas.filter(a=>a.pts.includes(tr.np));return ars.length?`<p class="mute" style="font-size:13px">影響範疇：${ars.map(a=>a.n).join("、")}</p>`:""})()}
    <div class="tr-facts"><div><span>開始</span><b>${fmtD(tr.start)}</b></div><div><span>最準</span><b>${fmtD(tr.exact)}</b></div><div><span>結束</span><b>${fmtD(tr.end)}</b></div><div><span>容許度</span><b>${tr.orb.toFixed(1)}°</b></div></div>
    <p class="mute" style="font-size:13px">行運${tr.tp}喺${SIGNS[Math.floor(tr.tlon/30)]}座 ${(tr.tlon%30).toFixed(0)}°，你本命${tr.np}喺${SIGNS[Math.floor(tr.nlon/30)]}座 ${(tr.nlon%30).toFixed(0)}°。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}</p>
-   <div id="trAI"></div>`,sh=>{$("#trAI",sh).appendChild(aiBlock("深入了解呢個行運",()=>prompt(`解讀行運：${tr.tp}${tr.asp}本命${tr.np}（容許度${tr.orb.toFixed(1)}°，${fmtD(tr.start)}至${fmtD(tr.end)}，最準${fmtD(tr.exact)}）。講清楚佢對使用者生活嘅具體影響、要把握同要避免嘅事，再對照紫微今日流日四化：${an.zw?huaSentence(an.zw.daily):""}`,c)))});
+   <div id="trAI"></div>`,sh=>{$("#trAI",sh).appendChild(aiBlock("深入了解呢個行運",()=>prompt(`解讀行運：${tr.tp}${tr.asp}本命${tr.np}（容許度${tr.orb.toFixed(1)}°，${fmtD(tr.start)}至${fmtD(tr.end)}，最準${fmtD(tr.exact)}）。講清楚佢對使用者生活嘅具體影響、要把握同要避免嘅事，再對照紫微今日流日四化：${an.zw?huaSentence(an.zw.daily):""}`,c),{local:()=>localTransit(c,tr)}))});
 }
 const AREA_IC_SVG={power:'<svg class="ar-ic" viewBox="0 0 24 24"><path d="M12 21V11"/><path d="M12 13c0-4 3-6 7-6 0 4-3 6-7 6Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3 2.5 5 6 5Z"/></svg>',
  pressure:'<svg class="ar-ic" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.5 2.5-5 .5 2 1.5 2.5 2.5 2.5C12 8 11 6 12 3Z"/></svg>',
@@ -1986,7 +2214,7 @@ function renderToday(el){
     <div id="todayAI"></div>
   </section>
   <footer class="s-foot"><div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><g class="bm-sun"><line x1="27.60" y1="16.00" x2="30.00" y2="16.00"/><line x1="26.05" y1="21.80" x2="27.26" y2="22.50"/><line x1="21.80" y1="26.05" x2="23.00" y2="28.12"/><line x1="16.00" y1="27.60" x2="16.00" y2="29.00"/><line x1="10.20" y1="26.05" x2="9.00" y2="28.12"/><line x1="5.95" y1="21.80" x2="4.74" y2="22.50"/><line x1="4.40" y1="16.00" x2="2.00" y2="16.00"/><line x1="5.95" y1="10.20" x2="4.74" y2="9.50"/><line x1="10.20" y1="5.95" x2="9.00" y2="3.88"/><line x1="16.00" y1="4.40" x2="16.00" y2="3.00"/><line x1="21.80" y1="5.95" x2="23.00" y2="3.88"/><line x1="26.05" y1="10.20" x2="27.26" y2="9.50"/><circle cx="16" cy="16" r="9.6"/></g><path class="bm-moon" d="M19.4 10.4a6.3 6.3 0 1 0 2.9 9.1a5.2 5.2 0 1 1-2.9-9.1Z"/><circle class="bm-star" cx="22.6" cy="11.2" r=".9"/></svg></span><span>SOLUNA</span><span class="zh">曜</span></div><p>寫畀正在成長嘅你嘅星象。</p><span>Made under the same sky</span></footer>`;
-  const aiB=aiBlock("生成今日完整運勢",()=>prompt(`寫一篇今天（${ymd(now)}）的個人運勢。今日流日干支 ${di.gz}，對日主是${di.tg}（地支藏${di.tgz}）；今日月亮在${moonSign!=null?SIGNS[moonSign]:"?"}座，月相${mp?mp.name:""}；今日幸運色 ${lc.best[0]}、${lc.second[0]}，少用${lc.avoid[0]}（${lc.why.join("；")}）${di.clash?"；日支相沖":""}${di.he?"；日支六合":""}${mood?`；使用者自己記錄今日心情是「${mood}」，請用貼合這種心情的語氣`:""}。${an?` 已計算嘅真實行運：${an.transits.slice(0,8).map(t=>`${t.tp}${t.asp}本命${t.np}（${t.orb.toFixed(1)}°，${t.span}）`).join("；")}。行星落宮：${Object.entries(an.tpos).map(([n,v])=>`${n}第${v.house}宮`).join("、")}。紫微：${an.zw?[an.zw.daily,an.zw.monthly,an.zw.yearly,an.zw.decadal].map(huaSentence).join(" "):"未有出生時間"}。八字：${an.bz?an.bz.layers.map(L=>`${L.label}${L.g}=${L.tg}${L.fav>0?"(喜)":L.fav<0?"(忌)":""}`).join("、")+(an.bz.dayClash?"、日支相沖":"")+(an.bz.dayHe?"、日支六合":""):""}。紫微格局：${an.pats.map(p=>p.n).join("、")||"無特別"}。旺：${an.power.map(a=>a.n).join("、")}；煩：${an.pressure.map(a=>a.n).join("、")}；忌：${an.trouble.map(a=>a.n).join("、")}。`:""} 請寫一篇詳細、具體嘅解讀，必須引用上面嘅行運同紫微四化做根據。分「總覽」「感情」「事業與財運」「身心」「紫微今日四化」「幸運色與穿搭建議」「今日一句提醒」七部分，結合東西方觀點。`,chart));
+  const aiB=aiBlock("生成今日完整運勢",()=>prompt(`寫一篇今天（${ymd(now)}）的個人運勢。今日流日干支 ${di.gz}，對日主是${di.tg}（地支藏${di.tgz}）；今日月亮在${moonSign!=null?SIGNS[moonSign]:"?"}座，月相${mp?mp.name:""}；今日幸運色 ${lc.best[0]}、${lc.second[0]}，少用${lc.avoid[0]}（${lc.why.join("；")}）${di.clash?"；日支相沖":""}${di.he?"；日支六合":""}${mood?`；使用者自己記錄今日心情是「${mood}」，請用貼合這種心情的語氣`:""}。${an?` 已計算嘅真實行運：${an.transits.slice(0,8).map(t=>`${t.tp}${t.asp}本命${t.np}（${t.orb.toFixed(1)}°，${t.span}）`).join("；")}。行星落宮：${Object.entries(an.tpos).map(([n,v])=>`${n}第${v.house}宮`).join("、")}。紫微：${an.zw?[an.zw.daily,an.zw.monthly,an.zw.yearly,an.zw.decadal].map(huaSentence).join(" "):"未有出生時間"}。八字：${an.bz?an.bz.layers.map(L=>`${L.label}${L.g}=${L.tg}${L.fav>0?"(喜)":L.fav<0?"(忌)":""}`).join("、")+(an.bz.dayClash?"、日支相沖":"")+(an.bz.dayHe?"、日支六合":""):""}。紫微格局：${an.pats.map(p=>p.n).join("、")||"無特別"}。旺：${an.power.map(a=>a.n).join("、")}；煩：${an.pressure.map(a=>a.n).join("、")}；忌：${an.trouble.map(a=>a.n).join("、")}。`:""} 請寫一篇詳細、具體嘅解讀，必須引用上面嘅行運同紫微四化做根據。分「總覽」「感情」「事業與財運」「身心」「紫微今日四化」「幸運色與穿搭建議」「今日一句提醒」七部分，結合東西方觀點。`,chart),{local:()=>localToday(chart)});
   $("#todayAI",el).appendChild(aiB);
   el.querySelectorAll(".insight-tabs button").forEach(b=>b.onclick=()=>{insightTab=b.dataset.k;renderToday(el)});
   $("#insAI",el).onclick=()=>{$("#todayAI",el).scrollIntoView({behavior:RM?"auto":"smooth",block:"center"});$("button",aiB).click()};
@@ -2014,7 +2242,7 @@ function fcWeek(el){
   const best=days.reduce((a,b)=>b.total>a.total?b:a), worst=days.reduce((a,b)=>b.total<a.total?b:a);
   el.innerHTML=`<p>呢七日最順嘅係 <b>${best.date.getMonth()+1}/${best.date.getDate()}（${TG[best.tg].kw}）</b>，最需要放慢嘅係 <b>${worst.date.getMonth()+1}/${worst.date.getDate()}（${TG[worst.tg].kw}）</b>。</p>
   <div class="daylist">${days.map((d,i)=>`<div class="dayrow ${i===0?"now":""}"><div class="d"><b>${d.date.getDate()}</b>週${WD[d.date.getDay()]}</div><div style="min-width:0"><div>${(()=>{const lc=luckyColor(chart,d);return `<span class="cdot" style="background:${lc.best[1]}" title="幸運色 ${lc.best[0]}"></span>`})()}<b>${d.tg}</b> · ${esc(d.an?d.an.headline:TG[d.tg].head)}</div>${d.an?`<div class="wk-ar"><span>☀️ 旺 ${d.an.power.map(a=>a.n).slice(0,2).join("、")}</span><span>🌑 忌 ${d.an.trouble[0].n}</span>${d.an.zw?`<span>紫微流日${d.an.zw.daily.hua.find(x=>x.h==="忌")?.star||""}化忌入${d.an.zw.daily.hua.find(x=>x.h==="忌")?.pal||"—"}</span>`:""}</div>`:""}<div class="bar"><span style="width:${(d.total/5*100).toFixed(0)}%"></span></div></div><div class="mono mute" style="font-size:11.5px;text-align:right">${d.gz}<br>${d.moonLon!=null?"月"+SIGN_SHORT[Math.floor(d.moonLon/30)]:""}</div></div>`).join("")}</div>`;
-  el.appendChild(aiBlock("生成本週計劃",()=>prompt(`為使用者寫本週（${ymd(days[0].date)} 至 ${ymd(days[6].date)}）的運勢與行動計劃。每日資料：${days.map(d=>`${ymd(d.date)} ${d.gz}日 ${d.tg}，月亮${d.moonLon!=null?SIGNS[Math.floor(d.moonLon/30)]:""}座${d.an?`，綜合分${d.an.dayScore.toFixed(1)}/5，旺${d.an.power.map(a=>a.n).join("、")}，忌${d.an.trouble[0].n}，主要行運${d.an.transits.filter(t=>t.tb!=="Moon").slice(0,2).map(t=>t.tp+t.asp+t.np).join("、")||"無"}${d.an.zw?`，紫微流日${d.an.zw.daily.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("、")}`:""}`:""}`).join("；")}。先一段本週總結，然後逐日一句重點與建議。`,chart)));
+  el.appendChild(aiBlock("生成本週計劃",()=>prompt(`為使用者寫本週（${ymd(days[0].date)} 至 ${ymd(days[6].date)}）的運勢與行動計劃。每日資料：${days.map(d=>`${ymd(d.date)} ${d.gz}日 ${d.tg}，月亮${d.moonLon!=null?SIGNS[Math.floor(d.moonLon/30)]:""}座${d.an?`，綜合分${d.an.dayScore.toFixed(1)}/5，旺${d.an.power.map(a=>a.n).join("、")}，忌${d.an.trouble[0].n}，主要行運${d.an.transits.filter(t=>t.tb!=="Moon").slice(0,2).map(t=>t.tp+t.asp+t.np).join("、")||"無"}${d.an.zw?`，紫微流日${d.an.zw.daily.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("、")}`:""}`:""}`).join("；")}。先一段本週總結，然後逐日一句重點與建議。`,chart),{local:()=>localWeek(chart,days)}));
 }
 function fcMonth(el){
   const now=new Date();const L=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();
@@ -2026,7 +2254,7 @@ function fcMonth(el){
   <div class="stack"><span class="eyebrow">未來 30 日能量</span>
   <div class="cal">${[..."日一二三四五六"].map(x=>`<div class="h">${x}</div>`).join("")}${"<div class=\"empty\"></div>".repeat(lead)}${cells.map((d,i)=>{const l=Math.round(d.total),k=d.lvl||(l>=4?"good":l===3?"mid":"low");return `<div data-l="${l}" data-k="${k}" class="${i===0?"today":""}" title="${ymd(d.date)} ${d.tg} · ${k==="good"?"順日":k==="mid"?"平穩":"宜靜"}${d.an?` · 旺${d.an.power[0].n} · 忌${d.an.trouble[0].n}`:""}"><b>${d.date.getDate()}</b><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div>`}).join("")}</div>
   <div class="legend"><span data-k="good"><i>☀︎</i>順日 · 適合主動</span><span data-k="mid"><i>◐</i>平穩 · 照常進行</span><span data-k="low"><i>☾</i>宜靜 · 休息低調</span></div></div>`;
-  el.appendChild(aiBlock("生成一個月計劃",()=>prompt(`為使用者寫未來一個月（由 ${ymd(first)} 起）的運勢與行動計劃。流月干支 ${mgz}，對日主為${tg}（地支藏${tgz}）。最順的日子：${cells.filter(c=>c.total>=4).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}；宜靜的日子：${cells.filter(c=>c.total<2.6).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}。分「本月主題」「感情」「事業財運」「健康」「每週行動計劃（4週）」。`,chart)));
+  el.appendChild(aiBlock("生成一個月計劃",()=>prompt(`為使用者寫未來一個月（由 ${ymd(first)} 起）的運勢與行動計劃。流月干支 ${mgz}，對日主為${tg}（地支藏${tgz}）。最順的日子：${cells.filter(c=>c.total>=4).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}；宜靜的日子：${cells.filter(c=>c.total<2.6).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}。分「本月主題」「感情」「事業財運」「健康」「每週行動計劃（4週）」。`,chart),{local:()=>localMonth(chart)}));
 }
 function fcYear(el){
   const now=new Date();const L=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();
@@ -2039,7 +2267,7 @@ function fcYear(el){
   el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年係你嘅「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>${majorTransitsHTML(chart)}
   <div class="stack"><span class="eyebrow">未來 12 個月</span><div class="mlist">${months.map((m,i)=>{const a=m.an,k=m.lvl||"mid",yl=m.an&&m.an.bz?m.an.bz.layers.find(x=>x.label==="流月"):null,zl=a&&a.zw?a.zw.monthly:null,lu=zl&&zl.hua.find(x=>x.h==="祿"),ji=zl&&zl.hua.find(x=>x.h==="忌");
     return `<div class="mrow ${i===0?"now":""}" data-k="${k}"><div class="mr-d"><span class="mono">${m.d.getFullYear()%100}/${m.d.getMonth()+1}</span><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div><div class="mr-x"><p><b>${m.g}月 · ${m.tg}</b>${yl?`<span class="chip">${yl.fav>0?"喜用":yl.fav<0?"忌神":"中性"}</span>`:""}</p>${a?`<p class="mr-a">☀️ 旺 ${a.power.slice(0,2).map(x=>x.n).join("、")}　🌑 忌 ${a.trouble[0].n}</p>`:""}${zl?`<p class="mr-z">紫微流月：${lu?`${lu.star}化祿入${lu.pal}`:""}${ji?`；${ji.star}化忌入${ji.pal}`:""}</p>`:""}</div></div>`}).join("")}</div></div>`;
-  el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${m.an.trouble[0].n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart)));
+  el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${m.an.trouble[0].n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart),{local:()=>localYear(chart)}));
 }
 function fcDecade(el){
   const b=chart.bazi, now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0];
@@ -2049,7 +2277,7 @@ function fcDecade(el){
   ${chart.ziwei?(()=>{const z=chart.ziwei,age=now-z.by+1,find=st=>{const p=z.palaces.find(q=>q&&(q.stars.includes(st)||q.minor.includes(st)));return p?p.name:"—"};
     return `<div class="stack"><span class="eyebrow">紫微大限 · 十年一宮</span><div class="timeline">${z.palaces.slice().filter(Boolean).sort((a,b)=>a.dx[0]-b.dx[0]).map(p=>{const isNow=age>=p.dx[0]&&age<=p.dx[1];const sh=SIHUA_T[p.stem]||[];return `<div class="tl ${isNow?"now":""}"><div class="age">${z.by+p.dx[0]-1}<br>– ${z.by+p.dx[1]-1}<br><span class="mute">${p.dx[0]}–${p.dx[1]}歲</span></div><div class="gz">${p.stem}${ZHI[p.b]}</div><div style="min-width:0"><b>大限命宮在${p.name}${isNow?" · 現在":""}</b><p style="font-size:13px">${p.stars.length?p.stars.join("、"):"空宮"} · ${PAL_MEAN[p.name]||""}為主線</p><p class="mute" style="font-size:11.5px">${sh.map((st,i)=>`${st}化${HUA[i]}入${find(st)}`).join("、")}</p></div></div>`}).join("")}</div></div>`})():""}
   <div class="stack"><span class="eyebrow">現行大運 ${cur.gz} 內的流年</span><div class="months">${years.map(x=>`<div class="${x.y===now?"now":""}"><span class="mono">${x.y}</span><b>${x.gz}</b><span>${x.tg}</span></div>`).join("")}</div></div>`;
-  el.appendChild(aiBlock("生成十年規劃",()=>prompt(`為使用者寫未來十年的人生規劃。現行大運 ${cur.gz}（${cur.startYear}-${cur.endYear}），對日主為${tenGod(b.dm,cur.gz[0])}；下一步大運 ${(b.yun[b.yun.indexOf(cur)+1]||{}).gz||""}。十年內流年：${years.map(x=>`${x.y} ${x.gz}(${x.tg})`).join("、")}。分「這十年的主題」「事業與財富路線」「感情與家庭」「健康」「逐年關鍵字與行動建議（每年一行）」。`,chart)));
+  el.appendChild(aiBlock("生成十年規劃",()=>prompt(`為使用者寫未來十年的人生規劃。現行大運 ${cur.gz}（${cur.startYear}-${cur.endYear}），對日主為${tenGod(b.dm,cur.gz[0])}；下一步大運 ${(b.yun[b.yun.indexOf(cur)+1]||{}).gz||""}。十年內流年：${years.map(x=>`${x.y} ${x.gz}(${x.tg})`).join("、")}。分「這十年的主題」「事業與財富路線」「感情與家庭」「健康」「逐年關鍵字與行動建議（每年一行）」。`,chart),{local:()=>localDecade(chart)}));
 }
 
 /* ============ Chart ============ */
@@ -2078,14 +2306,15 @@ function renderChart(el){
   if(chart.ziwei){drawZw($("#zwBox",el));$("#zwAI",el).appendChild(aiBlock("解讀紫微盤（含所選大限／流年）",()=>{const z=chart.ziwei,o=zwHoro(z);
     const desc=z.palaces.map(p=>`${p.name}(${p.stem}${ZHI[p.b]}${p.shen?"，身宮":""})：${[...p.q.majorStars,...p.q.minorStars].map(s=>s.name+(s.brightness||"")+(s.mutagen?"化"+s.mutagen:"")).join("、")||"空宮"}；${p.misc.join("、")}；大限${p.dx.join("-")}`).join("\n");
     const ov=o?`\n所選${o.label}：${o.desc}，${o.label}命宮在${ZHI[(o.lv.index+2)%12]}（本命${z.palaces[(o.lv.index+2)%12].name}），${o.label}四化：${o.lv.mutagen.map((n,i)=>n+"化"+HUA[i]).join("、")}。請重點解讀這段時間：${o.label}命宮與本命宮位重疊的意義、四化落入哪些本命宮位，分「總論」「事業財運」「感情人際」「健康」「建議」。`:"\n請解讀本命盤：先論命身宮主星性質同廟陷，再看三方四正、生年四化及宮干飛化（化祿化忌飛入何宮、自化、祿忌交沖），六吉六煞及雜曜（如紅鸞天喜天刑天姚）的影響，按星曜組合判斷而唔好單星論斷。";
-    return prompt(`以紫微斗數解讀。${z.yy}，${z.bureauName}，命主${z.soul}，身主${z.body}。本命十二宮：\n${desc}${ov}`,chart)}));}
-  $("#chartAI",el).appendChild(aiBlock("解讀我嘅完整命盤",()=>prompt("綜合八字、紫微斗數和西洋星盤，解讀使用者的性格、天賦、感情模式、事業方向和人生課題。指出三個系統互相印證的地方，以及互相矛盾時應怎樣理解。",chart)));
+    return prompt(`以紫微斗數解讀。${z.yy}，${z.bureauName}，命主${z.soul}，身主${z.body}。本命十二宮：\n${desc}${ov}`,chart)},{local:()=>localZiwei(chart)}));}
+  $("#chartAI",el).appendChild(aiBlock("解讀我嘅完整命盤",()=>prompt("綜合八字、紫微斗數和西洋星盤，解讀使用者的性格、天賦、感情模式、事業方向和人生課題。指出三個系統互相印證的地方，以及互相矛盾時應怎樣理解。",chart),{local:()=>localChart(chart)}));
 }
 /* ===== 紫微 (iztro engine) ===== */
 const HUA=["祿","權","科","忌"];
 function hourIndex(t){const h=Number(t.split(":")[0]);return h===23?12:Math.floor((h+1)/2)}
 function buildZiwei(p){
   if(!window.iztro)return null;
+  if(!buildZiwei.cfg){try{iztro.astro.config({mutagens:{戊:["貪狼","太陰","太陽","天機"],庚:["太陽","武曲","天府","天同"],壬:["天梁","紫微","天府","武曲"]}})}catch(e){console.warn(e)}buildZiwei.cfg=1}
   const a=iztro.astro.bySolar(p.date,hourIndex(p.time),p.gender==="M"?"男":"女",true,"zh-TW");
   const by=Number(p.date.slice(0,4));const yb=ZHI.indexOf(a.chineseDate[1]);
   const palaces=[];
@@ -2249,7 +2478,7 @@ function orMeihua(el){
       <div class="deep-row"><b>變卦 · 結果</b><p>${GUA64[bi]}：${GUA_T[gShort(bi)]||""}。最後${endGood?"對你有利":"仍要小心"}（變卦用卦${relWord(r.end)}）。</p></div>
       <div class="deep-row"><b>${MH_CAT.find(x=>x[0]===cat)[1]}</b><p>${MH_CAT_T[cat][good?"吉":"凶"]}${good!==endGood?(endGood?"開頭有阻滯，但結果會轉好。":"開頭順利，但後段要留神。"):""}</p></div>`;
       const ai=$("#mhAI",el);ai.innerHTML="";
-      ai.appendChild(aiBlock("解讀呢支卦",()=>prompt(`以梅花易數斷卦。使用者問「${q||"近況"}」（範疇：${MH_CAT.find(x=>x[0]===cat)[1]}）。${mhMode==="time"?"時間起卦":`數字起卦（${a}、${b}）`}：本卦${GUA64[main]}，動爻第${r.mv}爻，互卦${GUA64[hu]}，變卦${GUA64[bi]}。體卦${tiG.n}${EL[tiG.el]}（${r.tiS}），用卦${yG.n}${EL[yG.el]}，${r.key}；互卦對體：${r.huR.join("、")}；變卦用卦對體：${r.end}。請按體用生剋為主、卦氣旺衰為輔，結合本卦（開始）、互卦（過程）、變卦（結果）同八卦類象，具體回答問題，講埋應期（大約幾時有結果）同可以點做。`,chart),{save:()=>({kind:"梅花易數",title:`${GUA64[main]} → ${GUA64[bi]}`,q,result:`${T[0]} · ${r.key}；本卦${GUA64[main]}，互卦${GUA64[hu]}，變卦${GUA64[bi]}`})}));
+      ai.appendChild(aiBlock("解讀呢支卦",()=>prompt(`以梅花易數斷卦。使用者問「${q||"近況"}」（範疇：${MH_CAT.find(x=>x[0]===cat)[1]}）。${mhMode==="time"?"時間起卦":`數字起卦（${a}、${b}）`}：本卦${GUA64[main]}，動爻第${r.mv}爻，互卦${GUA64[hu]}，變卦${GUA64[bi]}。體卦${tiG.n}${EL[tiG.el]}（${r.tiS}），用卦${yG.n}${EL[yG.el]}，${r.key}；互卦對體：${r.huR.join("、")}；變卦用卦對體：${r.end}。請按體用生剋為主、卦氣旺衰為輔，結合本卦（開始）、互卦（過程）、變卦（結果）同八卦類象，具體回答問題，講埋應期（大約幾時有結果）同可以點做。`,chart),{local:()=>localMeihua(r,cat,q,main,hu,bi,T,good,endGood),save:()=>({kind:"梅花易數",title:`${GUA64[main]} → ${GUA64[bi]}`,q,result:`${T[0]} · ${r.key}；本卦${GUA64[main]}，互卦${GUA64[hu]}，變卦${GUA64[bi]}`})}));
     });
   };
 }
@@ -2352,7 +2581,7 @@ function orTarot(el){
       box.scrollIntoView({behavior:"smooth",block:"start"});
       box.insertAdjacentHTML("beforeend",tarotSynth(drawn));
       const q=$("#tq",el).value.trim(),ai=$("#tAI",el);ai.innerHTML="";
-      ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。牌面對應：${drawn.map(d=>`${d.card.name}=${cardCorr(d.card)}`).join("；")}。請按以下次序解讀：①破題（呢組牌整體講緊咩）②逐張評估（牌義＋牌位＋正逆位，結合神話原型同心理象徵，唔好死背關鍵字）③連貫（相鄰牌嘅元素尊貴：火風相生、水土相生、火水同風土相剋，以及數字重複）④依據（指出牌面上邊個細節支持你嘅判斷）⑤意向（具體可行嘅建議）。可輕輕連結使用者嘅星盤或八字。`,chart),{save:()=>({kind:"塔羅",title:sp.n,q,result:drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":""}`).join("　")})}));
+      ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。牌面對應：${drawn.map(d=>`${d.card.name}=${cardCorr(d.card)}`).join("；")}。請按以下次序解讀：①破題（呢組牌整體講緊咩）②逐張評估（牌義＋牌位＋正逆位，結合神話原型同心理象徵，唔好死背關鍵字）③連貫（相鄰牌嘅元素尊貴：火風相生、水土相生、火水同風土相剋，以及數字重複）④依據（指出牌面上邊個細節支持你嘅判斷）⑤意向（具體可行嘅建議）。可輕輕連結使用者嘅星盤或八字。`,chart),{local:()=>localTarot(drawn,q,sp),save:()=>({kind:"塔羅",title:sp.n,q,result:drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":""}`).join("　")})}));
     };
     const rb=$("#reveal",el);if(rb)rb.onclick=reveal;
   });
@@ -2374,9 +2603,9 @@ function orShin(el){
     const tick=()=>{for(let k=0;k<6&&i<N;k++,i++){const[x,y,a]=pts[i];ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(0,0,7,3,0,0,Math.PI*2);ctx.fill();ctx.restore()}if(i<N)requestAnimationFrame(tick)};setTimeout(tick,900);
     const odd=N%2===1;const center=zones[0];
     const msgs=odd?["神明說：門已經開了，你只是不敢走進去。","祖先在看著你。這件事可以做，但不要一個人扛。","米落得很散：先處理身邊小事，大事自然會順。"]:["神明說：先停一停。三個月內答案會自己出現。","米聚在中間：你要的東西其實已經在手上。","有人在背後說你，與其解釋，不如做出成績。"];
-    const out=$("#shinOut",el);
-    setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:20px">${esc(pick(msgs,Math.random))}</p>`;
-      out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart),{save:()=>({kind:"神占",title:`米卦 ${N} 粒`,q,result:(out.querySelector(".headline")||{}).textContent||""})}));},1700);
+    const shMsg=pick(msgs,Math.random);const out=$("#shinOut",el);
+    setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:20px">${esc(shMsg)}</p>`;
+      out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart),{local:()=>localShin(q,N,odd,center,zones,shMsg),save:()=>({kind:"神占",title:`米卦 ${N} 粒`,q,result:(out.querySelector(".headline")||{}).textContent||""})}));},1700);
   });
 }
 /* dream */
@@ -2443,7 +2672,7 @@ function orDream(el){
   <section class="djournal"><div class="dj-head"><div><p class="kicker">Journal · 夢境與心情日記</p><h3 class="dj-t">你嘅日記月曆</h3></div><span class="mute dj-where" id="dWhere"></span></div><div id="dCal"></div><div id="dStats"></div><div id="dList"><p class="mute">載入中⋯</p></div></section>`;
   el.querySelectorAll(".feel button").forEach(b=>b.onclick=()=>{const f=b.dataset.f;feel=feel.includes(f)?feel.filter(x=>x!==f):[...feel,f];b.setAttribute("aria-pressed",feel.includes(f))});
   let cur=null;
-  const ai=aiBlock("完整解夢",()=>{const t=$("#dq",el).value.trim();if(!t){$("#dq",el).focus();return null}return dreamPrompt(t,feel)},{onDone:async text=>{if(cur){cur.interp=text;const s=await dreamStore();await s.save(cur);drawList()}}});
+  const ai=aiBlock("完整解夢",()=>{const t=$("#dq",el).value.trim();if(!t){$("#dq",el).focus();return null}return dreamPrompt(t,feel)},{local:()=>{const t=$("#dq",el).value.trim();if(!t){$("#dq",el).focus();return null}return localDream(t,feel)},onDone:async text=>{if(cur){cur.interp=text;const s=await dreamStore();await s.save(cur);drawList()}}});
   $("#dAI",el).appendChild(ai);
   const drawList=async()=>{
     const s=await dreamStore();const w=$("#dWhere",el);if(w)w.textContent=s.cloud?"已同步到你嘅帳戶（只有你睇到）":"只儲存喺呢部機";
@@ -2467,7 +2696,7 @@ function orDream(el){
      ${hits.length?`<p class="kicker">夢中的象徵</p>${hits.map(([k,v])=>`<p class="sh-p"><b>${k}</b>　${esc(v)}</p>`).join("")}`:""}
      <div id="djAI"></div>
      <button class="btn small" type="button" id="djDel" style="align-self:flex-start">刪除呢個夢</button>`,sh=>{
-       const box=aiBlock(d.interp?"重新解夢":"完整解夢",()=>dreamPrompt(d.text,d.feel||[]),{onDone:async text=>{d.interp=text;const s=await dreamStore();await s.save(d);drawList()}});
+       const box=aiBlock(d.interp?"重新解夢":"完整解夢",()=>dreamPrompt(d.text,d.feel||[]),{local:()=>localDream(d.text,d.feel||[]),onDone:async text=>{d.interp=text;const s=await dreamStore();await s.save(d);drawList()}});
        if(d.interp)$(".ai-out",box).innerHTML=md(d.interp);
        $("#djAI",sh).appendChild(box);
        let armed=false;$("#djDel",sh).onclick=async e=>{if(!armed){armed=true;e.target.textContent="再撳一次確認刪除";return}const s=await dreamStore();await s.remove(d.id);$("#sheet").hidden=true;drawList()};
@@ -2501,6 +2730,7 @@ function orFace(el){
 const ODU=[["Ogbe","IIII","光明、開始、一切順利；保持正直與耐心。"],["Oyeku","00 00".replace(/ /g,""),"結束與休息；黑夜過後才有白天，照顧祖先。"],["Iwori","0II0","洞察與轉化；看清事物的本質。"],["Odi","I00I","重生與保護；守住家庭與承諾。"],["Irosun","II00","祖先的力量；留意夢境與血緣。"],["Owonrin","00II","混亂中的機會；靈活應變。"],["Obara","I000","口才與財富；說話要真誠。"],["Okanran","000I","衝突與表達；先聆聽再發言。"],["Ogunda","III0","開路與突破；清除障礙。"],["Osa","0III","變動與風；為突如其來的轉變做準備。"],["Ika","0I00","謹慎與節制；避免捲入是非。"],["Oturupon","00I0","療癒與耐性；照顧身體。"],["Otura","I0II","靈性與和平；尋找內心的信仰。"],["Irete","II0I","堅持與穩固；腳踏實地。"],["Ose","I0I0","愛與豐盛；甜美的事情將至。"],["Ofun","0I0I","純潔與恩典；以白色、清淨回應生命。"]];
 function orIfa(el){
   el.innerHTML=`<p>Ifá 是西非約魯巴（Yorùbá）的占卜體系，祭司 Babaláwo 會擲出占卜鏈 <b>Opele</b>（八片半殼），組成 256 種 <b>Odu</b> 之一。這裡是簡化的體驗版，正式占卜需由受過訓練的祭司進行。</p>
+  <label class="f" for="iq">你的問題（可留空）<input id="iq" maxlength="200"></label>
   <button class="btn solid" type="button" id="ifago">擲 Opele</button><div id="ifaOut" class="stack"></div><div id="ifaAI"></div>`;
   $("#ifago",el).onclick=()=>dailyFree("ifa","Ifá 占卜",()=>{
     const leg=()=>Array.from({length:4},()=>Math.random()<.5?"I":"0").join("");
@@ -2508,7 +2738,7 @@ function orIfa(el){
     const name=R===L?`${fR[0]} Meji`:`${fR[0]}-${fL[0]}`;
     const legHTML=s=>`<div class="leg">${[...s].map(c=>`<div class="mark">${c==="I"?"<i></i>":"<i></i><i></i>"}</div>`).join("")}</div>`;
     $("#ifaOut",el).innerHTML=`<div class="opele">${legHTML(R)}${legHTML(L)}</div><span class="eyebrow">Odu</span><h2>${name}</h2><p><b>${fR[0]}</b>（右）${esc(fR[2])}</p>${R!==L?`<p><b>${fL[0]}</b>（左）${esc(fL[2])}</p>`:`<p class="mute">雙腿相同，稱為 Meji，是 16 個主要 Odu 之一，力量更純粹。</p>`}`;
-    const ai=$("#ifaAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀 Odu",()=>prompt(`使用者體驗 Ifá 占卜，擲出 Odu「${name}」（右腿 ${fR[0]}，左腿 ${fL[0]}）。尊重地介紹這個 Odu 在約魯巴傳統中的意象與相關 Orisha，再轉化為給使用者的近況指引與一個可做的小儀式（例如供奉、感恩、行善）。提醒這是簡化體驗。`,chart),{save:()=>({kind:"Ifá",title:`Odu ${name}`,q:"",result:`右腿 ${fR[0]}，左腿 ${fL[0]}`})}));
+    const ai=$("#ifaAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀 Odu",()=>prompt(`使用者體驗 Ifá 占卜，擲出 Odu「${name}」（右腿 ${fR[0]}，左腿 ${fL[0]}）。尊重地介紹這個 Odu 在約魯巴傳統中的意象與相關 Orisha，再轉化為給使用者的近況指引與一個可做的小儀式（例如供奉、感恩、行善）。提醒這是簡化體驗。`,chart),{local:()=>localIfa(name,fR,fL,$("#iq",el).value.trim()),save:()=>({kind:"Ifá",title:`Odu ${name}`,q:"",result:`右腿 ${fR[0]}，左腿 ${fL[0]}`})}));
   });
 }
 /* Runes */
@@ -2522,7 +2752,7 @@ function orRunes(el){
     const bag=[...RUNES].sort(()=>Math.random()-.5).slice(0,3).map(r=>({r,rev:!NOREV.has(r[1])&&Math.random()<.3}));const pos=["Urd · 過去","Verdandi · 現在","Skuld · 將來"];
     $("#rOut",el).innerHTML=`<div class="runes">${bag.map((b,i)=>`<div class="stack" style="align-items:center;gap:6px"><span class="eyebrow">${pos[i]}</span><div class="rune ${b.rev?"rev":""}"><span class="glyph">${b.r[0]}</span></div><b>${b.r[1]}${b.rev?"（逆）":""}</b><span class="mute" style="font-size:13px">${b.r[2]}</span></div>`).join("")}</div>`;
     const q=$("#rq",el).value.trim();const ai=$("#rAI",el);ai.innerHTML="";
-    ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart),{save:()=>({kind:"盧恩符文",title:"三女神牌陣",q,result:bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位）":""}`).join("　")})}));
+    ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart),{local:()=>localRunes(bag,pos,q),save:()=>({kind:"盧恩符文",title:"三女神牌陣",q,result:bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位）":""}`).join("　")})}));
   });
 }
 
@@ -2565,7 +2795,7 @@ function openProduct(k){
     <div id="prodAI"></div>
    </div>
    ${has?"":`<div class="prod-bar"><span>付款解鎖，睇晒你嘅完整報告</span><button class="btn solid small" type="button" id="prodBuy">解鎖 ${p.price}</button></div><p class="mute" style="font-size:12.5px;text-align:center">Sol Pro 會員可以用會員價購買</p>`}`,sh=>{
-     if(has){$("#prodAI",sh).appendChild(aiBlock(`生成我嘅「${p.n}」`,()=>productPrompt(p)));return}
+     if(has){$("#prodAI",sh).appendChild(aiBlock(`生成我嘅「${p.n}」`,()=>productPrompt(p),{local:()=>localProduct(p)}));return}
      $("#prodBuy",sh).onclick=buyNow;
    });
 }

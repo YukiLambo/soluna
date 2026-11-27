@@ -2979,7 +2979,7 @@ function openProduct(k){
 }
 function renderShop(el){
   const card=p=>`<button type="button" class="pcard" data-p="${p.k}"><span class="pcard-en">${p.en}</span><b>${p.n}</b><span class="mute">${p.blurb}</span><span class="pcard-price">${owns(p.k)?"已解鎖":p.price}</span></button>`;
-  el.innerHTML=`<div class="stack"><span class="eyebrow">Soluna 商店</span><h1>更深入了解你自己<span class="lat">know thyself</span></h1><p class="mute">兩種會員任你揀；每份報告亦可以另外購買，都係按你嘅八字、紫微同星盤即時寫成。</p></div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">Soluna 商店</span><h1>更深入了解你自己<span class="lat">become who you are</span></h1><p class="mute">兩種會員任你揀；每份報告亦可以另外購買，都係按你嘅八字、紫微同星盤即時寫成。</p></div>
   <div id="sPlus" class="stack" style="gap:14px">${["sol","luna"].map(t=>{const T=TIER[t];const L=t==="sol"?["Luna Plus 全部內容","命盤深讀（八字、紫微、星盤）","一個月、一年、十年完整運勢同行動計劃","報告享會員價"]:["塔羅同各種占卜無限次","今日運勢同行運深入解讀","完整解夢","本週計劃"];
     return `<section class="plus${t==="luna"?" luna":""}"><p class="kicker">${t==="sol"?"☉ 全包":"☽ 入門"}</p><h2>${T.full}</h2><p class="mute" style="margin-top:-6px">${t==="sol"?"照亮你嘅全部：由今日到未來十年。":"每日陪住你，好似月光咁溫柔。"}</p>
     <ul class="pw-list">${L.map(x=>`<li>${x}</li>`).join("")}</ul>

@@ -1,12 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 每個用戶只可以讀寫自己嘅資料；「member」（會員）欄位只可以由你喺控制台或者付款系統設定
+    // 每個用戶只可以讀寫自己嘅資料。
+    // member（true / "luna" / "sol"）同 owned（已買報告）只可以由你喺控制台或者付款系統設定；
+    // credits（占卜次數）用戶自己只可以每次減 1，唔可以加。
     match /users/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
-      allow create: if request.auth != null && request.auth.uid == uid && !('member' in request.resource.data);
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && !request.resource.data.keys().hasAny(['member', 'owned', 'credits']);
       allow update: if request.auth != null && request.auth.uid == uid
-                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['member']);
+                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['member', 'owned'])
+                    && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['credits'])
+                        || (resource.data.credits is int && request.resource.data.credits == resource.data.credits - 1
+                            && request.resource.data.credits >= 0));
     }
   }
 }

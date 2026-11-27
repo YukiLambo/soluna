@@ -293,6 +293,24 @@ body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn{display:none}
 .toast b{font-family:var(--f-display);font-weight:500;font-size:18px}.toast span{font-size:13px;color:var(--mute)}
 .toast.out{opacity:0;transform:translate(-50%,-10px)}
 @keyframes tin{from{opacity:0;transform:translate(-50%,-14px)}}
+.shop-entry{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:14px;padding:16px 18px;background:var(--surface)}
+.shop-entry>span{display:flex;flex-direction:column;gap:3px}.shop-entry b{font-family:var(--f-display);font-weight:400;font-size:20px}.shop-entry .mute{font-size:12.5px}
+.plus{border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);border-radius:18px;padding:22px 18px;display:flex;flex-direction:column;gap:14px;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--gold) 12%,var(--surface)),var(--surface))}
+.plus h2{font-family:var(--f-display);font-weight:400;font-size:26px}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan,.pack{all:unset;cursor:pointer;position:relative;border:1px solid var(--line);border-radius:12px;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px;text-align:center;background:var(--bg)}
+.plan.best{border-color:var(--gold)}.plan b,.pack b{font-size:14px;font-weight:500}.plan .pp{font-family:var(--f-display);font-size:24px}.plan .pp small{font-size:12px;color:var(--mute)}
+.tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--gold);color:var(--hi-fg);font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:600}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcard{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--surface);min-height:150px}
+.pcard b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1.25}.pcard .mute{font-size:12.5px;line-height:1.55;flex:1}
+.pcard-en{font-family:var(--f-latin);font-style:italic;font-size:13px;color:var(--gold)}.pcard-price{font-family:var(--f-mono);font-size:12.5px;color:var(--gold)}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pack span:last-child{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
+.prod{display:flex;flex-direction:column;gap:0}.prod-h{font-family:var(--f-display);font-weight:400;font-size:30px}.prod-sig{font-size:12px;color:var(--mute);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.prod-sec{border-bottom:1px solid var(--line);padding:16px 0}.prod-sec h3{font-family:var(--f-display);font-weight:400;font-size:21px;display:flex;justify-content:space-between;align-items:center;color:var(--mute)}
+.prod-sec.open h3{color:var(--fg)}.prod-pv{margin-top:8px;font-size:14.5px;line-height:1.8;color:var(--mute2);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent);max-height:150px;overflow:hidden}
+.prod-bar{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--fg);color:var(--bg);padding:12px 14px;border-radius:12px;margin-top:14px;font-size:13px}
+.prod-bar .btn{background:var(--bg);color:var(--fg);border-color:var(--bg)}
 .spread{display:grid;gap:12px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
 .tstage{position:relative;height:230px;margin:14px -16px 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .tstage::-webkit-scrollbar{display:none}
@@ -713,6 +731,47 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 :root[data-theme="light"] .sand .kicker{color:#8a6a35}
 :root[data-theme="light"] .sand p{color:#5b5245}
 :root[data-theme="light"] .cal div[data-l="3"]{background:transparent}
+.you-head{display:flex;align-items:center;gap:16px;margin:4px 0 18px}
+.you-av{position:relative;flex:none;width:72px;height:72px;border-radius:50%;border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);background:color-mix(in srgb,var(--fg) 6%,transparent);color:var(--fg);font-family:var(--f-display);font-size:30px;font-weight:300;cursor:pointer}
+.you-edit{position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;background:var(--bg);border:1px solid color-mix(in srgb,var(--fg) 30%,transparent);font-size:12px;line-height:22px;text-align:center}
+.you-id h1{margin:0;font-size:28px}
+.you-signs{display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 0 0;font-size:14.5px}
+.you-signs i{font-style:normal;opacity:.7;margin-right:4px}
+.you-tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid color-mix(in srgb,var(--fg) 15%,transparent);margin:0 0 20px;position:sticky;top:0;z-index:2;background:var(--bg)}
+.you-tabs button{background:none;border:0;padding:12px 0 10px;color:var(--mute);font:inherit;font-size:14.5px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.you-tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
+:root[data-theme="light"] .you-tabs button[aria-selected="true"]{border-bottom-color:var(--gold)}
+.set-list{display:flex;flex-direction:column;border-top:1px solid color-mix(in srgb,var(--fg) 12%,transparent);margin:18px 0}
+.set-list>button,.set-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 2px;background:none;border:0;border-bottom:1px solid color-mix(in srgb,var(--fg) 12%,transparent);color:var(--fg);font:inherit;font-size:15px;text-align:left;cursor:pointer}
+.set-about summary{cursor:pointer;font-size:15px;padding:6px 0}
+.set-about p{font-size:14px}
+.saved-list{list-style:none;padding:0;margin:0}
+.saved-list li{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,transparent);font-size:14.5px}
+.saved-list li em{margin-left:auto;font-style:normal;font-size:12px;opacity:.7;white-space:nowrap}
+.mood-q{margin:6px 0 2px;padding:14px 16px;border-left:2px solid var(--gold,#bab8ec);text-align:left;background:color-mix(in srgb,var(--fg) 4%,transparent)}
+.mood-q blockquote{margin:0;font-family:var(--f-display);font-size:17px;line-height:1.7;color:var(--fg)}
+.mood-q figcaption{margin-top:6px;font-size:12.5px;color:var(--mute)}
+.mood-q.small{margin-top:12px}.mood-q.small blockquote{font-size:15px}
+.jcal{display:flex;flex-direction:column;gap:8px}
+.jcal-top{display:flex;justify-content:space-between;align-items:center}.jcal-top b{font-family:var(--f-display);font-weight:400;font-size:17px}
+.jcal-w,.jcal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.jcal-w span{font-size:11.5px;color:var(--mute)}
+.jcal-d{position:relative;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid color-mix(in srgb,var(--fg) 10%,transparent);background:none;color:var(--fg);font:inherit;cursor:pointer;padding:0}
+.jcal-d b{font-weight:400;font-size:13px}
+.jcal-d[style*="--mh"]{background:color-mix(in srgb,var(--mh) 22%,transparent);border-color:color-mix(in srgb,var(--mh) 55%,transparent)}
+.jcal-m{width:6px;height:6px;border-radius:50%;background:var(--mh)}
+.jcal-d em{position:absolute;top:2px;right:4px;font-style:normal;font-size:10px;opacity:.85}
+.jcal-d.today{outline:1.5px solid var(--fg);outline-offset:-1.5px}.jcal-d.future{opacity:.3;cursor:default}
+.jcal-sum{font-size:13.5px;margin:4px 0 0}
+.jcal-key{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--mute)}
+.jcal-key i,.jcal-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}.jcal-key em{font-style:normal;margin-right:4px}
+.mood-grid{grid-template-columns:repeat(3,1fr)}
+.pw-tiers{display:flex;flex-direction:column;gap:8px;text-align:left}
+.pw-tier{border:1px solid color-mix(in srgb,var(--fg) 14%,transparent);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13.5px}
+.pw-tier b{font-weight:600;font-size:14.5px}.pw-tier span{color:var(--mute)}
+.pw-tier.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 9%,transparent)}
+.plus.luna{border-color:color-mix(in srgb,var(--fg) 22%,transparent);background:color-mix(in srgb,var(--fg) 3%,var(--surface))}
+.ai-lockline{font-size:13px;margin:6px 0 0}
 </style>
 
 <canvas id="skybg" aria-hidden="true"></canvas>
@@ -727,8 +786,8 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
   <div class="in">
     <a href="#today" data-v="today"><b>今</b>今日</a>
     <a href="#forecast" data-v="forecast"><b>運</b>運勢</a>
-    <a href="#chart" data-v="chart"><b>盤</b>命盤</a>
     <a href="#dream" data-v="dream"><b>夢</b>夢境</a>
+    <a href="#shop" data-v="shop"><b>✦</b>商店</a>
     <a href="#me" data-v="me"><b>我</b>我的</a>
   </div>
 </nav>
@@ -982,35 +1041,59 @@ function getSample(){
   return Promise.resolve(AI_ENDPOINT?serverSampler():null);
 }
 /* ---------- Membership & paywall ---------- */
-const ENT={member:false};
-const isMember=()=>ENT.member===true;
+const ENT={member:false,tier:"",credits:0,owned:[]};
+const FREE_PER_DAY=5;
+const isMember=()=>!!ENT.tier;
+const isSol=()=>ENT.tier==="sol";
+const TIER={luna:{zh:"月曜",en:"Luna Plus",full:"Luna Plus"},sol:{zh:"日曜",en:"Sol Pro",full:"Sol Pro"}};
+const SOL_ONLY=l=>/一個月計劃|一年計劃|十年規劃|完整命盤|紫微盤/.test(l);
+const canUse=l=>SOL_ONLY(l)?isSol():isMember();
+const tierLabel=()=>ENT.tier?TIER[ENT.tier].full+" 會員":"免費版";
 const LOCK_IC='<svg class="ic lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-function openPaywall(what){
-  const sh=$("#sheet");
+function openPaywall(what,focus,need){
+  const sh=$("#sheet");need=need||(what&&SOL_ONLY(what)?"sol":"luna");
+  const up=ENT.tier==="luna"&&need==="sol";
   sh.innerHTML=`<section class="panel paywall" role="dialog" aria-label="解鎖完整內容">
     <div class="pw-orb">${$(".brand-mark").innerHTML}</div>
     <p class="kicker">Soluna 會員</p>
     <h2>${what?esc(what)+"，":""}仲有更多等緊你。</h2>
-    <p class="mute">你嘅星空仲有好多故事未講。付款解鎖之後，就可以睇晒：</p>
-    <ul class="pw-list"><li>一個月、一年、十年嘅完整運勢同行動計劃</li><li>為你度身寫嘅深入解讀：命盤、行運、塔羅、解夢、占卜</li><li>塔羅同各種占卜無限次抽</li></ul>
-    <button class="btn solid" type="button" id="pwGo">付款解鎖更多內容</button>
+    <p class="mute">${up?"升級做 Sol Pro，就可以睇晒你完整嘅星空：":"你嘅星空仲有好多故事未講。加入會員，就可以慢慢了解："}</p>
+    <div class="pw-tiers">
+      <div class="pw-tier${need==="luna"?" on":""}"><b>☽ Luna Plus</b><span>塔羅同占卜無限次 · 今日運勢、行運同解夢嘅深入解讀</span></div>
+      <div class="pw-tier${need==="sol"?" on":""}"><b>☉ Sol Pro</b><span>Luna Plus 全部內容 ＋ 命盤深讀、一個月至十年完整運勢同行動計劃</span></div>
+    </div>
+    <button class="btn solid" type="button" id="pwGo">${need==="sol"?(up?"升級 Sol Pro":"加入 Sol Pro 了解"):"加入會員了解 · 7 日免費試"}</button>
+    <button class="btn" type="button" id="pwShop" style="width:100%">睇吓所有方案</button>
     <button class="linkbtn" type="button" id="pwLater">遲啲先</button>
     <p class="note" id="pwMsg" role="status" hidden></p></section>`;
   sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
   $("#pwLater").onclick=()=>{sh.hidden=true};
-  $("#pwGo").onclick=()=>{const m=$("#pwMsg");m.hidden=false;m.textContent="付款功能就快開放，多謝你嘅支持！開放之後你會第一時間收到通知。"};
+  $("#pwShop").onclick=()=>{sh.hidden=true;shopFocus=focus||"";location.hash="#shop"};
+  $("#pwGo").onclick=()=>{sh.hidden=true;shopFocus="plus";location.hash="#shop"};
 }
 const freeKey=k=>"soluna.free."+k+"."+ymd(new Date());
-function dailyFree(kind,name,fn){
-  if(isMember()||!store(freeKey(kind))){if(!isMember())store(freeKey(kind),1);fn();return}
-  openPaywall(`今日嘅免費${name}已經用咗`);
+/* 占卜：每日 5 次免費（所有占卜合計），之後用次數包；會員無限次 */
+function freeLeft(){return Math.max(0,FREE_PER_DAY-(store(freeKey("all"))||0))}
+async function useCredit(){
+  if(!FB||!fbUser||ENT.credits<=0)return false;
+  try{await FB.F.setDoc(FB.F.doc(FB.db,"users",fbUser.uid),{credits:ENT.credits-1},{merge:true});ENT.credits--;return true}catch(e){console.warn(e);return false}
 }
+async function dailyFree(kind,name,fn){
+  if(isMember()){fn();return}
+  const used=store(freeKey("all"))||0;
+  if(used<FREE_PER_DAY){store(freeKey("all"),used+1);fn();toastMsg(`今日仲有 ${FREE_PER_DAY-used-1} 次免費占卜`);return}
+  if(await useCredit()){fn();toastMsg(`用咗 1 次占卜次數，仲有 ${ENT.credits} 次`);return}
+  openPaywall("今日 5 次免費占卜已經用晒","packs");
+}
+function toastMsg(t){const d=document.createElement("div");d.className="toast";d.innerHTML=`<span style="color:var(--fg)">${esc(t)}</span>`;document.body.appendChild(d);setTimeout(()=>d.classList.add("out"),2200);setTimeout(()=>d.remove(),3000)}
 function lockPreview(body,what){
-  if(isMember())return;
+  if(isSol())return;
   body.classList.add("pv-lock");
   const c=document.createElement("div");c.className="pv-card";
-  c.innerHTML=`<p class="kicker">${LOCK_IC} 會員內容</p><h3>${esc(what)}已經為你計好</h3><p class="mute">付款解鎖之後，就可以睇晒完整嘅運勢走勢同行動計劃。</p><button class="btn solid" type="button">付款解鎖</button>`;
-  $("button",c).onclick=()=>openPaywall(what);body.after(c);
+  c.innerHTML=`<p class="kicker">${LOCK_IC} Sol Pro 內容</p><h3>${esc(what)}已經為你計好</h3><p class="mute">付費了解，就可以睇晒完整嘅運勢走勢同行動計劃。</p><button class="btn solid" type="button">${ENT.tier==="luna"?"升級 Sol Pro 了解":"付費了解"}</button>`;
+  $("button",c).onclick=()=>openPaywall(what,"","sol");body.after(c);
+  const pk={"你未來一年嘅運勢":"year","你未來十年嘅人生走勢":"decade"}[what];
+  if(pk){const p=PRODUCTS.find(x=>x.k===pk);const b2=document.createElement("button");b2.className="linkbtn";b2.type="button";b2.textContent=`或者單次購買「${p.n}」${p.price}`;b2.onclick=()=>openProduct(pk);c.appendChild(b2)}
 }
 
 function profileContext(c){
@@ -1035,10 +1118,10 @@ ${c?"使用者資料：\n"+profileContext(c)+"\n":""}
 }
 function aiBlock(label,taskFn,opts={}){
   const box=document.createElement("div");box.className="ai";
-  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">付費解讀 · Premium</span><button class="btn small solid" type="button">${isMember()?"":LOCK_IC}${esc(label)}</button></div><div class="ai-out"></div><p class="note" hidden></p>`;
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">${canUse(label)?"深入了解":"付費了解 · "+(SOL_ONLY(label)?"Sol Pro":"Luna Plus")}</span><button class="btn small solid" type="button">${canUse(label)?esc(label):LOCK_IC+"付費了解"}</button></div>${canUse(label)?"":`<p class="ai-lockline mute">${esc(label)}：加入 ${SOL_ONLY(label)?"Sol Pro":"Luna Plus"}，就可以為你度身寫成。</p>`}<div class="ai-out"></div><p class="note" hidden></p>`;
   const btn=$("button",box), out=$(".ai-out",box), note=$(".note",box);
   btn.onclick=async()=>{
-    if(!isMember()){openPaywall(label);return}
+    if(!canUse(label)){openPaywall(label);return}
     const task=typeof taskFn==="function"?taskFn():taskFn; if(task===null)return;
     note.hidden=true;btn.disabled=true;out.innerHTML='<span class="thinking">正在感應中 ⋯</span>';
     const s=await getSample();
@@ -1070,7 +1153,7 @@ async function fbLoad(){
 async function cloudDown(uid){
   const {F,db}=FB,ref=F.doc(db,"users",uid);let snap=null;
   try{snap=await F.getDoc(ref)}catch(e){console.warn(e)}
-  ENT.member=!!(snap&&snap.exists()&&snap.data().member===true);
+  {const d=snap&&snap.exists()?snap.data():{};ENT.tier=d.member===true||d.member==="sol"?"sol":d.member==="luna"?"luna":"";ENT.member=!!ENT.tier;ENT.credits=+d.credits||0;ENT.owned=Array.isArray(d.owned)?d.owned:[]}
   const data=snap&&snap.exists()?(snap.data().data||{}):null;
   if(data&&Object.keys(data).length){
     Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));
@@ -1129,7 +1212,7 @@ async function authGate(start){
   let started=false;
   FB.A.onAuthStateChanged(FB.auth,async u=>{
     fbUser=u;
-    if(!u){window.cloudPush=null;ENT.member=false;try{localStorage.removeItem("soluna.signedIn")}catch(e){}started=false;authScreen();return}
+    if(!u){window.cloudPush=null;ENT.member=false;ENT.tier="";try{localStorage.removeItem("soluna.signedIn")}catch(e){}started=false;authScreen();return}
     try{localStorage.setItem("soluna.signedIn","1")}catch(e){}
     document.body.classList.remove("locked");$("#main").innerHTML=`<p class="note" style="margin-top:40px;text-align:center">同步緊你嘅命盤⋯</p>`;
     await cloudDown(u.uid);
@@ -1317,20 +1400,38 @@ function particleOrb(c){
   <div class="orb-core"><span class="orb-sign">${SIGNS[ts]}</span><span>今日太陽星座</span><span class="mono" style="font-size:9.5px;color:#77777b">${SIGN_DATES[ts]}</span></div>
   <span class="orbit-label label-dm">日主 · ${c.bazi.dm}${EL[ganEl(c.bazi.dm)]}</span><span class="orbit-label label-sun">太陽 · ${sun}</span>${c.asc?`<span class="orbit-label label-rise">上升 · ${c.asc.sign}</span>`:""}<span class="orbit-label label-moon">月亮 · ${moon}</span></div>`;
 }
-const MOODS=["溫柔","不安","開放","沉重","有希望","迷惘"];
-const moodKey=()=>"soluna.mood."+ymd(new Date());
-function openMood(after){
-  const sh=$("#sheet");let pick=store(moodKey())||"";
+const MOODS=["平靜","溫柔","有希望","開放","感恩","疲倦","不安","沉重","迷惘"];
+const MOOD_HUE={平靜:"#9fb8d8",溫柔:"#e6b8c8",有希望:"#e8c77a",開放:"#a8d4b0",感恩:"#f0a878",疲倦:"#a7a3b8",不安:"#c79ad8",沉重:"#7f8aa6",迷惘:"#b5b0a0"};
+const MOOD_Q={
+ 平靜:[["知止而後有定，定而後能靜，靜而後能安。","《大學》"],["行到水窮處，坐看雲起時。","王維"],["湖面靜落嚟，先睇得清天空。你而家就係嗰個湖。",""],["唔使急住去邊度，你已經喺你應該喺嘅地方。",""],["上善若水，水善利萬物而不爭。","老子"],["平靜唔係冇風浪，而係喺風浪入面仍然認得返自己。",""],["一呼一吸之間，世界其實已經夠用。",""],["回首向來蕭瑟處，歸去，也無風雨也無晴。","蘇軾"]],
+ 溫柔:[["溫柔係一種力量，佢唔需要大聲。",""],["你對人嘅溫柔，記得都分少少返畀自己。",""],["天下莫柔弱於水，而攻堅強者莫之能勝。","老子"],["花開唔係為咗畀人睇，係因為時候到咗。",""],["最柔軟嘅心，往往最勇敢，因為佢冇放棄感受。",""],["願你溫柔，但唔好忘記你都值得被溫柔對待。",""],["人間有味是清歡。","蘇軾"]],
+ 有希望:[["山重水複疑無路，柳暗花明又一村。","陸游"],["種子喺泥土入面嘅時候，都唔知自己會開成點樣嘅花。",""],["千里之行，始於足下。","老子"],["希望唔係一種預測，而係一種決定。",""],["天行健，君子以自強不息。","《周易》"],["今日你相信嘅嘢，會慢慢變成你行嘅路。",""],["黑夜越深，星就越清楚。",""]],
+ 開放:[["杯要空，先裝得落新嘅茶。",""],["窮則變，變則通，通則久。","《周易》"],["你唔需要知道全部答案，只需要願意問落去。",""],["每一道門，都要你先放低手上嘅嘢先推得開。",""],["世界好大，而你比你諗嘅更加闊。",""],["海納百川，有容乃大。","林則徐"],["好奇心係靈魂嘅窗，今日打開佢吧。",""]],
+ 感恩:[["你而家擁有嘅，曾經都係你祈求過嘅。",""],["知足者富。","老子"],["感恩唔係因為一切都好，而係因為你睇得見好嘅部分。",""],["飲水思源。",""],["多謝今日嘅自己，仲願意溫柔咁望住世界。",""],["細微嘅美好最容易錯過，亦最值得記低。",""],["人生如逆旅，我亦是行人。","蘇軾"]],
+ 疲倦:[["休息唔係放棄，係為咗行得更遠。",""],["月亮都有缺嘅時候，佢從來冇因此唔係月亮。",""],["今日做得少啲都冇問題，你嘅價值唔係用效率計。",""],["萬物並作，吾以觀復。","老子"],["累嘅時候，連樹都會落葉過冬。",""],["放低一陣，世界唔會因此停頓，但你會返嚟。",""],["慢慢嚟，係一種好溫柔嘅速度。",""]],
+ 不安:[["讓一切發生喺你身上：美麗同恐懼。只要繼續行，冇一種感覺係永恆。","里爾克"],["你擔心嘅事，大多數都唔會發生；會發生嘅，你都會有力量面對。",""],["禍兮福之所倚，福兮禍之所伏。","老子"],["唔安代表你喺乎。先抱一抱嗰個好在乎嘅自己。",""],["分清邊啲喺你控制之內，然後只為嗰啲用力。",""],["呼吸係你隨時可以返嘅屋企。",""],["風暴會過，你會記得自己點樣捱過。",""]],
+ 沉重:[["喺最深嘅冬天，我終於發現，我入面有一個不可戰勝嘅夏天。","卡繆"],["傷口係光入嚟嘅地方，唔使急住將佢藏好。",""],["你唔需要一次過揹起所有，今日揹今日嘅就夠。",""],["眼淚都係一種語言，佢講緊你有幾愛。",""],["石頭沉落水底，水依然流向前。",""],["沉重嘅日子，都係你嘅一部分，佢唔係你嘅全部。",""],["夜最黑嘅時候，就離天光唔遠。",""]],
+ 迷惘:[["知人者智，自知者明。","老子"],["迷路嘅時候，正正係認識新路嘅時候。",""],["唔知去邊都唔緊要，先知道自己唔想要咩。",""],["霧散之前，行慢啲，睇清腳下一步就夠。",""],["問題本身，有時就係答案嘅入口。",""],["學而不思則罔，思而不學則殆。","孔子"],["未有答案嘅日子，都係一段正在形成嘅答案。",""]]};
+const moodKey=(d)=>"soluna.mood."+(d||ymd(new Date()));
+const moodOf=v=>!v?null:typeof v==="string"?{m:v}:v;
+const moodName=d=>{const o=moodOf(store(moodKey(d)));return o?o.m:""};
+function pickQuote(m){const pool=MOOD_Q[m]||MOOD_Q.平靜;const K="soluna.qseen."+m;let seen=store(K)||[];if(seen.length>=pool.length)seen=seen.slice(-1);
+  const opts=pool.map((_,i)=>i).filter(i=>!seen.includes(i));const i=opts[Math.floor(Math.random()*opts.length)];store(K,[...seen,i]);return pool[i]}
+function openMood(after,day){
+  const d=day||ymd(new Date());const sh=$("#sheet");const prev=moodOf(store(moodKey(d)))||{};let pick=prev.m||"";let q=prev.q||null;let note=prev.note||"";
+  const isToday=d===ymd(new Date());
   const draw=()=>{sh.innerHTML=`<section class="panel" role="dialog" aria-modal="true" aria-labelledby="mt" style="text-align:center;align-items:stretch">
    <div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose" aria-label="關閉">${ic("close")}</button></div>
-   <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:28px">而家心入面係咩感覺？</h2>
+   <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:28px">${isToday?"而家心入面係咩感覺？":`${esc(d)} 嗰日係咩感覺？`}</h2>
    <p class="mute">唔使解釋得清楚，揀最接近嗰個就得。</p>
    <div class="mood-grid">${MOODS.map(m=>`<button type="button" aria-pressed="${pick===m}" data-m="${m}">${m}</button>`).join("")}</div>
+   ${q?`<figure class="mood-q"><blockquote>${esc(q[0])}</blockquote>${q[1]?`<figcaption>— ${esc(q[1])}</figcaption>`:""}</figure>`:""}
+   ${pick?`<label class="f" for="mnote" style="text-align:left">想寫低幾句？（可以留空）<textarea id="mnote" maxlength="600" rows="3" placeholder="今日發生咗咩、諗緊咩⋯">${esc(note)}</textarea></label>`:""}
    <button class="btn solid" type="button" id="msave" ${pick?"":"disabled"} style="border-radius:0;padding:14px">記住呢一刻</button>
-   <small class="mute" style="font-size:10.5px">只會儲存喺你部機 · 心情會影響 AI 今日解讀嘅語氣</small></section>`;
-   sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{pick=b.dataset.m;draw()});
+   <small class="mute" style="font-size:11.5px">心情會記入你嘅日記月曆 · 亦會影響今日解讀嘅語氣</small></section>`;
+   sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const n=$("#mnote");if(n)note=n.value;if(pick!==b.dataset.m){pick=b.dataset.m;q=pickQuote(pick)}draw()});
    $("#mclose").onclick=()=>{sh.hidden=true};
-   $("#msave").onclick=()=>{store(moodKey(),pick);sh.hidden=true;after&&after()};};
+   $("#msave").onclick=()=>{const n=$("#mnote");if(n)note=n.value.trim();store(moodKey(d),{m:pick,q,note,t:Date.now()});sh.hidden=true;after&&after()};};
   draw();sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
 }
 /* ============ Daily analysis engine: real transits + 紫微 流日/流月/流年/大限 四化 ============ */
@@ -1623,7 +1724,7 @@ function openArea(c,an,k){
    ${pal?`<div class="sh-zw"><p class="kicker">紫微 · 本命${pal.name}（${ZHI[pal.b]}宮）</p><p>主星：${pal.stars.length?pal.stars.join("、"):"空宮（借對宮）"}${pal.minor.length?` · 輔星：${pal.minor.slice(0,6).join("、")}`:""}</p>${a.hua.length?`<p>${a.hua.map(h=>`${h.label}${h.star}化${h.h}`).join(" · ")}</p>`:"<p class='mute'>今日冇流日四化飛入呢個宮位。</p>"}</div>`:""}
    ${a.trs.length?`<p class="kicker" style="margin-top:6px">相關行運 · Transits</p>${a.trs.map(trRow).join("")}`:""}
    <div id="areaAI"></div>`,sh=>{
-     $("#areaAI",sh).appendChild(aiBlock(`AI 深入解讀「${a.n}」`,()=>prompt(`詳細分析使用者今日（${ymd(an.date)}）「${a.n}」範疇。已計算嘅事實：${areaText(a,cls)} ${pal?`紫微本命${pal.name}主星${pal.stars.join("、")||"空宮"}。`:""}${a.k==="love"?"愛情範疇包括感情、桃花、親密關係同性（以成熟、尊重嘅語氣講）。":""}請結合西洋行運同紫微斗數，分「現況」「點解」「點做」三段，具體、溫柔但直接。`,c)))});
+     $("#areaAI",sh).appendChild(aiBlock(`深入了解「${a.n}」`,()=>prompt(`詳細分析使用者今日（${ymd(an.date)}）「${a.n}」範疇。已計算嘅事實：${areaText(a,cls)} ${pal?`紫微本命${pal.name}主星${pal.stars.join("、")||"空宮"}。`:""}${a.k==="love"?"愛情範疇包括感情、桃花、親密關係同性（以成熟、尊重嘅語氣講）。":""}請結合西洋行運同紫微斗數，分「現況」「點解」「點做」三段，具體、溫柔但直接。`,c)))});
 }
 function sixScore(a){return Math.max(1,Math.min(5,Math.round(3+a.net*.9)))}
 function sixHTML(c,an){
@@ -1644,7 +1745,7 @@ function openTransit(c,an,i){
    ${(()=>{const ars=an.areas.filter(a=>a.pts.includes(tr.np));return ars.length?`<p class="mute" style="font-size:13px">影響範疇：${ars.map(a=>a.n).join("、")}</p>`:""})()}
    <div class="tr-facts"><div><span>開始</span><b>${fmtD(tr.start)}</b></div><div><span>最準</span><b>${fmtD(tr.exact)}</b></div><div><span>結束</span><b>${fmtD(tr.end)}</b></div><div><span>容許度</span><b>${tr.orb.toFixed(1)}°</b></div></div>
    <p class="mute" style="font-size:13px">行運${tr.tp}喺${SIGNS[Math.floor(tr.tlon/30)]}座 ${(tr.tlon%30).toFixed(0)}°，你本命${tr.np}喺${SIGNS[Math.floor(tr.nlon/30)]}座 ${(tr.nlon%30).toFixed(0)}°。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}</p>
-   <div id="trAI"></div>`,sh=>{$("#trAI",sh).appendChild(aiBlock("AI 解讀呢個行運",()=>prompt(`解讀行運：${tr.tp}${tr.asp}本命${tr.np}（容許度${tr.orb.toFixed(1)}°，${fmtD(tr.start)}至${fmtD(tr.end)}，最準${fmtD(tr.exact)}）。講清楚佢對使用者生活嘅具體影響、要把握同要避免嘅事，再對照紫微今日流日四化：${an.zw?huaSentence(an.zw.daily):""}`,c)))});
+   <div id="trAI"></div>`,sh=>{$("#trAI",sh).appendChild(aiBlock("深入了解呢個行運",()=>prompt(`解讀行運：${tr.tp}${tr.asp}本命${tr.np}（容許度${tr.orb.toFixed(1)}°，${fmtD(tr.start)}至${fmtD(tr.end)}，最準${fmtD(tr.exact)}）。講清楚佢對使用者生活嘅具體影響、要把握同要避免嘅事，再對照紫微今日流日四化：${an.zw?huaSentence(an.zw.daily):""}`,c)))});
 }
 const AREA_IC_SVG={power:'<svg class="ar-ic" viewBox="0 0 24 24"><path d="M12 21V11"/><path d="M12 13c0-4 3-6 7-6 0 4-3 6-7 6Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3 2.5 5 6 5Z"/></svg>',
  pressure:'<svg class="ar-ic" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.5 2.5-5 .5 2 1.5 2.5 2.5 2.5C12 8 11 6 12 3Z"/></svg>',
@@ -1657,7 +1758,7 @@ function renderToday(el){
   const sunSign=chart.planets?Math.floor(chart.planets[0].lon/30):0;
   const moonSign=di.moonLon!=null?Math.floor(di.moonLon/30):null;
   const house=moonSign!=null?((moonSign-sunSign+12)%12):null;
-  const mood=store(moodKey());
+  const mood=moodName();
   const lc=luckyColor(chart,di);
   const head=t.head.split(/(?<=，)/);
   const score=Math.round(di.total/5*100);
@@ -1700,7 +1801,7 @@ function renderToday(el){
     <h1>${esc(head[0])}${head[1]?`<br><em>${esc(head[1])}</em>`:""}</h1>
     <p class="hero-greet">${greet}，<b>${esc(uname)}</b>。</p>
     <p class="hero-body">${esc(L1h||L2)}</p>
-    <button class="primary-button" type="button" id="moodBtn">${ic("sparkle")}${mood?`今日感覺：${esc(mood)}`:"記錄今日心情"}${ic("arrow")}</button>
+    <button class="primary-button" type="button" id="moodBtn">${ic("sparkle")}${mood?`今日感覺：${esc(mood)}`:"記錄今日心情"}${ic("arrow")}</button>${(()=>{const o=moodOf(store(moodKey()));return o&&o.q?`<figure class="mood-q small"><blockquote>${esc(o.q[0])}</blockquote>${o.q[1]?`<figcaption>— ${esc(o.q[1])}</figcaption>`:""}</figure>`:""})()}
     ${particleOrb(chart)}
     <div class="cosmic-weather"><div class="wi">${ic("moon")}</div><div><span>Cosmic weather · 宇宙天氣</span><strong>${t.kw}、${TG[di.tgz].kw}、${house!=null?HOUSE_THEME[house].split("與")[0]:"內省"}</strong></div></div>
   </div>
@@ -1709,7 +1810,7 @@ function renderToday(el){
     <div class="sec-head"><div><p class="kicker">Written in your sky · 寫喺你嘅星空</p><h2>今日要你學識「${t.kw}」。</h2></div><div class="day-score">能量契合<strong>${score}<small>%</small></strong></div></div>
     <div class="insight-tabs" role="tablist" aria-label="今日洞察">${Object.entries(INS).map(([k,v],i)=>`<button type="button" role="tab" data-k="${k}" aria-selected="${insightTab===k}"><span>0${i+1}</span><div><strong>${v.n}</strong><small>${v.s}</small></div>${ic("arrow")}</button>`).join("")}</div>
     <article class="insight-card"><div class="card-stars" aria-hidden="true">· ˚ ✦ . · ˚</div><p class="kicker">${cur.k}</p><h3>${esc(cur.h)}</h3><p class="body">${esc(cur.b)}</p>
-      <div class="card-footer"><span>${ic("orbit")} ${esc(cur.st)}</span><button class="text-button" type="button" id="insAI">${esc(cur.a)} · AI 深入 ${ic("arrow")}</button></div></article>
+      <div class="card-footer"><span>${ic("orbit")} ${esc(cur.st)}</span><button class="text-button" type="button" id="insAI">${esc(cur.a)} · 深入 ${ic("arrow")}</button></div></article>
     <div class="yiji"><div><span class="big">宜</span><ul>${t.yi.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><span class="big">忌</span><ul>${t.ji.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
 
   </section>
@@ -1746,7 +1847,7 @@ function renderToday(el){
 let fcTab=store("xuanjing.fc")||"week";
 function renderForecast(el){
   el.innerHTML=`<div class="stack"><span class="eyebrow">運勢</span><h1>未來嘅節奏<span class="lat">the long view</span></h1></div>
-  <div class="seg" role="group" aria-label="時間範圍">${[["week","本週"],["month","一個月"],["year","一年"],["decade","十年"]].map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${fcTab===k}">${n}${k!=="week"&&!isMember()?" ✦":""}</button>`).join("")}</div>
+  <div class="seg" role="group" aria-label="時間範圍">${[["week","本週"],["month","一個月"],["year","一年"],["decade","十年"]].map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${fcTab===k}">${n}${k!=="week"&&!isSol()?" ✦":""}</button>`).join("")}</div>
   <div id="fcBody" class="stack" style="gap:24px"></div>`;
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{fcTab=b.dataset.k;store("xuanjing.fc",fcTab);renderForecast(el)});
   const body=$("#fcBody",el);({week:fcWeek,month:fcMonth,year:fcYear,decade:fcDecade})[fcTab](body);
@@ -2087,6 +2188,32 @@ function dreamStore(){
 }
 const DREAM_FEEL=["平靜","開心","驚慌","悲傷","奇異","重複夢","清醒夢","胎夢"];
 function dreamPrompt(t,feel){return prompt(`替使用者解夢。夢境：「${t}」。${feel.length?`醒來感覺／標籤：${feel.join("、")}。`:""}分「夢的核心象徵」「周公解夢 / 中國傳統」「韓國꿈해몽（如屬胎夢、財夢要指出）」「心理學角度」「給你的提醒」。`,chart)}
+let calYM=null;
+function drawCal(box,dreams,openDream,redraw){
+  if(!box)return;const now=new Date();if(!calYM)calYM=[now.getFullYear(),now.getMonth()];
+  const [Y,M]=calYM;const first=new Date(Y,M,1).getDay();const days=new Date(Y,M+1,0).getDate();const today=ymd(now);
+  const byDay={};dreams.forEach(d=>{(byDay[d.date]=byDay[d.date]||[]).push(d)});
+  const pad=n=>String(n).padStart(2,"0");let cells="";
+  for(let i=0;i<first;i++)cells+=`<span></span>`;
+  let mc=0,dc=0;const cnt={};
+  for(let n=1;n<=days;n++){const ds=`${Y}-${pad(M+1)}-${pad(n)}`;const mo=moodOf(store(moodKey(ds)));const dr=byDay[ds]||[];if(mo){mc++;cnt[mo.m]=(cnt[mo.m]||0)+1}if(dr.length)dc++;
+    cells+=`<button type="button" class="jcal-d${ds===today?" today":""}${ds>today?" future":""}" data-day="${ds}" ${ds>today?"disabled":""} style="${mo?`--mh:${MOOD_HUE[mo.m]||"#aaa"}`:""}"><b>${n}</b>${mo?`<i class="jcal-m"></i>`:""}${dr.length?`<em>☾</em>`:""}</button>`}
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+  box.innerHTML=`<div class="jcal"><div class="jcal-top"><button type="button" class="btn small" data-cm="-1" aria-label="上個月">‹</button><b>${Y}年${M+1}月</b><button type="button" class="btn small" data-cm="1" aria-label="下個月" ${Y===now.getFullYear()&&M===now.getMonth()?"disabled":""}>›</button></div>
+  <div class="jcal-w">${[..."日一二三四五六"].map(w=>`<span>${w}</span>`).join("")}</div><div class="jcal-g">${cells}</div>
+  <p class="jcal-sum mute">${mc||dc?`呢個月記低咗 ${mc} 日心情、${dc} 日有夢${top?`，最常感到「${top[0]}」`:""}。`:"呢個月仲未有記錄。撳任何一日就可以補記心情。"}</p>
+  <div class="jcal-key">${MOODS.map(m=>`<span><i style="background:${MOOD_HUE[m]}"></i>${m}</span>`).join("")}<span><em>☾</em>有夢</span></div></div>`;
+  box.querySelectorAll("[data-cm]").forEach(b=>b.onclick=()=>{let m=M+Number(b.dataset.cm),y=Y;if(m<0){m=11;y--}if(m>11){m=0;y++}calYM=[y,m];drawCal(box,dreams,openDream,redraw)});
+  box.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{const ds=b.dataset.day;const mo=moodOf(store(moodKey(ds)));const dr=byDay[ds]||[];
+    openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title">${esc(ds)} · 星期${WDN[new Date(ds+"T12:00").getDay()]}</span><span></span></div>
+    <p class="kicker">心情</p>${mo?`<p class="sh-p" style="color:var(--fg)"><span class="jcal-dot" style="background:${MOOD_HUE[mo.m]||"#aaa"}"></span>${esc(mo.m)}</p>${mo.q?`<figure class="mood-q"><blockquote>${esc(mo.q[0])}</blockquote>${mo.q[1]?`<figcaption>— ${esc(mo.q[1])}</figcaption>`:""}</figure>`:""}${mo.note?`<p class="sh-p" style="white-space:pre-wrap">${esc(mo.note)}</p>`:""}`:`<p class="mute">呢日未有記錄心情。</p>`}
+    <button class="btn small" type="button" id="calMood" style="align-self:flex-start">${mo?"修改心情":"記錄呢日心情"}</button>
+    <p class="kicker" style="margin-top:10px">夢境</p>${dr.length?dr.map(d=>`<button type="button" class="dj-row" data-did="${esc(d.id)}"><span class="dj-x"><span class="dj-txt">${esc(d.text)}</span></span></button>`).join(""):`<p class="mute">呢晚冇記低夢。</p>`}`,sh=>{
+      $("#calMood",sh).onclick=()=>openMood(()=>redraw(),ds);
+      sh.querySelectorAll("[data-did]").forEach(x=>x.onclick=()=>{const d=dr.find(y=>y.id===x.dataset.did);if(d)openDream(d)});
+    });
+  });
+}
 function orDream(el){
   let feel=[];const today=ymd(new Date());
   el.innerHTML=`<p>將個夢寫低，越具體越好：人物、地點、顏色、感覺。每個夢都會存入你嘅<b>夢境日記</b>，隨時可以睇返。</p>
@@ -2094,7 +2221,7 @@ function orDream(el){
   <label class="f" for="dq">尋晚嘅夢<textarea id="dq" maxlength="2000" placeholder="例如：我夢見自己在海邊撿到一條金色的魚，然後牙齒掉了⋯"></textarea></label>
   <div class="feel" role="group" aria-label="醒來感覺">${DREAM_FEEL.map(f=>`<button type="button" data-f="${f}" aria-pressed="false">${f}</button>`).join("")}</div>
   <button class="btn solid" type="button" id="dgo">記錄夢境</button><div id="dOut" class="stack"></div><div id="dAI"></div>
-  <section class="djournal"><div class="dj-head"><div><p class="kicker">Dream journal · 夢境日記</p><h3 class="dj-t">你記低嘅夢</h3></div><span class="mute dj-where" id="dWhere"></span></div><div id="dStats"></div><div id="dList"><p class="mute">載入中⋯</p></div></section>`;
+  <section class="djournal"><div class="dj-head"><div><p class="kicker">Journal · 夢境與心情日記</p><h3 class="dj-t">你嘅日記月曆</h3></div><span class="mute dj-where" id="dWhere"></span></div><div id="dCal"></div><div id="dStats"></div><div id="dList"><p class="mute">載入中⋯</p></div></section>`;
   el.querySelectorAll(".feel button").forEach(b=>b.onclick=()=>{const f=b.dataset.f;feel=feel.includes(f)?feel.filter(x=>x!==f):[...feel,f];b.setAttribute("aria-pressed",feel.includes(f))});
   let cur=null;
   const ai=aiBlock("完整解夢",()=>{const t=$("#dq",el).value.trim();if(!t){$("#dq",el).focus();return null}return dreamPrompt(t,feel)},{onDone:async text=>{if(cur){cur.interp=text;const s=await dreamStore();await s.save(cur);drawList()}}});
@@ -2103,6 +2230,7 @@ function orDream(el){
     const s=await dreamStore();const w=$("#dWhere",el);if(w)w.textContent=s.cloud?"已同步到你嘅帳戶（只有你睇到）":"只儲存喺呢部機";
     let all=[];try{all=await s.list()}catch(e){$("#dList",el).innerHTML=`<p class="note">日記暫時載入唔到，請稍後再試。</p>`;return}
     all.sort((a,b)=>(b.date+b.created).localeCompare(a.date+a.created));
+    drawCal($("#dCal",el),all,openDream,drawList);
     if(!all.length){$("#dList",el).innerHTML=`<p class="mute">仲未有記錄。寫低第一個夢，佢就會出現喺度。</p>`;$("#dStats",el).innerHTML="";return}
     const cnt={};all.forEach(d=>(d.symbols||[]).forEach(k=>cnt[k]=(cnt[k]||0)+1));
     const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,6);
@@ -2180,23 +2308,114 @@ function orRunes(el){
 }
 
 /* ============ Me ============ */
+
+/* ============ Shop: membership, premium readings, reports, divination packs ============ */
+let shopFocus="";
+const PLANS={luna:{month:{n:"月費",price:"HK$28",per:"每月"},year:{n:"年費",price:"HK$198",per:"每年",note:"每月約 HK$17 · 慳 41%"}},sol:{month:{n:"月費",price:"HK$58",per:"每月"},year:{n:"年費",price:"HK$398",per:"每年",note:"每月約 HK$33 · 慳 43%"}}};
+const PRODUCTS=[
+ {k:"love",g:"self",n:"愛情中的你",en:"You in love",price:"HK$38",blurb:"你點樣去愛、會被邊種人吸引，同埋你真正需要嘅係咩。",secs:["你點樣去愛","喺關係入面嘅你","你會被邊種人吸引","當感情遇到困難","你真正需要嘅愛","未來一年嘅感情走勢"]},
+ {k:"career",g:"self",n:"天賦與事業",en:"Your calling",price:"HK$38",blurb:"你與生俱來嘅才華，同最適合你發光嘅舞台。",secs:["你嘅天賦","適合你嘅工作方式","你嘅事業高峰期","要小心嘅陷阱","十年事業路線"]},
+ {k:"money",g:"self",n:"財運密碼",en:"Your money code",price:"HK$38",blurb:"你同錢嘅關係、財從邊度嚟，同埋點樣守得住。",secs:["你同錢嘅關係","正財與偏財","你嘅財運高峰","最易破財嘅位","理財建議"]},
+ {k:"soul",g:"self",n:"你的靈魂課題",en:"Your soul's lesson",price:"HK$38",blurb:"呢一世你嚟學咩、要放低咩，同埋你最深嘅力量。",secs:["你嚟呢個世界嘅原因","一直重複嘅課題","你最深嘅力量","要學識放低嘅嘢","你嘅使命"]},
+ {k:"year",g:"report",n:"年度運勢報告",en:"Your year ahead",price:"HK$98",blurb:"未來十二個月逐月走勢、轉捩點同最好嘅時機。",secs:["今年嘅主題","逐月運勢（12 個月）","感情與人際","事業與財運","健康與心情","最好嘅時機同要小心嘅月份"]},
+ {k:"decade",g:"report",n:"十年人生報告",en:"Your next ten years",price:"HK$128",blurb:"按你嘅大運同大限，睇清未來十年嘅人生路線。",secs:["呢十年嘅主線","逐年關鍵字","事業與財富路線","感情與家庭","人生轉捩點","給十年後嘅你"]}];
+const PACKS=[{k:"p5",n:5,price:"HK$18"},{k:"p15",n:15,price:"HK$45",tag:"最受歡迎"},{k:"p40",n:40,price:"HK$98",tag:"最抵"}];
+function buyNow(){toastMsg("付款功能就快開放，多謝你嘅支持 ✦")}
+const owns=k=>ENT.owned.includes(k);
+function productPreview(k){
+  const c=chart,P=n=>(c.planets||[]).find(x=>x.n===n),z=c.ziwei,pal=n=>z?z.palaces.find(p=>p&&p.name===n):null,st=p=>p&&p.stars.length?p.stars.join("、"):"無主星（借對宮）",b=c.bazi;
+  const v=P("金星"),m=P("火星"),mo=P("月亮"),su=P("太陽"),ju=P("木星"),sa=P("土星");
+  if(k==="love")return `你嘅金星喺${v.sign}座，所以你愛人嘅方式帶住${SIGN_KW[v.sign]}嘅味道；火星喺${m.sign}座，令你喺追求同親密時${SIGN_KW[m.sign].split("、")[0]}。${z?`紫微夫妻宮坐${st(pal("夫妻"))}，`:""}你需要嘅唔係轟轟烈烈，而係一段令你覺得被理解嘅關係。`;
+  if(k==="career")return `${c.mc?`你嘅天頂喺${c.mc.sign}座，社會最容易睇見你${SIGN_KW[c.mc.sign]}嘅一面；`:""}${z?`紫微官祿宮坐${st(pal("官祿"))}，`:""}八字係${b.geju}，${b.gejuD.split("，")[0]}。你嘅才華唔係一樣，而係一種獨特嘅組合。`;
+  if(k==="money")return `${z?`紫微財帛宮坐${st(pal("財帛"))}，`:""}木星喺${ju.sign}座，代表你嘅財運多數嚟自${HOUSE_THEME[houseOf(c,ju.lon)-1]}；土星喺${sa.sign}座，提你喺${HOUSE_THEME[houseOf(c,sa.lon)-1]}要特別穩陣。`;
+  if(k==="soul")return `你嘅太陽喺${su.sign}座、月亮喺${mo.sign}座：外面嘅你${SIGN_KW[su.sign].split("、")[0]}，入面嘅你需要${SIGN_KW[mo.sign].split("、")[0]}。${z?`命宮坐${st(z.palaces[z.ming])}，`:""}日主${b.dm}${EL[ganEl(b.dm)]}：${DM_DESC[b.dm]}`;
+  if(k==="year"){const y=new Date().getFullYear(),L=Solar.fromYmd(y,6,1).getLunar().getYearInGanZhiByLiChun();return `今年係${L}年，流年天干對你日主係「${tenGod(b.dm,L[0])}」，主題係${TG[tenGod(b.dm,L[0])].kw}。木星喺${ju.sign}座行經你第${houseOf(c,ju.lon)}宮，${HOUSE_THEME[houseOf(c,ju.lon)-1]}會係你今年最多機會嘅地方。`}
+  if(k==="decade"){const yr=new Date().getFullYear(),cur=(b.yun||[]).find(x=>yr>=x.startYear&&yr<=x.endYear);return cur?`你而家行緊${cur.gz}大運（${cur.startYear}–${cur.endYear}），呢步運對你係「${tenGod(b.dm,cur.gz[0])}」：${TG[tenGod(b.dm,cur.gz[0])].life}`:"你嘅大運即將開始，呢十年會係打好根基嘅階段。"}
+  return "";
+}
+function productPrompt(p){return prompt(`為使用者撰寫一份付費深入報告「${p.n}」。按以下章節逐一詳細撰寫，每章用「## 章節名」做小標題：${p.secs.join("、")}。結合八字（格局、喜忌、大運）、紫微斗數（相關宮位主星、四化、大限）同西洋星盤（相關行星、宮位、相位），每章至少一段具體分析同一個可以實行嘅建議。語氣溫暖、親切、具體，全文約 900–1300 字。`,chart)}
+function openProduct(k){
+  const p=PRODUCTS.find(x=>x.k===k);if(!p)return;const c=chart,P=n=>(c.planets||[]).find(x=>x.n===n);
+  const sig=c.planets?`☉ ${P("太陽").sign} ☽ ${P("月亮").sign}${c.asc?" ↑ "+c.asc.sign:""}`:"";
+  const has=owns(k);
+  openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title">${p.en}</span><span></span></div>
+   <div class="prod">
+    <p class="kicker">${p.g==="report"?"運勢報告":"深入解讀"}</p><h2 class="prod-h">${p.n}</h2><p class="prod-sig mono">${esc(profile.name||"")} · ${sig}</p>
+    <div class="prod-sec open"><h3>${p.secs[0]}${has?"":LOCK_IC}</h3><p class="prod-pv">${esc(productPreview(k))}</p></div>
+    ${p.secs.slice(1).map(t=>`<div class="prod-sec"><h3>${t}</h3></div>`).join("")}
+    <div id="prodAI"></div>
+   </div>
+   ${has?"":`<div class="prod-bar"><span>付款解鎖，睇晒你嘅完整報告</span><button class="btn solid small" type="button" id="prodBuy">解鎖 ${p.price}</button></div><p class="mute" style="font-size:12.5px;text-align:center">Sol Pro 會員可以用會員價購買</p>`}`,sh=>{
+     if(has){$("#prodAI",sh).appendChild(aiBlock(`生成我嘅「${p.n}」`,()=>productPrompt(p)));return}
+     $("#prodBuy",sh).onclick=buyNow;
+   });
+}
+function renderShop(el){
+  const card=p=>`<button type="button" class="pcard" data-p="${p.k}"><span class="pcard-en">${p.en}</span><b>${p.n}</b><span class="mute">${p.blurb}</span><span class="pcard-price">${owns(p.k)?"已解鎖":p.price}</span></button>`;
+  el.innerHTML=`<div class="stack"><span class="eyebrow">Soluna 商店</span><h1>更深入了解你自己<span class="lat">go deeper</span></h1><p class="mute">兩種會員任你揀；每份報告亦可以另外購買，都係按你嘅八字、紫微同星盤即時寫成。</p></div>
+  <div id="sPlus" class="stack" style="gap:14px">${["sol","luna"].map(t=>{const T=TIER[t];const L=t==="sol"?["Luna Plus 全部內容","命盤深讀（八字、紫微、星盤）","一個月、一年、十年完整運勢同行動計劃","報告享會員價"]:["塔羅同各種占卜無限次","今日運勢同行運深入解讀","完整解夢","本週計劃"];
+    return `<section class="plus${t==="luna"?" luna":""}"><p class="kicker">${t==="sol"?"☉ 全包":"☽ 入門"}</p><h2>${T.full}</h2><p class="mute" style="margin-top:-6px">${t==="sol"?"照亮你嘅全部：由今日到未來十年。":"每日陪住你，好似月光咁溫柔。"}</p>
+    <ul class="pw-list">${L.map(x=>`<li>${x}</li>`).join("")}</ul>
+    <div class="plans">${Object.entries(PLANS[t]).map(([k,v])=>`<button type="button" class="plan${k==="year"?" best":""}" data-plan="${t}-${k}">${k==="year"?`<span class="tag">最抵 · 7 日免費試</span>`:""}<b>${v.n}</b><span class="pp">${v.price}<small> / ${v.per}</small></span>${v.note?`<small class="mute">${v.note}</small>`:""}</button>`).join("")}</div>
+    ${ENT.tier===t?`<p class="note">✦ 你已經係 ${T.full} 會員，多謝你嘅支持。</p>`:isSol()?"":`<button class="btn${t==="sol"?" solid":""}" type="button" data-plan="${t}">${ENT.tier==="luna"&&t==="sol"?"升級做 Sol Pro":"開始 7 日免費試用"}</button>`}</section>`}).join("")}
+    <small class="mute" style="text-align:center">試用期內隨時取消，唔會收費。</small></div>
+  <div class="stack"><span class="eyebrow">深入了解自己 · 每份 HK$38</span><div class="pgrid">${PRODUCTS.filter(p=>p.g==="self").map(card).join("")}</div></div>
+  <div class="stack"><span class="eyebrow">運勢報告</span><div class="pgrid">${PRODUCTS.filter(p=>p.g==="report").map(card).join("")}</div></div>
+  <div class="stack" id="sPacks"><span class="eyebrow">占卜次數包 · 永不過期</span><p class="mute" style="font-size:13px">每日有 ${FREE_PER_DAY} 次免費占卜（今日仲有 ${freeLeft()} 次）。用完之後，就會用你嘅次數包${ENT.credits?`（而家有 ${ENT.credits} 次）`:""}。</p>
+    <div class="packs">${PACKS.map(k=>`<button type="button" class="pack" data-pack="${k.k}">${k.tag?`<span class="tag">${k.tag}</span>`:""}<b>${k.n} 次</b><span>${k.price}</span></button>`).join("")}</div></div>
+  <p class="note">價錢以港幣計。內容供娛樂同自我反思之用。</p>`;
+  el.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openProduct(b.dataset.p));
+  el.querySelectorAll("[data-plan],[data-pack]").forEach(b=>b.onclick=buyNow);
+  if(shopFocus){const t=$(shopFocus==="packs"?"#sPacks":"#sPlus",el);shopFocus="";setTimeout(()=>t&&t.scrollIntoView({behavior:"smooth",block:"start"}),60)}
+}
+let meTab=store("soluna.meTab")||"chart";
 function renderMe(el){
-  el.innerHTML=`<div class="stack"><span class="eyebrow">我的</span><h1>${esc(profile.name)}</h1></div>
-  <dl class="kv"><dt>出生日期</dt><dd class="mono">${esc(profile.date)}</dd><dt>出生時間</dt><dd class="mono">${profile.timeUnknown?"不詳":esc(profile.time)}</dd><dt>出生地</dt><dd>${esc(chart.city[0])}</dd><dt>性別</dt><dd>${profile.gender==="M"?"男":"女"}（用於大運順逆）</dd><dt>解讀語言</dt><dd>${esc(profile.lang)}</dd></dl>
-  <div class="row"><button class="btn solid" type="button" id="edit">修改出生資料</button>${profile.demo?"":`<button class="btn" type="button" id="reset">回到示範命盤</button>`}</div>
-  <hr class="rule">
-  <div class="stack"><span class="eyebrow">占卜 · Oracle</span><h2 style="font-family:var(--f-display);font-weight:300;font-size:22px">問一個問題</h2>
-  <div class="tiles" role="group" aria-label="占卜方法">${[["tarot","塔羅","Tarot · 타로"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].map(([k,n,e])=>`<button type="button" data-or="${k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div></div>
-  <hr class="rule">
-  <div class="stack"><span class="eyebrow">${BRAND.zh}包含</span>
+  const pl=chart.planets;const sg=[pl?["☉",pl[0].sign]:null,pl?["☽",pl[1].sign]:null,chart.asc?["↑",chart.asc.sign]:null].filter(Boolean);
+  const TABS=[["chart","命盤"],["oracle","占卜"],["saved","收藏"],["set","設定"]];
+  if(!TABS.some(t=>t[0]===meTab))meTab="chart";
+  el.innerHTML=`<div class="you-head"><button type="button" class="you-av" id="youAv" aria-label="修改我嘅出生資料">${esc((profile.demo?"示":(profile.name||"我")).slice(0,1))}<span class="you-edit" aria-hidden="true">✎</span></button>
+  <div class="you-id"><h1>${esc(profile.name)}</h1><p class="you-signs">${sg.map(([i,n])=>`<span><i>${i}</i>${esc(n)}</span>`).join("")}</p>${profile.demo?`<p class="mute" style="font-size:12.5px;margin:2px 0 0">示範命盤 · 撳頭像輸入你嘅資料</p>`:""}</div></div>
+  <div class="you-tabs" role="tablist">${TABS.map(([k,n])=>`<button type="button" role="tab" data-mt="${k}" aria-selected="${k===meTab}">${n}</button>`).join("")}</div>
+  <div id="youBody"></div>`;
+  $("#youAv",el).onclick=openEditor;
+  el.querySelectorAll("[data-mt]").forEach(b=>b.onclick=()=>{meTab=b.dataset.mt;store("soluna.meTab",meTab);renderMe(el)});
+  const body=$("#youBody",el);
+  if(meTab==="chart"){renderChart(body);const h=body.firstElementChild;if(h&&h.querySelector(".eyebrow"))h.remove();return}
+  if(meTab==="oracle"){
+    body.innerHTML=`<div class="stack"><p class="mute" style="font-size:13.5px">${isMember()?"會員可以無限次占卜。":`每日 ${FREE_PER_DAY} 次免費（今日仲有 ${freeLeft()} 次）${ENT.credits?`，另有 ${ENT.credits} 次已購買次數`:""}。`}</p><h2 style="font-family:var(--f-display);font-weight:300;font-size:22px">問一個問題</h2>
+    <div class="tiles" role="group" aria-label="占卜方法">${[["tarot","塔羅","Tarot · 타로"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].filter(([k])=>k!=="face"||IN_CLAUDE).map(([k,n,e])=>`<button type="button" data-or="${k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div>
+    ${isMember()?"":`<button type="button" class="btn" id="morePk" style="margin-top:6px">購買更多占卜次數</button>`}</div>`;
+    body.querySelectorAll("[data-or]").forEach(b=>b.onclick=()=>{orTab=b.dataset.or;store("xuanjing.or",orTab);location.hash="#oracle"});
+    const mp=$("#morePk",body);if(mp)mp.onclick=()=>{location.hash="#shop"};
+    return;
+  }
+  if(meTab==="saved"){
+    const mine=PRODUCTS.filter(x=>owns(x.k));
+    body.innerHTML=`<div class="stack"><span class="eyebrow">我的報告</span>${mine.length?`<div class="pgrid">${mine.map(x=>`<button type="button" class="pcard" data-pk="${x.k}"><small>${esc(x.en)}</small><b>${esc(x.n)}</b><span class="mute">撳入去睇完整報告</span></button>`).join("")}</div>`:`<p class="mute" style="font-size:14px">你仲未解鎖任何報告。想更深入了解自己，可以去<a href="#shop">商店</a>睇吓。</p>`}</div>
+    <hr class="rule"><div class="stack"><span class="eyebrow">夢境日記</span><div id="savedDreams"><p class="mute">載入中⋯</p></div><div class="row"><button type="button" class="btn" id="newDream">記錄新嘅夢</button></div></div>`;
+    body.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>openProduct(b.dataset.pk));
+    $("#newDream",body).onclick=()=>{location.hash="#dream"};
+    (async()=>{const box=$("#savedDreams",body);try{const st=await dreamStore();const all=(await st.list()).sort((a,b)=>(b.date+(b.created||"")).localeCompare(a.date+(a.created||"")));
+      box.innerHTML=all.length?`<ul class="saved-list">${all.slice(0,12).map(d=>`<li><span class="mono mute">${esc(d.date||"")}</span><span>${esc((d.text||"").slice(0,60))}${(d.text||"").length>60?"⋯":""}</span>${d.interp?`<em>已解夢</em>`:""}</li>`).join("")}</ul>${all.length>12?`<p class="mute" style="font-size:13px">仲有 ${all.length-12} 個夢，喺「夢」頁可以睇晒。</p>`:""}`:`<p class="mute" style="font-size:14px">仲未有記錄。發完夢記低佢，日後可以睇返。</p>`}catch(e){box.innerHTML=`<p class="note">暫時載入唔到，請稍後再試。</p>`}})();
+    return;
+  }
+  body.innerHTML=`<button type="button" class="shop-entry" id="goShop"><span><span class="kicker">Soluna 商店</span><b>${isMember()?`你係 ${TIER[ENT.tier].full} 會員 ✦`:"更深入了解你自己"}</b><span class="mute">Luna Plus、Sol Pro 會員、愛情、事業、財運同年度報告</span></span><span aria-hidden="true">→</span></button>
+  <div class="set-list">
+    <button type="button" id="setEdit"><span>出生資料</span><span class="mute">修改 →</span></button>
+    <button type="button" id="setTheme"><span>外觀</span><span class="mute">${isLight()?"淺色":"深色"} · 切換 →</span></button>
+    ${profile.demo?"":`<button type="button" id="reset"><span>回到示範命盤</span><span class="mute">→</span></button>`}
+    ${fbUser?`<div class="set-row"><span>帳戶<br><small class="mute">${esc(fbUser.email||fbUser.displayName||"")} · ${tierLabel()}</small></span><button class="btn small" type="button" id="logout">登出</button></div>`:""}
+  </div>
+  <details class="set-about"><summary>${BRAND.zh}包含啲咩</summary>
   <p><b>計算型</b>：西洋星盤（太陽至冥王星、上升、天頂）、四柱八字與十神、五行、十年大運、紫微斗數十四主星與四化、每日流日與月相。</p>
-  <p><b>占卜型</b>（喺呢頁）：78 張偉特塔羅（親手揀牌）、韓國神占（擲米）、面相手相、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>（底部「夢」）：解夢同夢境日記。</p>
-  <p><b>運勢</b>：今日、本週、一個月、一年、十年，並可生成行動計劃。</p></div>
-  ${fbUser?`<hr class="rule"><div class="stack"><span class="eyebrow">帳戶</span><p style="font-size:14px">已登入：<b>${esc(fbUser.email||fbUser.displayName||"")}</b><br><span class="mute" style="font-size:13px">命盤、夢境日記同心情記錄會自動同步到雲端。</span><br><span style="font-size:13px">${isMember()?"✦ 你係 Soluna 會員":"免費版"}</span></p><div class="row"><button class="btn" type="button" id="logout">登出</button></div></div>`:""}
-  <p class="note">${BRAND.zh}的內容供娛樂和自我反思之用。重要的健康、法律及財務決定，請諮詢相關專業人士。出生資料只儲存在你這部裝置的瀏覽器內。</p>`;
-  el.querySelectorAll("[data-or]").forEach(b=>b.onclick=()=>{orTab=b.dataset.or;store("xuanjing.or",orTab);location.hash="#oracle"});
-  const lo=$("#logout",el);if(lo)lo.onclick=()=>signOutAll();
-  $("#edit",el).onclick=openEditor;const r=$("#reset",el);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
+  <p><b>占卜型</b>：78 張偉特塔羅（親手揀牌）、韓國神占（擲米）、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>：解夢同夢境日記。</p>
+  <p><b>運勢</b>：今日、本週、一個月、一年、十年，並可生成行動計劃。</p></details>
+  <p class="note">${BRAND.zh}的內容供娛樂和自我反思之用。重要的健康、法律及財務決定，請諮詢相關專業人士。</p>`;
+  $("#goShop",body).onclick=()=>{location.hash="#shop"};
+  $("#setEdit",body).onclick=openEditor;
+  $("#setTheme",body).onclick=()=>{const t=$("#themeBtn");if(t)t.click();renderMe(el)};
+  const lo=$("#logout",body);if(lo)lo.onclick=()=>signOutAll();
+  const r=$("#reset",body);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
 }
 function openEditor(){
   const sh=$("#sheet");const p=profile.demo?{...DEMO,name:"",demo:true}:profile;
@@ -2222,11 +2441,11 @@ function renderDream(el){
   el.innerHTML=`<div class="stack"><span class="eyebrow">夢境 · Dream journal</span><h1>記住每一個夢<span class="lat">dreams, kept</span></h1></div><div id="drBody" class="stack" style="gap:22px"></div>`;
   orDream($("#drBody",el));
 }
-const VIEWS={today:renderToday,forecast:renderForecast,chart:renderChart,dream:renderDream,oracle:renderOracle,me:renderMe};
+const VIEWS={today:renderToday,forecast:renderForecast,chart:el=>{meTab="chart";renderMe(el)},dream:renderDream,oracle:renderOracle,me:renderMe,shop:renderShop};
 function route(){
   const hp=document.getElementById("hdrProfile");if(hp)hp.textContent=(profile.demo?"示":(profile.name||"我")).slice(0,1);
   const v=(location.hash||"#today").slice(1);const key=VIEWS[v]?v:"today";
-  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===(key==="oracle"?"me":key)?"page":"false"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===(key==="oracle"||key==="chart"?"me":key)?"page":"false"));
   const shx=$("#sheet");if(shx)shx.hidden=true;
   const main=$("#main");main.innerHTML="";const sec=document.createElement("section");sec.className="view";main.appendChild(sec);
   try{VIEWS[key](sec)}catch(e){sec.innerHTML=`<p class="note">這一頁暫時未能顯示：${esc(e.message)}。請重新整理。</p>`;console.error(e)}

@@ -35,7 +35,8 @@ export default {
     // Membership is read from Firestore with the user's own token (the rules stop users from setting it themselves).
     const docUrl = `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)/documents/users/${uid}`;
     const doc = await (await fetch(docUrl, { headers: { authorization: "Bearer " + token } })).json();
-    if (doc?.fields?.member?.booleanValue !== true) return json({ error: "locked" }, 402, cors);
+    const m = doc?.fields?.member; // true / "sol" / "luna"
+    if (!(m?.booleanValue === true || ["sol", "luna"].includes(m?.stringValue))) return json({ error: "locked" }, 402, cors);
 
     // Simple per-day limit using the Cache API as a counter (good enough for a small app).
     const day = new Date().toISOString().slice(0, 10), ck = new Request(`https://quota.local/${uid}/${day}`), cache = caches.default;

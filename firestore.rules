@@ -1,9 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 每個用戶只可以讀寫自己嘅資料
+    // 每個用戶只可以讀寫自己嘅資料；「member」（會員）欄位只可以由你喺控制台或者付款系統設定
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid && !('member' in request.resource.data);
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['member']);
     }
   }
 }

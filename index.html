@@ -19,7 +19,7 @@
 /* Layout: one phone-width column, hairline ink on paper; one bold natal wheel on the Today view, everything else quiet. */
 :root{
   /* Soluna (Figma v2): midnight indigo, lavender moonlight, mist panel. Single dark look by design. */
-  --bg:#070812; --surface:#11121f; --surface2:#141526; --fg:#f4f2ff; --mute:#8c8c90; --mute2:#a7a4a0; --line:rgba(255,255,255,.09); --soft:#151628;
+  --bg:#070812; --surface:#11121f; --surface2:#141526; --fg:#f4f2ff; --mute:#a4a3ad; --mute2:#c4c1cc; --line:rgba(255,255,255,.09); --soft:#151628;
   --gold:#c9c7f4; --gold2:#d6d4f5; --gold3:#bbb9eb; --sand:#d8d8ec; --ink:#161622; --hi:#d6d4f5; --hi-fg:#11111d;
   --f-display:"Cormorant Garamond","Noto Serif TC","Songti TC",serif;
   --f-body:"Manrope","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
@@ -30,41 +30,41 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:13px;font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:14px;font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px))}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding-block:14px 12px;border-bottom:1px solid var(--line)}
-.brand{font-family:var(--f-display);font-weight:900;font-size:19px;letter-spacing:.3em}
+.brand{font-family:var(--f-display);font-weight:900;font-size:20px;letter-spacing:.3em}
 .brand{display:flex;align-items:baseline;gap:10px}
-.brand em{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:16px;letter-spacing:.02em;color:var(--mute)}
-.today-date{font-family:var(--f-mono);font-size:11px;color:var(--mute);text-align:right;letter-spacing:.06em;line-height:1.4}
+.brand em{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:17px;letter-spacing:.02em;color:var(--mute)}
+.today-date{font-family:var(--f-mono);font-size:11.5px;color:var(--mute);text-align:right;letter-spacing:.06em;line-height:1.4}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
-h1{font-size:26px;line-height:1.3;font-weight:900}
-h2{font-size:18px;font-weight:600;line-height:1.35}
-h3{font-size:14.5px;font-weight:600}
+h1{font-size:28px;line-height:1.3;font-weight:900}
+h2{font-size:19px;font-weight:600;line-height:1.35}
+h3{font-size:15.5px;font-weight:600}
 p{margin:0}
-.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
 .mute{color:var(--mute)}
 .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 section.view{display:flex;flex-direction:column;gap:28px;padding-top:22px}
 .stack{display:flex;flex-direction:column;gap:12px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .rule{border:0;border-top:1px solid var(--line);margin:0}
-.demo-banner{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px dashed var(--fg);padding:10px 12px;font-size:12px}
+.demo-banner{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px dashed var(--fg);padding:10px 12px;font-size:13px}
 button{font:inherit;color:inherit;cursor:pointer}
-.btn{border:1px solid var(--fg);background:transparent;padding:9px 16px;font-size:13px;letter-spacing:.04em;border-radius:0;transition:background .15s,color .15s}
+.btn{border:1px solid var(--fg);background:transparent;padding:9px 16px;font-size:14px;letter-spacing:.04em;border-radius:0;transition:background .15s,color .15s}
 .btn:hover{background:var(--fg);color:var(--bg)}
 .btn.solid{background:var(--hi);color:var(--hi-fg)}
 .btn.solid:hover{opacity:.85}
-.btn.small{padding:5px 10px;font-size:11px}
+.btn.small{padding:5px 10px;font-size:11.5px}
 .btn:disabled{opacity:.4;cursor:default}
 :focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .seg{display:flex;border:1px solid var(--fg);overflow-x:auto}
-.seg button{flex:1;min-width:64px;border:0;background:transparent;padding:8px 6px;font-size:12px;white-space:nowrap}
+.seg button{flex:1;min-width:64px;border:0;background:transparent;padding:8px 6px;font-size:13px;white-space:nowrap}
 .seg button+button{border-left:1px solid var(--fg)}
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.chips button{border:1px solid var(--line);background:transparent;padding:6px 12px;font-size:12px;white-space:nowrap;border-radius:999px}
+.chips button{border:1px solid var(--line);background:transparent;padding:6px 12px;font-size:13px;white-space:nowrap;border-radius:999px}
 .chips button[aria-pressed="true"]{border-color:var(--fg);background:var(--fg);color:var(--bg)}
 
 /* Cosmos */
@@ -74,7 +74,7 @@ body{position:relative;z-index:0}
 .hero .orrery{position:absolute;right:-34%;top:50%;transform:translateY(-50%);width:88%;max-width:none;height:auto;z-index:-1;opacity:.5;pointer-events:none}
 .hero .orrery .o{fill:none;stroke:var(--bg);stroke-width:.6}
 .hero .orrery .p{fill:var(--bg)}
-.hero .orrery text{fill:var(--bg);font-size:9px;font-family:var(--f-body)}
+.hero .orrery text{fill:var(--bg);font-size:9.5px;font-family:var(--f-body)}
 .hero .orb{position:absolute;inset:auto;right:-22%;top:-26%;left:auto;bottom:auto;width:72%;height:auto;aspect-ratio:1;max-width:none;z-index:-1;opacity:.55}
 .orbit-orn{display:flex;align-items:center;gap:12px}
 .orbit-orn::before,.orbit-orn::after{content:"";flex:1;border-top:1px solid var(--line)}
@@ -92,19 +92,19 @@ header.top{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filt
 .hero .top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .hero .moon svg{width:64px;height:64px;display:block}
 .hero .headline{color:var(--bg)}
-.hero .big-date{font-family:var(--f-latin);font-style:italic;font-size:40px;line-height:.9;font-weight:500}
-.hero p.body{color:color-mix(in srgb,var(--bg) 86%,var(--fg));font-size:13.5px}
+.hero .big-date{font-family:var(--f-latin);font-style:italic;font-size:43px;line-height:.9;font-weight:500}
+.hero p.body{color:color-mix(in srgb,var(--bg) 86%,var(--fg));font-size:14.5px}
 .orn{display:flex;align-items:center;gap:12px;color:var(--fg)}
 .orn::before,.orn::after{content:"";flex:1;border-top:1px solid var(--line)}
 .orn svg{width:14px;height:14px}
-.orn span{font-family:var(--f-latin);font-style:italic;font-size:15.5px}
+.orn span{font-family:var(--f-latin);font-style:italic;font-size:16.5px}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
 .tiles button{border:0;border-right:1px solid var(--fg);border-bottom:1px solid var(--fg);background:var(--bg);padding:14px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .15s,color .15s}
 .tiles button svg{width:40px;height:40px}
 .tiles button svg *{stroke:currentColor;fill:none;stroke-width:1.2}
 .tiles button svg .f{fill:currentColor;stroke:none}
-.tiles button b{font-family:var(--f-display);font-size:14px;font-weight:600;line-height:1.2}
-.tiles button small{font-family:var(--f-latin);font-style:italic;font-size:12px;color:var(--mute)}
+.tiles button b{font-family:var(--f-display);font-size:15px;font-weight:600;line-height:1.2}
+.tiles button small{font-family:var(--f-latin);font-style:italic;font-size:13px;color:var(--mute)}
 .tiles button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .tiles button[aria-pressed="true"] small{color:var(--bg)}
 .tiles button:hover:not([aria-pressed="true"]){background:var(--soft)}
@@ -112,112 +112,112 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 .wheel-box{display:flex;justify-content:center}
 .wheel-box svg{width:100%;max-width:360px;height:auto}
 .wheel-box text{font-family:var(--f-body);fill:var(--fg)}
-.headline{font-family:var(--f-display);font-size:23px;font-weight:900;line-height:1.35}
+.headline{font-family:var(--f-display);font-size:25px;font-weight:900;line-height:1.35}
 .yiji{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--fg);border-bottom:1px solid var(--fg)}
 .yiji>div{padding:12px 0}
 .yiji>div+div{border-left:1px solid var(--line);padding-left:14px}
-.yiji .big{font-family:var(--f-display);font-size:22px;font-weight:900;line-height:1}
-.yiji ul{list-style:none;margin:8px 0 0;padding:0;font-size:13px}
+.yiji .big{font-family:var(--f-display);font-size:24px;font-weight:900;line-height:1}
+.yiji ul{list-style:none;margin:8px 0 0;padding:0;font-size:14px}
 .yiji li{padding:3px 0}
 .meters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .meter{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .dots{display:flex;gap:3px}
 .dots i{width:9px;height:9px;border:1px solid var(--fg);border-radius:50%;display:block}
 .dots i.on{background:var(--fg)}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
 .kv dt{color:var(--mute)}
 .kv dd{margin:0}
-.note{font-size:12px;color:var(--mute);border-left:2px solid var(--line);padding-left:10px}
+.note{font-size:13px;color:var(--mute);border-left:2px solid var(--line);padding-left:10px}
 
 .colors{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .sw{display:flex;flex-direction:column;gap:6px}
 .sw i{display:block;height:54px;border:1px solid var(--fg)}
 .sw.avoid i{position:relative;overflow:hidden}
 .sw.avoid i::after{content:"";position:absolute;left:-10%;top:50%;width:120%;border-top:1.5px solid var(--fg);transform:rotate(-22deg);mix-blend-mode:difference;border-color:#fff}
-.sw b{font-family:var(--f-display);font-size:15px;line-height:1.1}
+.sw b{font-family:var(--f-display);font-size:16px;line-height:1.1}
 .cdot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid var(--fg);vertical-align:-1px;margin-right:4px}
 /* AI output */
 .ai{border-top:1px solid var(--fg);padding-top:14px;display:flex;flex-direction:column;gap:10px}
-.ai-out{font-size:14px;min-width:0}
-.ai-out h4{font-family:var(--f-display);font-size:15.5px;margin:14px 0 4px}
+.ai-out{font-size:15px;min-width:0}
+.ai-out h4{font-family:var(--f-display);font-size:16.5px;margin:14px 0 4px}
 .ai-out p{margin:0 0 10px}
 .ai-out ul{margin:0 0 10px;padding-left:20px}
 .ai-out:empty{display:none}
-.thinking{font-family:var(--f-mono);font-size:11px;color:var(--mute);letter-spacing:.1em;animation:blink 1.4s infinite}
+.thinking{font-family:var(--f-mono);font-size:11.5px;color:var(--mute);letter-spacing:.1em;animation:blink 1.4s infinite}
 @keyframes blink{50%{opacity:.35}}
 
 /* Forecast */
 .daylist{display:flex;flex-direction:column}
 .dayrow{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
-.dayrow .d{font-family:var(--f-mono);font-size:11px;line-height:1.3}
-.dayrow .d b{font-family:var(--f-display);font-size:17px;display:block}
+.dayrow .d{font-family:var(--f-mono);font-size:11.5px;line-height:1.3}
+.dayrow .d b{font-family:var(--f-display);font-size:18px;display:block}
 .dayrow.now{background:var(--soft);margin:0 -10px;padding:12px 10px}
 .bar{height:4px;background:var(--line);position:relative;margin-top:6px}
 .bar span{position:absolute;inset:0 auto 0 0;background:var(--fg)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal div{aspect-ratio:1;max-width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);position:relative}
-.cal div.h{font-family:var(--f-body);border:0;aspect-ratio:auto;color:var(--mute);font-size:11px}
+.cal div{aspect-ratio:1;max-width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line);position:relative}
+.cal div.h{font-family:var(--f-body);border:0;aspect-ratio:auto;color:var(--mute);font-size:11.5px}
 .cal div.empty{border:0}
 .cal div[data-l="5"],.cal div[data-l="4"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .cal div[data-l="3"]{background:var(--soft);border-color:var(--fg)}
 .cal div.today::after{content:"";position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:currentColor}
-.legend{display:flex;gap:14px;font-size:11px;color:var(--mute);flex-wrap:wrap}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--mute);flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border:1px solid var(--fg);margin-right:5px;vertical-align:-1px}
 .legend .l5::before{background:var(--fg)}
 .legend .l3::before{background:var(--soft)}
 .months{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.months div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 8px;font-size:11px;display:flex;flex-direction:column;gap:2px}
-.months b{font-family:var(--f-display);font-size:15px}
+.months div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 8px;font-size:11.5px;display:flex;flex-direction:column;gap:2px}
+.months b{font-family:var(--f-display);font-size:16px}
 .months .now{background:var(--fg);color:var(--bg)}
 .timeline{display:flex;flex-direction:column}
 .tl{display:grid;grid-template-columns:70px 54px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
-.tl .gz{font-family:var(--f-display);font-size:21px;font-weight:900;line-height:1.1}
+.tl .gz{font-family:var(--f-display);font-size:22px;font-weight:900;line-height:1.1}
 .tl.now{border:1px solid var(--fg);padding:14px 10px;margin:4px -10px}
-.tl .age{font-family:var(--f-mono);font-size:11px;line-height:1.4}
+.tl .age{font-family:var(--f-mono);font-size:11.5px;line-height:1.4}
 
 /* Chart */
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--fg)}
 .pillar{text-align:center;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
 .pillar+.pillar{border-left:1px solid var(--line)}
-.pillar .lbl{font-size:11px;color:var(--mute)}
-.pillar .g{font-family:var(--f-display);font-size:29px;font-weight:900;line-height:1.15}
-.pillar .tg{font-size:11px;font-family:var(--f-mono)}
+.pillar .lbl{font-size:11.5px;color:var(--mute)}
+.pillar .g{font-family:var(--f-display);font-size:31px;font-weight:900;line-height:1.15}
+.pillar .tg{font-size:11.5px;font-family:var(--f-mono)}
 .pillar.dm .g:first-of-type{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:2px}
 .elbars{display:flex;flex-direction:column;gap:8px}
-.elbar{display:grid;grid-template-columns:28px 1fr 22px;gap:10px;align-items:center;font-size:13px}
+.elbar{display:grid;grid-template-columns:28px 1fr 22px;gap:10px;align-items:center;font-size:14px}
 .elbar .track{height:10px;border:1px solid var(--fg);position:relative}
 .elbar .track span{position:absolute;inset:0 auto 0 0;background:var(--fg)}
 .planets{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
-.planets div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;gap:8px}
+.planets div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;gap:8px}
 .planets div:nth-child(odd){padding-right:12px}
 .planets div:nth-child(even){padding-left:12px;border-left:1px solid var(--line)}
 .ziwei-scroll{overflow-x:auto}
 .ziwei{display:grid;grid-template-columns:repeat(4,minmax(86px,1fr));grid-template-rows:repeat(4,minmax(150px,auto));border:1px solid var(--fg);min-width:352px}
 .zw .sts{display:flex;flex-direction:row;justify-content:flex-start;gap:2px;flex-wrap:wrap}
 .st{writing-mode:vertical-rl;text-orientation:upright;display:inline-flex;align-items:center;line-height:1;letter-spacing:.02em;padding:1px 0}
-.st.mj{font-family:var(--f-display);font-weight:900;font-size:13px}
-.st.mn{font-size:11px;font-weight:500}
-.st i{font-style:normal;font-size:9px;font-weight:400;color:var(--mute);margin-top:2px}
+.st.mj{font-family:var(--f-display);font-weight:900;font-size:14px}
+.st.mn{font-size:11.5px;font-weight:500}
+.st i{font-style:normal;font-size:9.5px;font-weight:400;color:var(--mute);margin-top:2px}
 .zw.ming .st i{color:var(--bg)}
-.st .hua{writing-mode:horizontal-tb;font-style:normal;font-family:var(--f-mono);font-size:9px;border:1px solid currentColor;padding:0 1px;margin-top:2px;font-weight:400;line-height:1.2}
-.zw .adj{font-size:9.5px;color:var(--mute);line-height:1.35}
+.st .hua{writing-mode:horizontal-tb;font-style:normal;font-family:var(--f-mono);font-size:9.5px;border:1px solid currentColor;padding:0 1px;margin-top:2px;font-weight:400;line-height:1.2}
+.zw .adj{font-size:10px;color:var(--mute);line-height:1.35}
 .zw.ming .adj{color:var(--bg)}
 .zw .adj .flow{color:var(--fg);font-weight:700;font-style:italic}
 .zw.ming .adj .flow{color:var(--bg)}
 .zw .ages{font-size:8.5px;color:var(--mute);line-height:1.3;margin-top:auto}
 .zw.ming .ages{color:var(--bg)}
-.zw .bot{display:grid;grid-template-columns:auto 1fr auto;gap:3px;align-items:end;font-size:9.5px;line-height:1.25}
+.zw .bot{display:grid;grid-template-columns:auto 1fr auto;gap:3px;align-items:end;font-size:10px;line-height:1.25}
 .zw .gods{color:var(--mute);white-space:nowrap}
 .zw .mid{min-width:0}
 .zw .rt span{white-space:nowrap}
 .zw.ming .gods{color:var(--bg)}
 .zw .mid{display:flex;flex-direction:column;align-items:center;white-space:nowrap}
 .zw .mid .mono{font-size:8px;letter-spacing:-.03em}
-.zw .mid b{font-size:11px}
+.zw .mid b{font-size:11.5px}
 .zw .rt{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
-.zw .rt b{font-family:var(--f-display);font-size:12px;line-height:1.05}
+.zw .rt b{font-family:var(--f-display);font-size:13px;line-height:1.05}
 .zw .tags{display:flex;gap:3px;flex-wrap:wrap}
-.zw .tag{font-size:9.5px;border:1px solid currentColor;padding:0 2px;white-space:nowrap}
+.zw .tag{font-size:10px;border:1px solid currentColor;padding:0 2px;white-space:nowrap}
 .zw .tag.solid{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .zw.ming .tag.solid{background:var(--bg);color:var(--fg)}
 .zw[data-b]{cursor:pointer}
@@ -230,34 +230,34 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 .st .hua.fly{border-style:dashed;border-width:1.5px}
 .zw .tag.dash{border-style:dashed}
 .flytab{border-top:1px solid var(--line);padding-top:10px}
-.flytab summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:14px}
+.flytab summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:15px}
 .tbl-scroll{overflow-x:auto;margin-top:8px}
-.flytab table{border-collapse:collapse;font-size:11px;min-width:460px;width:100%}
+.flytab table{border-collapse:collapse;font-size:11.5px;min-width:460px;width:100%}
 .flytab th,.flytab td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;white-space:nowrap}
 .flytab th{font-weight:500;color:var(--mute)}
 .zrow>div.hrs{grid-template-columns:repeat(12,minmax(0,1fr))}
-.c8{display:flex;gap:8px;font-family:var(--f-display);font-weight:900;font-size:15.5px;line-height:1.15;margin:2px 0}
-.ovbox{font-size:11px;border:1px solid var(--fg);padding:3px 6px;margin-top:2px}
+.c8{display:flex;gap:8px;font-family:var(--f-display);font-weight:900;font-size:16.5px;line-height:1.15;margin:2px 0}
+.ovbox{font-size:11.5px;border:1px solid var(--fg);padding:3px 6px;margin-top:2px}
 .zsel{display:flex;flex-direction:column;border-top:1px solid var(--fg)}
 .zrow{display:grid;grid-template-columns:40px 1fr;border-bottom:1px solid var(--line);align-items:stretch}
-.zrow>span{font-family:var(--f-display);font-weight:600;font-size:12px;display:flex;align-items:center}
+.zrow>span{font-family:var(--f-display);font-weight:600;font-size:13px;display:flex;align-items:center}
 .zrow>div{display:flex;overflow-x:auto;scrollbar-width:thin}
 .zrow>div.days{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));overflow:visible}
-.zrow button{flex:0 0 auto;min-width:60px;border:0;border-left:1px solid var(--line);background:transparent;padding:6px 4px;font-size:11px;line-height:1.3;font-family:var(--f-mono)}
+.zrow button{flex:0 0 auto;min-width:60px;border:0;border-left:1px solid var(--line);background:transparent;padding:6px 4px;font-size:11.5px;line-height:1.3;font-family:var(--f-mono)}
 .zrow .days button{min-width:0;font-family:var(--f-body);border-top:1px solid var(--line)}
 .zrow button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .zrow button[aria-pressed="part"]{background:var(--soft);box-shadow:inset 0 -2px 0 var(--fg)}
-.zw{border:1px solid var(--line);padding:5px 6px;font-size:11px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.zw .stars{font-family:var(--f-display);font-size:13px;font-weight:600;line-height:1.3;flex:1}
-.zw .minor{color:var(--mute);font-size:11px}
-.zw .foot{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--mute)}
-.zw .pn{font-size:11px;font-weight:700;color:var(--fg);font-family:var(--f-body)}
+.zw{border:1px solid var(--line);padding:5px 6px;font-size:11.5px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.zw .stars{font-family:var(--f-display);font-size:14px;font-weight:600;line-height:1.3;flex:1}
+.zw .minor{color:var(--mute);font-size:11.5px}
+.zw .foot{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10.5px;color:var(--mute)}
+.zw .pn{font-size:11.5px;font-weight:700;color:var(--fg);font-family:var(--f-body)}
 .zw.ming{background:var(--fg);color:var(--bg)}
 .zw.ming .minor,.zw.ming .foot,.zw.ming .pn{color:var(--bg)}
 .zw-center{grid-column:2/4;grid-row:2/4;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;padding:8px;border:1px solid var(--line)}
-.zw .misc{color:var(--mute);font-size:10px;line-height:1.35}
+.zw .misc{color:var(--mute);font-size:10.5px;line-height:1.35}
 .zw.ming .misc{color:var(--bg)}
-.zw .ovn{font-size:10px;font-weight:700;border:1px solid currentColor;padding:0 2px;white-space:nowrap}
+.zw .ovn{font-size:10.5px;font-weight:700;border:1px solid currentColor;padding:0 2px;white-space:nowrap}
 .zw .pn{white-space:nowrap}
 .zw .foot{gap:3px}
 .zw.ovming{outline:2px dashed var(--fg);outline-offset:-5px}
@@ -267,16 +267,32 @@ h1 .lat{font-family:var(--f-latin);font-style:italic;font-weight:500;font-size:.
 .zwctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .zwctl .seg{flex:1;min-width:220px}
 .yearnav{display:flex;align-items:center;gap:6px}
-.yearnav b{font-family:var(--f-mono);font-size:12px;min-width:84px;text-align:center}
-.hua{font-family:var(--f-mono);font-size:10px;border:1px solid currentColor;padding:0 2px;margin-left:2px;font-weight:400}
+.yearnav b{font-family:var(--f-mono);font-size:13px;min-width:84px;text-align:center}
+.hua{font-family:var(--f-mono);font-size:10.5px;border:1px solid currentColor;padding:0 2px;margin-left:2px;font-weight:400}
 
 /* Oracle */
 body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn{display:none}
 .auth{max-width:380px;margin:40px auto 0;text-align:center;gap:16px}
 .auth .auth-mark{width:64px;height:64px;margin:0 auto;color:var(--gold)}.auth .auth-mark svg{width:100%;height:100%;overflow:visible}
-.auth h1{font-family:var(--f-display);font-weight:300;font-size:34px;margin:0}.auth h1 em{font-style:italic;color:var(--gold)}
+.auth h1{font-family:var(--f-display);font-weight:300;font-size:36px;margin:0}.auth h1 em{font-style:italic;color:var(--gold)}
 .auth form{text-align:left}.auth .seg{margin:4px auto}
-.linkbtn{all:unset;cursor:pointer;font-size:12px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
+.linkbtn{all:unset;cursor:pointer;font-size:13px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
+.ic.lock{width:13px;height:13px;margin-right:5px;vertical-align:-2px;stroke:currentColor;fill:none;stroke-width:1.8}
+.paywall{text-align:center;gap:14px;display:flex;flex-direction:column;align-items:center}
+.paywall .pw-orb{width:58px;height:58px;color:var(--gold)}.paywall .pw-orb svg{width:100%;height:100%;overflow:visible}
+.paywall h2{font-family:var(--f-display);font-weight:400;font-size:24px}
+.pw-list{list-style:none;padding:0;margin:0;text-align:left;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.pw-list li::before{content:"✦";color:var(--gold);margin-right:8px}
+.paywall .btn.solid{width:100%}
+.pv-lock{max-height:420px;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent);pointer-events:none}
+.pv-card{border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-top:-40px;position:relative;background:var(--surface)}
+.pv-card h3{font-family:var(--f-display);font-weight:400;font-size:21px}
+.auth h1{font-size:30px}.auth-lead{font-size:14px;line-height:1.75}
+.auth .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);z-index:50;background:var(--surface);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);border-radius:14px;padding:12px 18px;display:flex;flex-direction:column;gap:2px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:tin .5s cubic-bezier(.3,.7,.2,1);transition:opacity .6s,transform .6s;max-width:calc(100% - 32px)}
+.toast b{font-family:var(--f-display);font-weight:500;font-size:18px}.toast span{font-size:13px;color:var(--mute)}
+.toast.out{opacity:0;transform:translate(-50%,-10px)}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-14px)}}
 .spread{display:grid;gap:12px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
 .tstage{position:relative;height:230px;margin:14px -16px 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .tstage::-webkit-scrollbar{display:none}
@@ -287,14 +303,14 @@ body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn{display:none}
 .tback.gone{opacity:0;pointer-events:none;transition:opacity .3s .15s,transform .32s!important}
 .tback:not(:disabled):hover{filter:brightness(1.25)}
 .tback:focus-visible{outline:2px solid var(--gold)}
-.thint{text-align:center;font-size:11.5px;color:var(--mute);margin:4px 0 14px;letter-spacing:.04em}
+.thint{text-align:center;font-size:12px;color:var(--mute);margin:4px 0 14px;letter-spacing:.04em}
 .tslots{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;margin-bottom:12px;min-height:20px}
-.tslot{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--mute);letter-spacing:.06em}
+.tslot{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--mute);letter-spacing:.06em}
 .tslot .sc{width:100%;max-width:64px;aspect-ratio:7/12;border:1px dashed color-mix(in srgb,var(--gold) 45%,transparent);border-radius:4px}
 .mini{all:unset;cursor:pointer;display:block;width:100%;height:100%;border-radius:4px;overflow:hidden;animation:tpop .45s cubic-bezier(.3,1.4,.4,1)}
 @keyframes tpop{0%{transform:translateY(-40px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
 :root[data-theme="light"] .tback .inkf,:root[data-theme="light"] .mini .inkf{fill:#2a2218}
-.tbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--mute);margin-bottom:12px}
+.tbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:var(--mute);margin-bottom:12px}
 .tcard .front img{width:100%;height:100%;object-fit:cover;display:block}
 .tcard .front.rev{transform:rotateY(180deg) rotate(180deg)}
 .tcard .side{border-radius:6px;overflow:hidden}
@@ -308,19 +324,19 @@ body.locked nav.tabs,body.locked #hdrProfile,body.locked #themeBtn{display:none}
 .tcard .side{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--fg);background:var(--bg)}
 .tcard .side svg{width:100%;height:100%;display:block}
 .tcard .front{transform:rotateY(180deg)}
-.tcard .pos{font-family:var(--f-mono);font-size:11px;color:var(--mute);letter-spacing:.08em}
-.tcard .nm{font-family:var(--f-display);font-weight:600;font-size:14px;line-height:1.3}
-.tcard .kw{font-size:11px;color:var(--mute);line-height:1.5}
+.tcard .pos{font-family:var(--f-mono);font-size:11.5px;color:var(--mute);letter-spacing:.08em}
+.tcard .nm{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.3}
+.tcard .kw{font-size:11.5px;color:var(--mute);line-height:1.5}
 svg .ink{stroke:var(--fg);fill:none}
 svg .inkf{fill:var(--fg)}
 svg .paper{fill:var(--bg)}
 svg text{fill:var(--fg)}
 textarea,input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--fg);border-radius:0;padding:10px 12px;width:100%}
 textarea{min-height:96px;resize:vertical}
-label.f{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mute)}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute)}
 .ritual{position:relative;border:1px solid var(--fg);height:220px;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .ritual canvas{position:absolute;inset:0;width:100%;height:100%}
-.bell{font-family:var(--f-display);font-size:12px;letter-spacing:.3em;z-index:1;background:var(--bg);padding:4px 10px;border:1px solid var(--fg)}
+.bell{font-family:var(--f-display);font-size:13px;letter-spacing:.3em;z-index:1;background:var(--bg);padding:4px 10px;border:1px solid var(--fg)}
 .ritual.ringing .bell{animation:ring .18s 8 alternate}
 @keyframes ring{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
 .opele{display:flex;gap:32px;justify-content:center;padding:18px 0}
@@ -329,7 +345,7 @@ label.f{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mu
 .mark i{width:5px;height:22px;background:var(--fg);display:block}
 .runes{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .rune{width:84px;height:110px;border:1px solid var(--fg);border-radius:42px 42px 8px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.rune .glyph{font-size:34px;line-height:1;font-family:"Segoe UI Historic","Noto Sans Runic",var(--f-body)}
+.rune .glyph{font-size:36px;line-height:1;font-family:"Segoe UI Historic","Noto Sans Runic",var(--f-body)}
 .rune.rev .glyph{transform:rotate(180deg)}
 .dropzone{border:1px dashed var(--fg);padding:22px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
 .dropzone img{max-height:220px;width:auto;max-width:100%}
@@ -337,8 +353,8 @@ label.f{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mu
 /* Nav */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--fg);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--nav-h)}
-nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--mute);text-decoration:none;font-size:11px}
-nav.tabs a b{font-family:var(--f-display);font-size:16px;font-weight:600;line-height:1}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--mute);text-decoration:none;font-size:11.5px}
+nav.tabs a b{font-family:var(--f-display);font-size:17px;font-weight:600;line-height:1}
 nav.tabs a[aria-current="page"]{color:var(--fg)}
 nav.tabs a[aria-current="page"] b{font-weight:900}
 
@@ -347,13 +363,13 @@ nav.tabs a[aria-current="page"] b{font-weight:900}
 .sheet .panel{background:var(--bg);border-top:1px solid var(--fg);width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 @media (min-width:600px){.sheet{align-items:center}.sheet .panel{border:1px solid var(--fg)}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.check{display:flex;gap:8px;align-items:center;font-size:12px}
+.check{display:flex;gap:8px;align-items:center;font-size:13px}
 .check input{width:auto}
 @media (max-width:420px){
-  h1{font-size:22px}.headline{font-size:21px}
+  h1{font-size:24px}.headline{font-size:22px}
   .tl{grid-template-columns:56px 46px 1fr;gap:8px}
   .spread{gap:8px}
-  .pillar .g{font-size:24px}
+  .pillar .g{font-size:26px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -361,15 +377,15 @@ nav.tabs a[aria-current="page"] b{font-weight:900}
 body{position:relative;z-index:0}
 /* ===== Soluna skin (from the Figma Make design) ===== */
 body{font-weight:400;letter-spacing:.005em}
-h1{font-weight:400;font-size:29px;line-height:1.15;letter-spacing:-.01em}
-h2{font-weight:400;font-size:22px;line-height:1.2}
+h1{font-weight:400;font-size:31px;line-height:1.15;letter-spacing:-.01em}
+h2{font-weight:400;font-size:24px;line-height:1.2}
 h3{font-weight:400}
 h1 .lat{font-family:var(--f-latin);font-style:normal;color:var(--gold3)}
-.eyebrow,.kicker{font-family:var(--f-body);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.eyebrow,.kicker{font-family:var(--f-body);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
 .mute,.note{color:var(--mute)}
 .note{border-left-color:rgba(183,180,235,.35)}
 header.top{background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line);padding-block:18px 14px}
-.brand{font-family:var(--f-body);font-weight:600;font-size:12px;letter-spacing:.25em;gap:11px;align-items:center}
+.brand{font-family:var(--f-body);font-weight:600;font-size:13px;letter-spacing:.25em;gap:11px;align-items:center}
 .brand-mark{width:28px;height:28px;display:block;flex:none;color:var(--gold)}
 .brand-mark svg{width:100%;height:100%;overflow:visible}
 .bm-sun line{stroke:currentColor;stroke-width:.9;stroke-linecap:round;opacity:.75}
@@ -379,17 +395,17 @@ header.top{background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom
 .brand-mark svg{animation:bmspin 60s linear infinite}
 .brand-mark .bm-moon,.brand-mark .bm-star{transform-origin:16px 16px}
 @keyframes bmspin{to{transform:rotate(360deg)}}
-.brand .zh{font-family:"Noto Serif TC",serif;font-weight:400;letter-spacing:0;font-size:14px;color:var(--gold2)}
+.brand .zh{font-family:"Noto Serif TC",serif;font-weight:400;letter-spacing:0;font-size:15px;color:var(--gold2)}
 .hdr-right{display:flex;align-items:center;gap:12px}
-.profile-orbit{width:32px;height:32px;border:1px solid rgba(255,255,255,.2);border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:14px;background:transparent;color:var(--fg);position:relative}
+.profile-orbit{width:32px;height:32px;border:1px solid rgba(255,255,255,.2);border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:15px;background:transparent;color:var(--fg);position:relative}
 .profile-orbit::after{content:"";position:absolute;right:-2px;top:2px;width:5px;height:5px;background:#b0adea;border-radius:50%;box-shadow:0 0 8px #b0adea}
 .today-date{color:var(--mute)}
-.btn{border-color:rgba(255,255,255,.18);border-radius:999px;font-size:11px;letter-spacing:.06em}
+.btn{border-color:rgba(255,255,255,.18);border-radius:999px;font-size:11.5px;letter-spacing:.06em}
 .btn:hover{background:rgba(255,255,255,.06);color:var(--fg)}
 .btn.solid{background:var(--gold2);color:var(--hi-fg);border-color:var(--gold2);font-weight:600}
 .btn.solid:hover{background:#d4d2f9;opacity:1}
 .seg{border:1px solid var(--line);border-radius:999px;padding:3px;gap:3px}
-.seg button{border-radius:999px;color:var(--mute2);font-size:11px}
+.seg button{border-radius:999px;color:var(--mute2);font-size:11.5px}
 .seg button+button{border-left:0}
 .seg button[aria-pressed="true"]{background:var(--gold2);color:var(--hi-fg)}
 textarea,input,select{background:var(--surface);border:1px solid var(--line);border-radius:10px}
@@ -397,23 +413,23 @@ textarea,input,select{background:var(--surface);border:1px solid var(--line);bor
 .demo-banner b{color:var(--gold2)}
 nav.tabs{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
 nav.tabs a{color:#6e6e73}
-nav.tabs a b{font-family:"Noto Serif TC",serif;font-weight:400;font-size:15px}
+nav.tabs a b{font-family:"Noto Serif TC",serif;font-weight:400;font-size:16px}
 nav.tabs a[aria-current="page"]{color:var(--fg)}
 nav.tabs a[aria-current="page"] b{font-weight:600;color:var(--gold2)}
 nav.tabs a[aria-current="page"]::before{top:0;width:28px;height:1px;border-radius:0;background:var(--gold);box-shadow:none}
 .ai{border-top:1px solid var(--line)}
-.ai-out h4{font-family:var(--f-display);font-weight:400;font-size:17px;color:var(--gold2)}
+.ai-out h4{font-family:var(--f-display);font-weight:400;font-size:18px;color:var(--gold2)}
 .thinking{color:var(--gold)}
 /* hero */
 .s-hero{display:flex;flex-direction:column;gap:18px;text-align:center;align-items:center;padding-top:18px}
-.date-line{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3);font-weight:500}
+.date-line{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3);font-weight:500}
 .date-line span{color:#6e6e73;margin-left:12px;padding-left:12px;border-left:1px solid #3b3b3f}
-.s-hero h1{font-family:var(--f-display);font-size:31px;line-height:1.18;font-weight:300;letter-spacing:-.02em;margin:6px 0 0}
+.s-hero h1{font-family:var(--f-display);font-size:33px;line-height:1.18;font-weight:300;letter-spacing:-.02em;margin:6px 0 0}
 .s-hero h1 em{font-style:normal;color:var(--gold3)}
-.hero-greet{font-family:var(--f-display);font-size:15.5px;font-weight:300;color:var(--fg);letter-spacing:.04em;margin-top:-4px}
+.hero-greet{font-family:var(--f-display);font-size:16.5px;font-weight:300;color:var(--fg);letter-spacing:.04em;margin-top:-4px}
 .hero-greet b{font-weight:400;color:var(--gold3)}
-.hero-body{max-width:420px;font-family:var(--f-display);font-size:14.5px;line-height:1.7;color:var(--mute2);font-weight:300}
-.primary-button{color:var(--hi-fg);border:1px solid var(--gold2);background:var(--gold2);border-radius:999px;padding:13px 18px;display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:600;letter-spacing:.04em;transition:transform .2s,background .2s}
+.hero-body{max-width:420px;font-family:var(--f-display);font-size:15.5px;line-height:1.7;color:var(--mute2);font-weight:300}
+.primary-button{color:var(--hi-fg);border:1px solid var(--gold2);background:var(--gold2);border-radius:999px;padding:13px 18px;display:inline-flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.04em;transition:transform .2s,background .2s}
 .primary-button:hover{transform:translateY(-2px);background:#d4d2f9}
 .primary-button svg{width:17px;height:17px;flex:none}
 .ic{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -424,8 +440,8 @@ nav.tabs a[aria-current="page"]::before{top:0;width:28px;height:1px;border-radiu
 .orb-ring{position:absolute;border:1px solid rgba(196,194,243,.14);border-radius:50%}
 .ring-one{inset:15%;transform:rotate(18deg) scaleY(.42)}
 .ring-two{inset:5%;transform:rotate(-47deg) scaleY(.78);border-color:rgba(255,255,255,.07)}
-.sky-cap{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap;font-size:10px;letter-spacing:.14em;color:#a8a29a}
-.sky-cap .orb-sign{font-size:19px}
+.sky-cap{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap;font-size:10.5px;letter-spacing:.14em;color:#a8a29a}
+.sky-cap .orb-sign{font-size:20px}
 .fold-shell{position:absolute;inset:-6%;width:112%;height:112%;z-index:1;pointer-events:auto}
 .realsky{position:absolute;inset:0;width:100%;height:100%;opacity:.55;-webkit-mask:radial-gradient(circle,#000 58%,transparent 72%);mask:radial-gradient(circle,#000 58%,transparent 72%)}
 .realsky .field circle{fill:#e0dffa}
@@ -433,45 +449,45 @@ nav.tabs a[aria-current="page"]::before{top:0;width:28px;height:1px;border-radiu
 .realsky .cl{fill:none;stroke:rgba(204,202,247,.55);stroke-width:.9}
 .realsky .cv{fill:#c8c5f7;filter:drop-shadow(0 0 4px #adaaee)}
 .realsky .cb{fill:#d5d3f9;filter:drop-shadow(0 0 8px #b2aef3)}
-.realsky text{display:none;fill:#b6b4e4;font-size:10px;letter-spacing:.12em;font-family:var(--f-body)}
+.realsky text{display:none;fill:#b6b4e4;font-size:10.5px;letter-spacing:.12em;font-family:var(--f-body)}
 .constellation{position:absolute;inset:0;width:100%;height:100%}
 .constellation path{fill:none;stroke:rgba(204,202,247,.38);stroke-width:.65}
 .constellation circle{fill:#c8c5f7;filter:drop-shadow(0 0 6px #adaaee)}
-.orb-core{position:relative;z-index:2;width:123px;height:123px;border:1px solid rgba(197,194,246,.42);background:rgba(14,14,16,.74);backdrop-filter:blur(8px);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#a8a29a;font-size:10px;letter-spacing:.1em;box-shadow:0 0 55px rgba(152,149,226,.12)}
-.orb-sign{color:#c5c3f6;font-size:23px;letter-spacing:.08em;font-family:"Noto Serif TC",serif;line-height:1}
-.orbit-label{position:absolute;font-size:9px;letter-spacing:.18em;color:#817e78;text-transform:uppercase}
+.orb-core{position:relative;z-index:2;width:123px;height:123px;border:1px solid rgba(197,194,246,.42);background:rgba(14,14,16,.74);backdrop-filter:blur(8px);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#a8a29a;font-size:10.5px;letter-spacing:.1em;box-shadow:0 0 55px rgba(152,149,226,.12)}
+.orb-sign{color:#c5c3f6;font-size:25px;letter-spacing:.08em;font-family:"Noto Serif TC",serif;line-height:1}
+.orbit-label{position:absolute;font-size:9.5px;letter-spacing:.18em;color:#817e78;text-transform:uppercase}
 .label-dm{top:8%;left:6%}.label-sun{top:16%;right:4%}.label-rise{bottom:16%;left:2%}.label-moon{bottom:14%;right:2%}
 .cosmic-weather{display:inline-flex;gap:13px;align-items:center;padding:12px 18px;background:rgba(18,19,22,.65);border:1px solid rgba(255,255,255,.1);border-radius:12px;backdrop-filter:blur(12px);text-align:left}
 .cosmic-weather .wi{color:var(--gold)}
 .cosmic-weather span,.cosmic-weather strong{display:block}
-.cosmic-weather span{color:#77777b;font-size:9px;text-transform:uppercase;letter-spacing:.16em;margin-bottom:3px}
-.cosmic-weather strong{font-size:11px;font-weight:400}
+.cosmic-weather span{color:#77777b;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;margin-bottom:3px}
+.cosmic-weather strong{font-size:11.5px;font-weight:400}
 /* daily */
 .daily{border-top:1px solid var(--line);padding-top:34px;display:flex;flex-direction:column;gap:22px}
 .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
-.sec-head h2{font-family:var(--f-display);font-weight:300;font-size:22px;line-height:1.15;margin-top:10px}
-.day-score{color:#77777b;font-size:9px;text-transform:uppercase;letter-spacing:.16em;text-align:right;white-space:nowrap}
-.day-score strong{display:block;font-family:var(--f-display);color:var(--fg);font-size:28px;font-weight:400;letter-spacing:0;line-height:1}
-.day-score small{color:#aba8e0;font-size:14.5px}
+.sec-head h2{font-family:var(--f-display);font-weight:300;font-size:24px;line-height:1.15;margin-top:10px}
+.day-score{color:#77777b;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;text-align:right;white-space:nowrap}
+.day-score strong{display:block;font-family:var(--f-display);color:var(--fg);font-size:30px;font-weight:400;letter-spacing:0;line-height:1}
+.day-score small{color:#aba8e0;font-size:15.5px}
 .insight-tabs{display:flex;flex-direction:column}
 .insight-tabs button{color:#6c6c70;background:transparent;border:0;border-bottom:1px solid var(--line);padding:16px 6px;text-align:left;display:grid;grid-template-columns:28px 1fr auto;gap:14px;align-items:center;transition:.25s}
 .insight-tabs button:first-child{border-top:1px solid var(--line)}
-.insight-tabs button>span{font-family:var(--f-display);font-size:12px}
+.insight-tabs button>span{font-family:var(--f-display);font-size:13px}
 .insight-tabs button strong,.insight-tabs button small{display:block}
-.insight-tabs button strong{color:#9a9998;font-family:var(--f-display);font-size:15px;font-weight:300;margin-bottom:2px}
-.insight-tabs button small{font-size:9px;text-transform:uppercase;letter-spacing:.14em}
+.insight-tabs button strong{color:#9a9998;font-family:var(--f-display);font-size:16px;font-weight:300;margin-bottom:2px}
+.insight-tabs button small{font-size:9.5px;text-transform:uppercase;letter-spacing:.14em}
 .insight-tabs button[aria-selected="true"]{color:var(--gold)}
 .insight-tabs button[aria-selected="true"] strong{color:#efeef8}
 .insight-tabs svg{width:18px;height:18px}
 .insight-card{background:var(--surface);border:1px solid var(--line);padding:38px 24px 24px;position:relative;overflow:hidden;animation:reveal .4s ease both;display:flex;flex-direction:column;gap:16px}
 .insight-card::after{content:"";position:absolute;width:240px;height:240px;right:-90px;top:-110px;border:1px solid rgba(173,170,236,.12);border-radius:50%;box-shadow:0 0 80px rgba(156,152,229,.05) inset}
-.card-stars{position:absolute;right:18px;top:16px;color:rgba(187,184,244,.45);letter-spacing:.7em;font-size:11px}
-.insight-card h3{font-family:var(--f-display);font-size:21px;line-height:1.3;font-weight:300}
-.insight-card p.body{color:var(--mute2);font-size:13px;line-height:1.8;font-weight:300}
+.card-stars{position:absolute;right:18px;top:16px;color:rgba(187,184,244,.45);letter-spacing:.7em;font-size:11.5px}
+.insight-card h3{font-family:var(--f-display);font-size:22px;line-height:1.3;font-weight:300}
+.insight-card p.body{color:var(--mute2);font-size:14px;line-height:1.8;font-weight:300}
 .card-footer{padding-top:16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.card-footer span{display:flex;align-items:center;gap:9px;color:#8e8c8b;font-size:10px;text-transform:uppercase;letter-spacing:.15em}
+.card-footer span{display:flex;align-items:center;gap:9px;color:#8e8c8b;font-size:10.5px;text-transform:uppercase;letter-spacing:.15em}
 .card-footer svg{width:17px;height:17px}
-.text-button{color:var(--gold);display:inline-flex;gap:9px;align-items:center;border:0;background:transparent;font-size:11px;padding:0}
+.text-button{color:var(--gold);display:inline-flex;gap:9px;align-items:center;border:0;background:transparent;font-size:11.5px;padding:0}
 .text-button svg{width:16px;height:16px}
 .yiji{border-color:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .yiji .big{font-family:"Noto Serif TC",serif;font-weight:400;color:var(--gold2)}
@@ -481,15 +497,15 @@ nav.tabs a[aria-current="page"]::before{top:0;width:28px;height:1px;border-radiu
 /* sand panel */
 .sand{background:var(--sand);color:var(--ink);padding:38px 24px;display:flex;flex-direction:column;gap:18px;margin-inline:-4px}
 .sand .kicker{color:#605d8c}
-.sand h2{font-family:var(--f-display);font-weight:300;font-size:24px;line-height:1.1}
-.sand p{color:#555363;font-size:13px;line-height:1.8;font-weight:300}
+.sand h2{font-family:var(--f-display);font-weight:300;font-size:26px;line-height:1.1}
+.sand p{color:#555363;font-size:14px;line-height:1.8;font-weight:300}
 .swatches{display:flex;align-items:center;justify-content:center;padding:6px 0}
-.person{width:96px;height:96px;border:1px solid rgba(23,23,26,.4);border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Noto Serif TC",serif;font-size:19px;position:relative}
+.person{width:96px;height:96px;border:1px solid rgba(23,23,26,.4);border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Noto Serif TC",serif;font-size:20px;position:relative}
 .person span{font-family:var(--f-body);font-size:8px;text-transform:uppercase;letter-spacing:.2em;margin-top:4px}
 .person+.person{margin-left:-12px}
 .person.avoid::after{content:"";position:absolute;inset:46% -4px auto;border-top:1px solid rgba(23,23,26,.6);transform:rotate(-30deg)}
-footer.s-foot{border-top:1px solid var(--line);padding-block:28px 10px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;color:#656569;font-size:10px;letter-spacing:.08em}
-footer.s-foot .brand{color:#b6b1a9;font-size:11px}
+footer.s-foot{border-top:1px solid var(--line);padding-block:28px 10px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;color:#656569;font-size:10.5px;letter-spacing:.08em}
+footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 /* other surfaces */
 .wheel-box svg .inkf{fill:var(--gold2)}
 .wheel-box text{fill:var(--fg)}
@@ -527,7 +543,7 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11px}
 .tcard .back .cbf{fill:var(--gold);stroke:none!important}
 .sheet .panel{background:var(--surface2);border:1px solid rgba(255,255,255,.12)}
 .mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.mood-grid button{border:1px solid var(--line);color:#9b9996;background:#1a1b20;padding:13px 5px;font-size:12px;transition:.2s;border-radius:0}
+.mood-grid button{border:1px solid var(--line);color:#9b9996;background:#1a1b20;padding:13px 5px;font-size:13px;transition:.2s;border-radius:0}
 .mood-grid button:hover,.mood-grid button[aria-pressed="true"]{color:var(--hi-fg);background:#bab8ec;border-color:#bab8ec}
 .modal-moon{width:55px;height:55px;margin:0 auto;color:#bab8ee;border:1px solid rgba(186,184,238,.3);border-radius:50%;display:grid;place-items:center}
 .modal-moon svg{width:26px;height:26px}
@@ -535,35 +551,35 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11px}
 @keyframes breathe{50%{transform:scale(1.1);opacity:.7}}
 @keyframes twinkle{50%{opacity:.25;transform:scale(.55)}}
 @keyframes reveal{from{opacity:0;transform:translateY(8px)}}
-@media (max-width:420px){.s-hero h1{font-size:31px}.sec-head h2{font-size:22px}.insight-card h3{font-size:22px}}
+@media (max-width:420px){.s-hero h1{font-size:33px}.sec-head h2{font-size:24px}.insight-card h3{font-size:24px}}
 
 /* ===== Co–Star style daily reading ===== */
 .reading{display:flex;flex-direction:column;gap:18px;border-top:1px solid var(--line);padding-top:4px}
 .day-strip{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--line);margin-inline:-4px}
-.day-strip button{background:none;border:0;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0 14px;font:inherit;font-size:10px;letter-spacing:.14em;cursor:pointer}
-.day-strip b{font-weight:400;font-size:14px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;letter-spacing:0;color:var(--fg)}
+.day-strip button{background:none;border:0;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0 14px;font:inherit;font-size:10.5px;letter-spacing:.14em;cursor:pointer}
+.day-strip b{font-weight:400;font-size:15px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;letter-spacing:0;color:var(--fg)}
 .day-strip button[aria-selected="true"]{color:var(--fg)}
 .day-strip button[aria-selected="true"] b{background:var(--fg);color:var(--bg)}
-.rd-h{font-family:var(--f-display);font-weight:300;font-size:23px;line-height:1.3;letter-spacing:.01em;margin-top:10px}
-.pp{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--mute2)}
+.rd-h{font-family:var(--f-display);font-weight:300;font-size:25px;line-height:1.3;letter-spacing:.01em;margin-top:10px}
+.pp{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:14px;color:var(--mute2)}
 .pp li{display:flex;gap:12px;align-items:flex-start;line-height:1.6}
-.ar-ic{font-size:14px;line-height:1.5;flex:none;width:20px;text-align:center}
-.pp-k{font-style:normal;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-right:10px}
+.ar-ic{font-size:15px;line-height:1.5;flex:none;width:20px;text-align:center}
+.pp-k{font-style:normal;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-right:10px}
 .ar-link{background:none;border:0;padding:0;font:inherit;color:var(--fg);text-decoration:underline;text-decoration-color:var(--mute);text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
 .ar-link:hover{text-decoration-color:var(--fg)}
-.rd-p{font-size:13px;line-height:1.85;color:var(--mute2);font-weight:300}
-.rd-k{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold3);margin-bottom:4px}
-.useful{display:flex;align-items:center;gap:18px;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--mute)}
+.rd-p{font-size:15.5px;line-height:1.85;color:var(--mute2);font-weight:400}
+.rd-k{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold3);margin-bottom:4px}
+.useful{display:flex;align-items:center;gap:18px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;color:var(--mute)}
 .useful button{background:none;border:0;color:var(--mute);padding:4px;cursor:pointer}
 .useful button svg{width:20px;height:20px}
 .useful button[aria-pressed="true"]{color:var(--fg)}
 .transits{border-top:1px solid var(--line);padding-top:30px;display:flex;flex-direction:column}
 .tr-row{display:grid;grid-template-columns:1fr 52px;gap:14px;align-items:center;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:22px 0;color:inherit;font:inherit;cursor:pointer;width:100%}
-.tr-t{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
-.tr-x{font-size:13px;line-height:1.75;color:var(--fg);font-weight:300;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tr-t{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.tr-x{font-size:14px;line-height:1.75;color:var(--fg);font-weight:300;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .read-sheet .tr-x{-webkit-line-clamp:unset;display:block}
-.tr-s{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--mute);margin-top:8px;text-transform:uppercase}
-.tr-more{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;margin-top:12px;color:var(--fg)}
+.tr-s{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--mute);margin-top:8px;text-transform:uppercase}
+.tr-more{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;margin-top:12px;color:var(--fg)}
 .tr-more svg{width:14px;height:14px}
 .mini-orbit{width:52px;height:52px}
 .mini-orbit.big{width:72px;height:72px;flex:none}
@@ -575,40 +591,40 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11px}
 .mini-orbit .ol{stroke:var(--gold);stroke-width:.7}
 .mini-orbit .ol.hard{stroke-dasharray:2 1.5}
 .sh-top{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px}
-.sh-title{text-align:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em}
-.sh-h{font-family:var(--f-display);font-weight:300;font-size:22px;line-height:1.3;margin-top:8px}
-.sh-p{font-size:13px;line-height:1.85;color:var(--mute2);font-weight:300}
-.sh-zw{border:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mute2)}
+.sh-title{text-align:center;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em}
+.sh-h{font-family:var(--f-display);font-weight:300;font-size:24px;line-height:1.3;margin-top:8px}
+.sh-p{font-size:14px;line-height:1.85;color:var(--mute2);font-weight:300}
+.sh-zw{border:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute2)}
 .tr-facts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .tr-facts div{padding:12px 0;display:flex;flex-direction:column;gap:4px;align-items:center}
-.tr-facts span{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;color:var(--mute)}
-.tr-facts b{font-weight:400;font-size:14px}
+.tr-facts span{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:var(--mute)}
+.tr-facts b{font-weight:400;font-size:15px}
 .read-sheet .tr-row{cursor:default}
 .tr-dz{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tr-dz div{border:1px solid var(--line);padding:12px 14px}
-.tr-dz span{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--gold3)}
-.tr-dz p{font-size:12.5px;line-height:1.7;margin-top:4px;font-weight:300}
+.tr-dz span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--gold3)}
+.tr-dz p{font-size:13.5px;line-height:1.7;margin-top:4px;font-weight:300}
 .tr-x{-webkit-line-clamp:5}
 .theme-btn{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--fg);display:grid;place-items:center;cursor:pointer;padding:0}
 .theme-btn svg{width:15px;height:15px}
 
 
 .six{border-top:1px solid var(--line);padding-top:30px;display:flex;flex-direction:column}
-.six .sec-head h2{font-size:19px}
+.six .sec-head h2{font-size:20px}
 .six-row{display:flex;flex-direction:column;gap:6px;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:20px 0;color:inherit;font:inherit;cursor:pointer;width:100%}
 .six-row:first-of-type{margin-top:16px;border-top:1px solid var(--line)}
 .six-top{display:flex;align-items:center;gap:14px}
-.six-n{font-family:var(--f-display);font-size:16px;font-weight:300;min-width:44px}
-.six-tag{margin-left:auto;font-size:11px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--mute)}
+.six-n{font-family:var(--f-display);font-size:17px;font-weight:300;min-width:44px}
+.six-tag{margin-left:auto;font-size:11.5px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--mute)}
 .six-tag.power{border-color:var(--gold);color:var(--gold)}
 .six-tag.trouble{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.six-h{font-size:14px;color:var(--fg);font-weight:400;margin-top:4px}
-.six-x{font-size:12.5px;line-height:1.8;color:var(--mute2);font-weight:300}
+.six-h{font-size:15px;color:var(--fg);font-weight:400;margin-top:4px}
+.six-x{font-size:13.5px;line-height:1.8;color:var(--mute2);font-weight:300}
 
 /* month calendar: three clearly different states */
 .cal div[data-k]{gap:1px;border-radius:6px}
-.cal div[data-k] b{font-weight:500;font-size:11px}
-.cal div[data-k] i{font-style:normal;font-size:9px;line-height:1}
+.cal div[data-k] b{font-weight:500;font-size:11.5px}
+.cal div[data-k] i{font-style:normal;font-size:9.5px;line-height:1}
 .cal div[data-k="good"]{background:var(--gold2)!important;color:var(--hi-fg)!important;border:1px solid var(--gold2)!important}
 .cal div[data-k="mid"]{background:transparent!important;color:var(--fg)!important;border:1px solid var(--gold)!important}
 .cal div[data-k="mid"] i{color:var(--gold)}
@@ -616,57 +632,57 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11px}
 .legend{gap:10px 16px}
 .legend span{display:inline-flex;align-items:center;gap:8px;color:var(--mute2)}
 .legend span::before{display:none!important}
-.legend span i{font-style:normal;width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:10px}
+.legend span i{font-style:normal;width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:10.5px}
 .legend [data-k="good"] i{background:var(--gold2);color:var(--hi-fg)}
 .legend [data-k="mid"] i{border:1px solid var(--gold);color:var(--gold)}
 .legend [data-k="low"] i{border:1px dashed var(--mute);color:var(--mute)}
 
 .feel{display:flex;flex-wrap:wrap;gap:8px}
-.feel button{border:1px solid var(--line);background:transparent;color:var(--mute2);border-radius:999px;padding:6px 12px;font:inherit;font-size:11px;cursor:pointer}
+.feel button{border:1px solid var(--line);background:transparent;color:var(--mute2);border-radius:999px;padding:6px 12px;font:inherit;font-size:11.5px;cursor:pointer}
 .feel button[aria-pressed="true"]{background:var(--gold2);color:var(--hi-fg);border-color:var(--gold2)}
 .djournal{border-top:1px solid var(--line);padding-top:26px;margin-top:10px;display:flex;flex-direction:column;gap:14px}
 .dj-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
-.dj-t{font-family:var(--f-display);font-weight:300;font-size:19px;margin-top:6px}
-.dj-where{font-size:11px;text-align:right}
+.dj-t{font-family:var(--f-display);font-weight:300;font-size:20px;margin-top:6px}
+.dj-where{font-size:11.5px;text-align:right}
 .dj-stats{display:grid;grid-template-columns:auto auto 1fr;gap:18px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0}
 .dj-stats>div:not(.dj-sym){display:flex;flex-direction:column;align-items:center}
-.dj-stats b{font-family:var(--f-display);font-weight:300;font-size:22px;line-height:1}
-.dj-stats span{font-size:11px;color:var(--mute)}
+.dj-stats b{font-family:var(--f-display);font-weight:300;font-size:24px;line-height:1}
+.dj-stats span{font-size:11.5px;color:var(--mute)}
 .dj-sym{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11px;color:var(--mute2)}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute2)}
 .chip.on{border-color:var(--gold);color:var(--gold)}
-.dj-month{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;color:var(--gold3);margin-top:8px}
+.dj-month{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;color:var(--gold3);margin-top:8px}
 .dj-row{display:grid;grid-template-columns:44px 1fr;gap:14px;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 0;color:inherit;font:inherit;cursor:pointer;width:100%}
-.dj-d{display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--mute)}
-.dj-d b{font-family:var(--f-display);font-weight:300;font-size:19px;color:var(--fg);line-height:1.1}
+.dj-d{display:flex;flex-direction:column;align-items:center;font-size:11.5px;color:var(--mute)}
+.dj-d b{font-family:var(--f-display);font-weight:300;font-size:20px;color:var(--fg);line-height:1.1}
 .dj-x{display:flex;flex-direction:column;gap:8px;min-width:0}
-.dj-txt{font-size:13px;line-height:1.7;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dj-txt{font-size:14px;line-height:1.7;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .dj-tags{display:flex;flex-wrap:wrap;gap:6px}
 
-.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--mute);text-decoration:none;margin-bottom:-10px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mute);text-decoration:none;margin-bottom:-10px}
 .back-link svg{width:14px;height:14px;transform:rotate(180deg)}
 .pats{gap:0}
 .pat{border-bottom:1px solid var(--line);padding:14px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
-.pat b{font-family:var(--f-display);font-weight:400;font-size:15px}
-.pat span{font-size:11px;color:var(--mute);justify-self:end;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.pat b{font-family:var(--f-display);font-weight:400;font-size:16px}
+.pat span{font-size:11.5px;color:var(--mute);justify-self:end;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
 .pat.g span{color:var(--gold);border-color:var(--gold)}
 .pat.b span{color:var(--fg);border-color:var(--fg)}
-.pat p{grid-column:1/-1;font-size:12.5px;line-height:1.75;color:var(--mute2);font-weight:300}
+.pat p{grid-column:1/-1;font-size:13.5px;line-height:1.75;color:var(--mute2);font-weight:300}
 
-.wk-ar{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--mute2);margin-top:4px}
+.wk-ar{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mute2);margin-top:4px}
 .mlist{display:flex;flex-direction:column}
 .mrow{display:grid;grid-template-columns:56px 1fr;gap:12px;border-bottom:1px solid var(--line);padding:14px 0}
 .mrow.now{background:color-mix(in srgb,var(--gold) 6%,transparent)}
 .mr-d{display:flex;flex-direction:column;align-items:center;gap:6px}
-.mr-d i{font-style:normal;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:11px}
+.mr-d i{font-style:normal;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:11.5px}
 .mrow[data-k="good"] .mr-d i{background:var(--gold2);color:var(--hi-fg)}
 .mrow[data-k="mid"] .mr-d i{border:1px solid var(--gold);color:var(--gold)}
 .mrow[data-k="low"] .mr-d i{border:1px dashed var(--mute);color:var(--mute)}
-.mr-x p{font-size:12px;line-height:1.7;color:var(--mute2)}
-.mr-x p:first-child{display:flex;gap:8px;align-items:center;color:var(--fg);font-size:13px}
+.mr-x p{font-size:13px;line-height:1.7;color:var(--mute2)}
+.mr-x p:first-child{display:flex;gap:8px;align-items:center;color:var(--fg);font-size:14px}
 .mr-x b{font-weight:400}
 /* ===== Light tone ===== */
-:root[data-theme="light"]{--bg:#f7f6f3;--surface:#ffffff;--surface2:#fbfaf8;--fg:#1c1b24;--mute:#8a8893;--mute2:#55535f;--line:rgba(28,27,36,.11);--soft:#efeee9;
+:root[data-theme="light"]{--bg:#f7f6f3;--surface:#ffffff;--surface2:#fbfaf8;--fg:#14131b;--mute:#6a6873;--mute2:#3d3b46;--line:rgba(28,27,36,.11);--soft:#efeee9;
   --gold:#a87b37;--gold2:#2a2218;--gold3:#a87b37;--sand:#efe3cc;--ink:#1c1b24;--hi:#2a2218;--hi-fg:#f7f6f3;color-scheme:light}
 :root[data-theme="light"] #skybg{opacity:.6}
 :root[data-theme="light"] .profile-orbit::after{background:var(--gold);box-shadow:none}
@@ -935,35 +951,64 @@ function luckyColor(c,di){
 }
 function moonPhaseInfo(date){
   if(!window.Astronomy)return null;const ph=Astronomy.MoonPhase(date);
-  const P=[[22.5,"新月","許願、寫下新的意圖。適合點一支白燭。"],[67.5,"眉月","播種：為新計劃踏出第一小步。"],[112.5,"上弦月","行動：處理阻力，做決定。"],[157.5,"盈凸月","調整：微調方向，耐心等待成果。"],[202.5,"滿月","感恩與顯化：情緒高漲，適合月光淨化水晶。"],[247.5,"虧凸月","分享：把學到的教給別人。"],[292.5,"下弦月","釋放：寫下想放手的事，然後燒掉或撕掉。"],[337.5,"殘月","休息：清理空間，斷捨離，準備重新開始。"],[361,"新月","許願、寫下新的意圖。適合點一支白燭。"]];
+  const P=[[22.5,"新月","月亮重新開始。適合許願、寫低新目標，想要儀式感可以點一支白蠟燭。"],[67.5,"眉月","月亮慢慢變大。適合為新計劃踏出第一小步，唔使一次做晒。"],[112.5,"上弦月","計劃開始遇到阻力。適合正面處理問題、做決定。"],[157.5,"盈凸月","就快滿月。適合微調方向，耐心等成果出現。"],[202.5,"滿月","情緒同能量最滿嘅時候。適合感恩、回顧成果，亦可以將水晶放喺月光下淨化。"],[247.5,"虧凸月","滿月剛過，係分享收穫嘅時候：將你最近學到嘅嘢教畀身邊人，或者多謝幫過你嘅人。"],[292.5,"下弦月","適合放手：寫低想放低嘅事，然後將張紙撕走。"],[337.5,"殘月","月亮就快消失。適合休息、執屋、斷捨離，準備下一個新開始。"],[361,"新月","月亮重新開始。適合許願、寫低新目標，想要儀式感可以點一支白蠟燭。"]];
   const f=P.find(x=>ph<x[0]);return{deg:ph,name:f[1],ritual:f[2]};
 }
 
 /* ============ Claude ============ */
 let samplePromise=null;
-const KEY_LS="soluna.apikey";
-function apiKey(){try{return localStorage.getItem(KEY_LS)||""}catch(e){return""}}
 const IN_CLAUDE=!!(window.claude&&window.claude.use);
-/* Standalone app: call the Anthropic API directly with the user's own key (stored only on this device) */
-function keySampler(key){
+const AI_ENDPOINT=window.SOLUNA_AI_ENDPOINT||null;
+/* Standalone app: reports are generated by DeepSeek through our own small server (the API key never reaches the phone) */
+function serverSampler(){
   return async(input,o={})=>{
-    const content=[];
-    if(o.images)for(const b of o.images){const data=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(b)});content.push({type:"image",source:{type:"base64",media_type:b.type||"image/jpeg",data}})}
-    content.push({type:"text",text:typeof input==="string"?input:input.map(m=>m.content).join("\n\n")});
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-sonnet-5-5",max_tokens:2000,stream:true,messages:[{role:"user",content}]})});
-    if(!res.ok){const code=res.status===401?"bad_key":res.status===429?"rate_limited":"error";throw {code}}
+    if(!fbUser)throw {code:"signin"};
+    const tok=await fbUser.getIdToken();
+    const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer "+tok},body:JSON.stringify({prompt:typeof input==="string"?input:input.map(m=>m.content).join("\n\n")})});
+    if(!res.ok)throw {code:res.status===402?"locked":res.status===429?"rate_limited":"error"};
     const rd=res.body.getReader(),dec=new TextDecoder();let buf="",text="";
-    for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;
-      while((i=buf.indexOf("\n"))>=0){const line=buf.slice(0,i).trim();buf=buf.slice(i+1);if(!line.startsWith("data:"))continue;
-        try{const ev=JSON.parse(line.slice(5));if(ev.type==="content_block_delta"&&ev.delta&&ev.delta.text){text+=ev.delta.text;o.onText&&o.onText({text})}}catch(e){}}}
+    for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let n;
+      while((n=buf.indexOf("\n"))>=0){const line=buf.slice(0,n).trim();buf=buf.slice(n+1);if(!line.startsWith("data:"))continue;const d=line.slice(5).trim();if(d==="[DONE]")continue;
+        try{const ev=JSON.parse(d),t=ev.choices&&ev.choices[0]&&ev.choices[0].delta&&ev.choices[0].delta.content;if(t){text+=t;o.onText&&o.onText({text})}}catch(e){}}}
     return {text,truncated:false};
   };
 }
 function getSample(){
   if(IN_CLAUDE){if(!samplePromise)samplePromise=window.claude.use("sample").catch(()=>null);return samplePromise}
-  const k=apiKey();return Promise.resolve(k?keySampler(k):null);
+  return Promise.resolve(AI_ENDPOINT?serverSampler():null);
 }
+/* ---------- Membership & paywall ---------- */
+const ENT={member:false};
+const isMember=()=>ENT.member===true;
+const LOCK_IC='<svg class="ic lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function openPaywall(what){
+  const sh=$("#sheet");
+  sh.innerHTML=`<section class="panel paywall" role="dialog" aria-label="解鎖完整內容">
+    <div class="pw-orb">${$(".brand-mark").innerHTML}</div>
+    <p class="kicker">Soluna 會員</p>
+    <h2>${what?esc(what)+"，":""}仲有更多等緊你。</h2>
+    <p class="mute">你嘅星空仲有好多故事未講。付款解鎖之後，就可以睇晒：</p>
+    <ul class="pw-list"><li>一個月、一年、十年嘅完整運勢同行動計劃</li><li>為你度身寫嘅深入解讀：命盤、行運、塔羅、解夢、占卜</li><li>塔羅同各種占卜無限次抽</li></ul>
+    <button class="btn solid" type="button" id="pwGo">付款解鎖更多內容</button>
+    <button class="linkbtn" type="button" id="pwLater">遲啲先</button>
+    <p class="note" id="pwMsg" role="status" hidden></p></section>`;
+  sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
+  $("#pwLater").onclick=()=>{sh.hidden=true};
+  $("#pwGo").onclick=()=>{const m=$("#pwMsg");m.hidden=false;m.textContent="付款功能就快開放，多謝你嘅支持！開放之後你會第一時間收到通知。"};
+}
+const freeKey=k=>"soluna.free."+k+"."+ymd(new Date());
+function dailyFree(kind,name,fn){
+  if(isMember()||!store(freeKey(kind))){if(!isMember())store(freeKey(kind),1);fn();return}
+  openPaywall(`今日嘅免費${name}已經用咗`);
+}
+function lockPreview(body,what){
+  if(isMember())return;
+  body.classList.add("pv-lock");
+  const c=document.createElement("div");c.className="pv-card";
+  c.innerHTML=`<p class="kicker">${LOCK_IC} 會員內容</p><h3>${esc(what)}已經為你計好</h3><p class="mute">付款解鎖之後，就可以睇晒完整嘅運勢走勢同行動計劃。</p><button class="btn solid" type="button">付款解鎖</button>`;
+  $("button",c).onclick=()=>openPaywall(what);body.after(c);
+}
+
 function profileContext(c){
   const p=c.p, b=c.bazi;const lines=[];
   lines.push(`稱呼：${p.name}；性別：${p.gender==="M"?"男":"女"}；出生：${p.date} ${p.timeUnknown?"（時間不詳）":p.time}，${c.city[0]}`);
@@ -986,18 +1031,19 @@ ${c?"使用者資料：\n"+profileContext(c)+"\n":""}
 }
 function aiBlock(label,taskFn,opts={}){
   const box=document.createElement("div");box.className="ai";
-  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">AI 深入解讀</span><button class="btn small solid" type="button">${esc(label)}</button></div><div class="ai-out"></div><p class="note" hidden></p>`;
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">付費解讀 · Premium</span><button class="btn small solid" type="button">${isMember()?"":LOCK_IC}${esc(label)}</button></div><div class="ai-out"></div><p class="note" hidden></p>`;
   const btn=$("button",box), out=$(".ai-out",box), note=$(".note",box);
   btn.onclick=async()=>{
+    if(!isMember()){openPaywall(label);return}
     const task=typeof taskFn==="function"?taskFn():taskFn; if(task===null)return;
     note.hidden=true;btn.disabled=true;out.innerHTML='<span class="thinking">正在感應中 ⋯</span>';
     const s=await getSample();
-    if(!s){out.innerHTML="";note.hidden=false;note.textContent="想用 AI 深入解讀，可以喺「我的」頁面輸入你自己嘅 Anthropic API key。上面嘅基本解讀已經按你嘅命盤計好。";btn.disabled=false;return}
+    if(!s){out.innerHTML="";note.hidden=false;note.textContent="解讀服務暫時未開放，請遲啲再試。上面嘅基本分析已經按你嘅命盤計好。";btn.disabled=false;return}
     try{
       const o={onText:({text})=>{out.innerHTML=md(text)},modelTier:"default"};
       if(opts.images)o.images=opts.images();
       const {text}=await s(task,o);out.innerHTML=md(text);if(opts.onDone)try{opts.onDone(text)}catch(e){}
-    }catch(e){out.innerHTML=e&&e.text?md(e.text):"";note.hidden=false;note.textContent={not_granted:"你未允許此頁使用 Claude，所以 AI 解讀已隱藏。",bad_key:"API key 唔啱，去「我的」頁面再檢查一次。",rate_limited:"請求太頻繁，請稍等一會再試。",images_unavailable:"此環境暫時不能傳送相片。"}[e&&e.code]||"解讀未能完成，請稍後再試。"}
+    }catch(e){out.innerHTML=e&&e.text?md(e.text):"";note.hidden=false;note.textContent={not_granted:"你未允許此頁使用 Claude，所以 AI 解讀已隱藏。",signin:"請先登入。",locked:"呢個係會員內容，付款解鎖之後就可以睇。",rate_limited:"請求太頻繁，請稍等一會再試。",images_unavailable:"此環境暫時不能傳送相片。"}[e&&e.code]||"解讀未能完成，請稍後再試。"}
     btn.disabled=false;btn.textContent="重新解讀";
   };
   return box;
@@ -1020,6 +1066,7 @@ async function fbLoad(){
 async function cloudDown(uid){
   const {F,db}=FB,ref=F.doc(db,"users",uid);let snap=null;
   try{snap=await F.getDoc(ref)}catch(e){console.warn(e)}
+  ENT.member=!!(snap&&snap.exists()&&snap.data().member===true);
   const data=snap&&snap.exists()?(snap.data().data||{}):null;
   if(data&&Object.keys(data).length){
     Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));
@@ -1031,17 +1078,27 @@ async function cloudDown(uid){
   let q={},t=0;
   window.cloudPush=(k,v)=>{if(!SYNC_KEY(k))return;q[encK(k)]=JSON.stringify(v);clearTimeout(t);t=setTimeout(()=>{const d=q;q={};F.setDoc(ref,{data:d,updated:F.serverTimestamp()},{merge:true}).catch(console.warn)},1200)};
 }
+function greetWord(){const h=new Date().getHours();return h<5?"夜深了":h<12?"早晨":h<18?"午安":"晚安"}
+function birthFields(){return `<p class="kicker" style="margin-top:6px">你嘅出生資料</p><p class="mute" style="font-size:12.5px;margin-top:-6px">出生時間越準，上升星座、時柱同紫微命盤就越準。資料只會用嚟幫你排盤。</p>
+  <div class="grid2"><label class="f" for="bd">出生日期<input id="bd" type="date" required min="1901-01-01" max="${ymd(new Date())}"></label>
+  <label class="f" for="bt">出生時間<input id="bt" type="time" value="12:00"></label></div>
+  <label class="check" for="bu"><input type="checkbox" id="bu">我唔知道出生時間</label>
+  <div class="grid2"><label class="f" for="bc">出生城市<select id="bc">${CITIES.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join("")}</select></label>
+  <label class="f" for="bg">性別（排大運用）<select id="bg"><option value="F">女</option><option value="M">男</option></select></label></div>`}
+function readBirth(){const d=$("#bd").value;if(!d)return null;const unk=$("#bu").checked;return {date:d,time:unk?"12:00":($("#bt").value||"12:00"),timeUnknown:unk,city:+$("#bc").value,gender:$("#bg").value}}
+function greetToast(name){const t=document.createElement("div");t.className="toast";t.innerHTML=`<b>${greetWord()}，${esc(name||"你好")}。</b><span>今日嘅星空已經為你準備好 ✦</span>`;document.body.appendChild(t);setTimeout(()=>t.classList.add("out"),3600);setTimeout(()=>t.remove(),4400)}
 function authScreen(){
   const m=$("#main");document.body.classList.add("locked");
   let mode="login";
   const draw=(msg="")=>{m.innerHTML=`<section class="view auth">
     <div class="auth-mark">${$(".brand-mark").innerHTML}</div>
-    <h1>曜 <em>Soluna</em></h1><p class="mute">${mode==="login"?"歡迎返嚟。登入之後，你嘅命盤、夢境日記同心情記錄會喺所有裝置同步。":"開一個帳戶，你嘅命盤同日記就唔會因為換機而唔見。"}</p>
+    <h1>${mode==="login"?greetWord()+"，歡迎返嚟":"初次見面，你好"}</h1><p class="mute auth-lead">${mode==="login"?"星星一直喺度等你。登入之後，今日屬於你嘅星空就會打開。":"好高興認識你。話我知你喺幾時、喺邊度出世，我哋就可以讀出只屬於你嘅星盤、八字同紫微命盤。"}</p>
     <div class="seg" role="group"><button type="button" data-m="login" aria-pressed="${mode==="login"}">登入</button><button type="button" data-m="signup" aria-pressed="${mode==="signup"}">註冊</button></div>
     <form id="af" class="stack" autocomplete="on">
-      ${mode==="signup"?`<label class="f" for="an">稱呼<input id="an" maxlength="20" autocomplete="nickname" placeholder="你想點樣被稱呼"></label>`:""}
+      ${mode==="signup"?`<label class="f" for="an">我哋可以點稱呼你？<input id="an" required maxlength="20" autocomplete="nickname" placeholder="例如：Yuki"></label>`:""}
       <label class="f" for="ae">電郵<input id="ae" type="email" required autocomplete="email" placeholder="you@example.com"></label>
       <label class="f" for="ap">密碼<input id="ap" type="password" required minlength="6" autocomplete="${mode==="login"?"current-password":"new-password"}" placeholder="最少 6 個字"></label>
+      ${mode==="signup"?birthFields():""}
       <button class="btn solid" type="submit">${mode==="login"?"登入":"建立帳戶"}</button>
     </form>
     <button class="btn" type="button" id="ag">用 Google 帳戶${mode==="login"?"登入":"註冊"}</button>
@@ -1051,7 +1108,10 @@ function authScreen(){
     const {A,auth}=FB,say=t=>{$("#amsg").textContent=t};
     const err=e=>({"auth/invalid-credential":"電郵或密碼唔啱。","auth/wrong-password":"密碼唔啱。","auth/user-not-found":"搵唔到呢個帳戶，可以先註冊。","auth/email-already-in-use":"呢個電郵已經註冊咗，直接登入就得。","auth/weak-password":"密碼最少要 6 個字。","auth/invalid-email":"電郵格式唔啱。","auth/network-request-failed":"連唔到網絡，請檢查一下再試。","auth/too-many-requests":"試得太多次，請等一陣再試。","auth/popup-closed-by-user":"登入視窗閂咗。"}[e.code]||"登入未成功："+(e.code||e.message));
     $("#af").onsubmit=async ev=>{ev.preventDefault();const em=$("#ae").value.trim(),pw=$("#ap").value;say(mode==="login"?"登入緊⋯":"建立緊帳戶⋯");
-      try{if(mode==="login")await A.signInWithEmailAndPassword(auth,em,pw);else{const c=await A.createUserWithEmailAndPassword(auth,em,pw);const nm=($("#an")||{}).value;if(nm){await A.updateProfile(c.user,{displayName:nm.trim()});const p=store("xuanjing.profile.v1");if(!p||p.demo)store("xuanjing.profile.v1",{...DEMO,name:nm.trim()})}}}catch(e){say(err(e))}};
+      try{if(mode==="login")await A.signInWithEmailAndPassword(auth,em,pw);else{const nm=$("#an").value.trim(),bp=readBirth();if(!bp){say("請填埋出生日期。");return}
+        Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));
+        store("xuanjing.profile.v1",{...bp,name:nm,lang:"繁體中文",demo:false});
+        const c=await A.createUserWithEmailAndPassword(auth,em,pw);await A.updateProfile(c.user,{displayName:nm})}}catch(e){say(err(e))}};
     $("#ag").onclick=async()=>{try{await A.signInWithPopup(auth,new A.GoogleAuthProvider())}catch(e){say(err(e))}};
     const f2=$("#af2");if(f2)f2.onclick=async()=>{const em=$("#ae").value.trim();if(!em){say("請先輸入你嘅電郵。");return}try{await A.sendPasswordResetEmail(auth,em);say("已經寄咗重設密碼嘅電郵畀你。")}catch(e){say(err(e))}};
   };
@@ -1065,12 +1125,14 @@ async function authGate(start){
   let started=false;
   FB.A.onAuthStateChanged(FB.auth,async u=>{
     fbUser=u;
-    if(!u){window.cloudPush=null;try{localStorage.removeItem("soluna.signedIn")}catch(e){}started=false;authScreen();return}
+    if(!u){window.cloudPush=null;ENT.member=false;try{localStorage.removeItem("soluna.signedIn")}catch(e){}started=false;authScreen();return}
     try{localStorage.setItem("soluna.signedIn","1")}catch(e){}
     document.body.classList.remove("locked");$("#main").innerHTML=`<p class="note" style="margin-top:40px;text-align:center">同步緊你嘅命盤⋯</p>`;
     await cloudDown(u.uid);
     profile=store("xuanjing.profile.v1")||{...DEMO};applyTheme(store("soluna.theme")||document.documentElement.dataset.theme||"dark");
     if(!started){started=true;start()}else{recompute();route()}
+    greetToast(profile.demo?(u.displayName||""):profile.name);
+    if(profile.demo)setTimeout(()=>{if(typeof openEditor==="function")openEditor()},900);
   });
 }
 async function signOutAll(){
@@ -1248,7 +1310,7 @@ function particleOrb(c){
   return `<div class="orb-wrap" aria-label="今日太陽星座${SIGNS[ts]}座嘅真實星圖"><div class="orb-aura"></div>
   <svg class="realsky" viewBox="0 0 400 400" aria-hidden="true"><g class="field">${stars}</g><path class="cl" d="${lines}"/>${verts.map(([x,y])=>`<circle class="cv" cx="${x}" cy="${y}" r="2.6"/>`).join("")}${K.b?`<circle class="cb" cx="${K.b[0]}" cy="${K.b[1]}" r="4.6"/><text x="${K.b[0]+8}" y="${K.b[1]-8}">${esc(K.b[2])}</text>`:""}</svg>
   <canvas class="fold-shell" id="orbShell" aria-hidden="true"></canvas>
-  <div class="orb-core"><span class="orb-sign">${SIGNS[ts]}</span><span>今日太陽星座</span><span class="mono" style="font-size:9px;color:#77777b">${SIGN_DATES[ts]}</span></div>
+  <div class="orb-core"><span class="orb-sign">${SIGNS[ts]}</span><span>今日太陽星座</span><span class="mono" style="font-size:9.5px;color:#77777b">${SIGN_DATES[ts]}</span></div>
   <span class="orbit-label label-dm">日主 · ${c.bazi.dm}${EL[ganEl(c.bazi.dm)]}</span><span class="orbit-label label-sun">太陽 · ${sun}</span>${c.asc?`<span class="orbit-label label-rise">上升 · ${c.asc.sign}</span>`:""}<span class="orbit-label label-moon">月亮 · ${moon}</span></div>`;
 }
 const MOODS=["溫柔","不安","開放","沉重","有希望","迷惘"];
@@ -1257,11 +1319,11 @@ function openMood(after){
   const sh=$("#sheet");let pick=store(moodKey())||"";
   const draw=()=>{sh.innerHTML=`<section class="panel" role="dialog" aria-modal="true" aria-labelledby="mt" style="text-align:center;align-items:stretch">
    <div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose" aria-label="關閉">${ic("close")}</button></div>
-   <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:26px">而家心入面係咩感覺？</h2>
+   <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:28px">而家心入面係咩感覺？</h2>
    <p class="mute">唔使解釋得清楚，揀最接近嗰個就得。</p>
    <div class="mood-grid">${MOODS.map(m=>`<button type="button" aria-pressed="${pick===m}" data-m="${m}">${m}</button>`).join("")}</div>
    <button class="btn solid" type="button" id="msave" ${pick?"":"disabled"} style="border-radius:0;padding:14px">記住呢一刻</button>
-   <small class="mute" style="font-size:10px">只會儲存喺你部機 · 心情會影響 AI 今日解讀嘅語氣</small></section>`;
+   <small class="mute" style="font-size:10.5px">只會儲存喺你部機 · 心情會影響 AI 今日解讀嘅語氣</small></section>`;
    sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{pick=b.dataset.m;draw()});
    $("#mclose").onclick=()=>{sh.hidden=true};
    $("#msave").onclick=()=>{store(moodKey(),pick);sh.hidden=true;after&&after()};};
@@ -1575,9 +1637,9 @@ function openTransit(c,an,i){
    <p class="sh-p">${esc(tr.text)}</p>
    <p class="sh-p">${esc(tr.more||"")}</p>
    <div class="tr-dz"><div><span>可以做</span><p>${esc(TR_DO[tr.tp][0])}</p></div><div><span>要避免</span><p>${esc(TR_DO[tr.tp][1])}</p></div></div>
-   ${(()=>{const ars=an.areas.filter(a=>a.pts.includes(tr.np));return ars.length?`<p class="mute" style="font-size:12px">影響範疇：${ars.map(a=>a.n).join("、")}</p>`:""})()}
+   ${(()=>{const ars=an.areas.filter(a=>a.pts.includes(tr.np));return ars.length?`<p class="mute" style="font-size:13px">影響範疇：${ars.map(a=>a.n).join("、")}</p>`:""})()}
    <div class="tr-facts"><div><span>開始</span><b>${fmtD(tr.start)}</b></div><div><span>最準</span><b>${fmtD(tr.exact)}</b></div><div><span>結束</span><b>${fmtD(tr.end)}</b></div><div><span>容許度</span><b>${tr.orb.toFixed(1)}°</b></div></div>
-   <p class="mute" style="font-size:12px">行運${tr.tp}喺${SIGNS[Math.floor(tr.tlon/30)]}座 ${(tr.tlon%30).toFixed(0)}°，你本命${tr.np}喺${SIGNS[Math.floor(tr.nlon/30)]}座 ${(tr.nlon%30).toFixed(0)}°。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}</p>
+   <p class="mute" style="font-size:13px">行運${tr.tp}喺${SIGNS[Math.floor(tr.tlon/30)]}座 ${(tr.tlon%30).toFixed(0)}°，你本命${tr.np}喺${SIGNS[Math.floor(tr.nlon/30)]}座 ${(tr.nlon%30).toFixed(0)}°。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}</p>
    <div id="trAI"></div>`,sh=>{$("#trAI",sh).appendChild(aiBlock("AI 解讀呢個行運",()=>prompt(`解讀行運：${tr.tp}${tr.asp}本命${tr.np}（容許度${tr.orb.toFixed(1)}°，${fmtD(tr.start)}至${fmtD(tr.end)}，最準${fmtD(tr.exact)}）。講清楚佢對使用者生活嘅具體影響、要把握同要避免嘅事，再對照紫微今日流日四化：${an.zw?huaSentence(an.zw.daily):""}`,c)))});
 }
 const AREA_IC_SVG={power:'<svg class="ar-ic" viewBox="0 0 24 24"><path d="M12 21V11"/><path d="M12 13c0-4 3-6 7-6 0 4-3 6-7 6Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3 2.5 5 6 5Z"/></svg>',
@@ -1595,20 +1657,20 @@ function renderToday(el){
   const lc=luckyColor(chart,di);
   const head=t.head.split(/(?<=，)/);
   const score=Math.round(di.total/5*100);
-  const L1=house!=null?`月亮今天走到${SIGNS[moonSign]}座，落在你太陽的第 ${house+1} 宮，焦點放在「${HOUSE_THEME[house]}」。`:"";
+  const L1=house!=null?`月亮今日走到${SIGNS[moonSign]}座，落喺你太陽嘅第 ${house+1} 宮，焦點係「${HOUSE_THEME[house]}」。`:"";
   const uname=(profile.name||"你").trim(), hr=today0.getHours(), greet=hr<5?"夜深了":hr<12?"早晨":hr<18?"午安":"晚安";
   const L1h=house!=null?`今日月亮走到${SIGNS[moonSign]}座，經過你太陽嘅第 ${house+1} 宮。你嘅心思會自然飄向「${HOUSE_THEME[house]}」，畀自己慢慢感受。`:"";
   const L2=`流日 ${di.gz} 對你的日主${chart.bazi.dm}是「${di.tg}」，地支藏「${di.tgz}」：${t.kw}與${TG[di.tgz].kw}交織。`;
-  const rel=di.he?"今天地支和你的日支六合，人緣好，適合談合作或約會。":di.clash?"今天地支和你的日支相沖，說話前留多一拍，關係需要多一點彈性。":"今天人際平穩，簡單直接的一句關心，比精心安排更有效。";
+  const rel=di.he?"今日地支同你日支六合，人緣好，適合傾合作或者約會。":di.clash?"今日地支同你日支相沖，講嘢之前停一停，關係需要多啲彈性。":"今日人際平穩，一句簡單直接嘅關心，好過精心安排。";
   const an=analyzeDay(chart,now), paras=an?readingParas(chart,an):[];
   const clsOf=a=>an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":"pressure";
   const A=k=>an?an.areas.find(x=>x.k===k):null;
   if(an){const m=k=>Math.max(1,Math.min(5,Math.round(3+A(k).net*.9)));di.sc={love:m("love"),work:m("work"),money:m("money"),health:m("routine")};di.total=(di.sc.love+di.sc.work+di.sc.money+di.sc.health)/4}
   const love=di.sc.love, work=di.sc.work, money=di.sc.money;
   const INS={
-    essence:{n:"本質",s:"Inner world · 內在",k:"Your essence · 你的本質",h:t.head,b:L2+" "+(L1||""),st:`${di.gz}日 · ${di.tg}`,a:`宜：${t.yi[0]}`},
-    connection:{n:"關係",s:"Love & friendship · 感情人緣",k:"Your connections · 你的關係",h:love>=4?"讓人看見未修飾的你。":love>=3?"溫柔地說出那句簡單的話。":"先照顧好自己，再照顧關係。",b:rel+` 今日感情 ${love}/5。`,st:`感情 ${love} / 5`,a:love>=3?"主動聯絡一個人":"今晚早點休息"},
-    becoming:{n:"成長",s:"Growth & purpose · 事業財運",k:"Your becoming · 你的成長",h:work>=4?"今天適合踏出實質的一步。":work>=3?"一件有意義的事就足夠。":"慢下來，比用力更有效。",b:`事業 ${work}/5，財運 ${money}/5。${TG[di.tgz].life}`,st:`事業 ${work} · 財運 ${money}`,a:`忌：${t.ji[0]}`}
+    essence:{n:"本質",s:"Inner world · 內在",k:"Your essence · 你嘅本質",h:t.head,b:L2+" "+(L1||""),st:`${di.gz}日 · ${di.tg}`,a:`宜：${t.yi[0]}`},
+    connection:{n:"關係",s:"Love & friendship · 感情人緣",k:"Your connections · 你嘅關係",h:love>=4?"畀人睇吓真實嘅你。":love>=3?"溫柔咁講出嗰句簡單嘅說話。":"先照顧好自己，再照顧段關係。",b:rel+` 今日感情 ${love}/5。`,st:`感情 ${love} / 5`,a:love>=3?"主動聯絡一個人":"今晚早點休息"},
+    becoming:{n:"成長",s:"Growth & purpose · 事業財運",k:"Your becoming · 你嘅成長",h:work>=4?"今日適合踏出實際嘅一步。":work>=3?"做好一件有意義嘅事就夠。":"慢落嚟，好過用力。",b:`事業 ${work}/5，財運 ${money}/5。${TG[di.tgz].life}`,st:`事業 ${work} · 財運 ${money}`,a:`忌：${t.ji[0]}`}
   };
   if(an){const mk=(key,ak)=>{const a=A(ak),c=clsOf(a);Object.assign(INS[key],{h:AREA_HEAD[c][ak],b:areaText(a,c),st:a.trs[0]?a.trs[0].title.split(" · ")[0]:(a.hua[0]?`${a.hua[0].label}${a.hua[0].star}化${a.hua[0].h}`:`${a.n}`)})};mk("essence","self");mk("connection","love");mk("becoming","work")}
   const cur=INS[insightTab];
@@ -1625,10 +1687,10 @@ function renderToday(el){
     ${paras.map(p=>`<p class="rd-p"><span class="rd-k">${p.k}</span>${esc(p.t)}</p>`).join("")}
     <div class="useful"><span>有冇用？</span><button type="button" data-u="1" aria-label="有用" aria-pressed="${store("soluna.useful."+ymd(now))===1}">${ic("thumb")}</button><button type="button" data-u="-1" aria-label="冇用" aria-pressed="${store("soluna.useful."+ymd(now))===-1}">${ic("thumbd")}</button></div>
   </section>`:"";
-  const transitHTML=an?`<section class="transits"><p class="kicker">Transits · 行運</p><p class="mute" style="font-size:12px;margin-top:6px">今日真實行星位置對你本命盤形成嘅相位，按影響力排序。</p>
+  const transitHTML=an?`<section class="transits"><p class="kicker">Transits · 行運</p><p class="mute" style="font-size:13px;margin-top:6px">今日真實行星位置對你本命盤形成嘅相位，按影響力排序。</p>
     ${showTr.map(([t,i])=>`<button type="button" class="tr-row" data-ti="${i}"><div><p class="tr-t">${esc(t.title)}</p><p class="tr-x">${esc(t.text)} ${esc(t.more||"")}</p><p class="tr-s">${esc(t.span)}${t.end?` · ${fmtD(t.start)}–${fmtD(t.end)}`:""}</p><span class="tr-more">詳情 ${ic("arrow")}</span></div>${miniOrbit(t)}</button>`).join("")}</section>`:"";
   el.innerHTML=`
-  ${profile.demo?`<div class="demo-banner"><span>你正在看<b>示範命盤</b>。輸入出生資料，所有內容會按你的命盤重新計算。</span><button class="btn small solid" type="button" id="goEdit">輸入資料</button></div>`:""}
+  ${profile.demo?`<div class="demo-banner"><span>你正在看<b>示範命盤</b>。輸入你嘅出生資料，所有內容就會按你嘅命盤重新計過。</span><button class="btn small solid" type="button" id="goEdit">輸入資料</button></div>`:""}
   <div class="s-hero">
     <p class="date-line">${now.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}<span>${mp?mp.name:""} · ${di.gz}日</span></p>
     <h1>${esc(head[0])}${head[1]?`<br><em>${esc(head[1])}</em>`:""}</h1>
@@ -1640,7 +1702,7 @@ function renderToday(el){
   </div>
   ${readingHTML}
   <section class="daily">
-    <div class="sec-head"><div><p class="kicker">Written in your sky · 寫在你的星空</p><h2>今日要你學識「${t.kw}」。</h2></div><div class="day-score">能量契合<strong>${score}<small>%</small></strong></div></div>
+    <div class="sec-head"><div><p class="kicker">Written in your sky · 寫喺你嘅星空</p><h2>今日要你學識「${t.kw}」。</h2></div><div class="day-score">能量契合<strong>${score}<small>%</small></strong></div></div>
     <div class="insight-tabs" role="tablist" aria-label="今日洞察">${Object.entries(INS).map(([k,v],i)=>`<button type="button" role="tab" data-k="${k}" aria-selected="${insightTab===k}"><span>0${i+1}</span><div><strong>${v.n}</strong><small>${v.s}</small></div>${ic("arrow")}</button>`).join("")}</div>
     <article class="insight-card"><div class="card-stars" aria-hidden="true">· ˚ ✦ . · ˚</div><p class="kicker">${cur.k}</p><h3>${esc(cur.h)}</h3><p class="body">${esc(cur.b)}</p>
       <div class="card-footer"><span>${ic("orbit")} ${esc(cur.st)}</span><button class="text-button" type="button" id="insAI">${esc(cur.a)} · AI 深入 ${ic("arrow")}</button></div></article>
@@ -1656,13 +1718,13 @@ function renderToday(el){
     <p>${esc(lc.why.join("；"))}。今日穿戴或用${lc.best[0]}色小物（衫、手機殼、飾物）最旺你。</p>
   </section>
   <section class="daily">
-    <div><p class="kicker">Your natal sky · 出生星盤</p><h2 style="font-family:var(--f-display);font-weight:300;font-size:24px;margin-top:10px">你出生嗰刻嘅天空</h2></div>
+    <div><p class="kicker">Your natal sky · 出生星盤</p><h2 style="font-family:var(--f-display);font-weight:300;font-size:26px;margin-top:10px">你出生嗰刻嘅天空</h2></div>
     <div class="wheel-box">${wheelSVG(chart,di.moonLon)}</div>
-    <p class="note">淡紫色圓點是你出生時的行星位置，空心圓是今天月亮的位置。${chart.asc?"左邊水平線是你的上升點。":"未有出生時間，星盤以太陽為起點。"}</p>
-    ${mp?`<div class="stack"><p class="kicker">Moon phase · 月相 · 女巫曆</p><h3 style="font-family:var(--f-display);font-size:21px">${mp.name}（${Math.round(mp.deg)}°）</h3><p class="mute">${esc(mp.ritual)}</p></div>`:""}
+    <p class="note">實心圓點係你出世嗰陣嘅行星位置，空心圓係今日月亮嘅位置。${chart.asc?"左邊嗰條橫線係你嘅上升點。":"未有出生時間，星盤用太陽做起點。"}</p>
+    ${mp?`<div class="stack"><p class="kicker">Moon phase · 今晚月相</p><h3 style="font-family:var(--f-display);font-size:22px">${mp.name}（${Math.round(mp.deg)}°）</h3><p class="mute">${esc(mp.ritual)}</p></div>`:""}
     <div id="todayAI"></div>
   </section>
-  <footer class="s-foot"><div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><g class="bm-sun"><line x1="27.60" y1="16.00" x2="30.00" y2="16.00"/><line x1="26.05" y1="21.80" x2="27.26" y2="22.50"/><line x1="21.80" y1="26.05" x2="23.00" y2="28.12"/><line x1="16.00" y1="27.60" x2="16.00" y2="29.00"/><line x1="10.20" y1="26.05" x2="9.00" y2="28.12"/><line x1="5.95" y1="21.80" x2="4.74" y2="22.50"/><line x1="4.40" y1="16.00" x2="2.00" y2="16.00"/><line x1="5.95" y1="10.20" x2="4.74" y2="9.50"/><line x1="10.20" y1="5.95" x2="9.00" y2="3.88"/><line x1="16.00" y1="4.40" x2="16.00" y2="3.00"/><line x1="21.80" y1="5.95" x2="23.00" y2="3.88"/><line x1="26.05" y1="10.20" x2="27.26" y2="9.50"/><circle cx="16" cy="16" r="9.6"/></g><path class="bm-moon" d="M19.4 10.4a6.3 6.3 0 1 0 2.9 9.1a5.2 5.2 0 1 1-2.9-9.1Z"/><circle class="bm-star" cx="22.6" cy="11.2" r=".9"/></svg></span><span>SOLUNA</span><span class="zh">曜</span></div><p>為正在成為的你而寫的星象。</p><span>Made under the same sky</span></footer>`;
+  <footer class="s-foot"><div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><g class="bm-sun"><line x1="27.60" y1="16.00" x2="30.00" y2="16.00"/><line x1="26.05" y1="21.80" x2="27.26" y2="22.50"/><line x1="21.80" y1="26.05" x2="23.00" y2="28.12"/><line x1="16.00" y1="27.60" x2="16.00" y2="29.00"/><line x1="10.20" y1="26.05" x2="9.00" y2="28.12"/><line x1="5.95" y1="21.80" x2="4.74" y2="22.50"/><line x1="4.40" y1="16.00" x2="2.00" y2="16.00"/><line x1="5.95" y1="10.20" x2="4.74" y2="9.50"/><line x1="10.20" y1="5.95" x2="9.00" y2="3.88"/><line x1="16.00" y1="4.40" x2="16.00" y2="3.00"/><line x1="21.80" y1="5.95" x2="23.00" y2="3.88"/><line x1="26.05" y1="10.20" x2="27.26" y2="9.50"/><circle cx="16" cy="16" r="9.6"/></g><path class="bm-moon" d="M19.4 10.4a6.3 6.3 0 1 0 2.9 9.1a5.2 5.2 0 1 1-2.9-9.1Z"/><circle class="bm-star" cx="22.6" cy="11.2" r=".9"/></svg></span><span>SOLUNA</span><span class="zh">曜</span></div><p>寫畀正在成長嘅你嘅星象。</p><span>Made under the same sky</span></footer>`;
   const aiB=aiBlock("生成今日完整運勢",()=>prompt(`寫一篇今天（${ymd(now)}）的個人運勢。今日流日干支 ${di.gz}，對日主是${di.tg}（地支藏${di.tgz}）；今日月亮在${moonSign!=null?SIGNS[moonSign]:"?"}座，月相${mp?mp.name:""}；今日幸運色 ${lc.best[0]}、${lc.second[0]}，少用${lc.avoid[0]}（${lc.why.join("；")}）${di.clash?"；日支相沖":""}${di.he?"；日支六合":""}${mood?`；使用者自己記錄今日心情是「${mood}」，請用貼合這種心情的語氣`:""}。${an?` 已計算嘅真實行運：${an.transits.slice(0,8).map(t=>`${t.tp}${t.asp}本命${t.np}（${t.orb.toFixed(1)}°，${t.span}）`).join("；")}。行星落宮：${Object.entries(an.tpos).map(([n,v])=>`${n}第${v.house}宮`).join("、")}。紫微：${an.zw?[an.zw.daily,an.zw.monthly,an.zw.yearly,an.zw.decadal].map(huaSentence).join(" "):"未有出生時間"}。八字：${an.bz?an.bz.layers.map(L=>`${L.label}${L.g}=${L.tg}${L.fav>0?"(喜)":L.fav<0?"(忌)":""}`).join("、")+(an.bz.dayClash?"、日支相沖":"")+(an.bz.dayHe?"、日支六合":""):""}。紫微格局：${an.pats.map(p=>p.n).join("、")||"無特別"}。旺：${an.power.map(a=>a.n).join("、")}；煩：${an.pressure.map(a=>a.n).join("、")}；忌：${an.trouble.map(a=>a.n).join("、")}。`:""} 請寫一篇詳細、具體嘅解讀，必須引用上面嘅行運同紫微四化做根據。分「總覽」「感情」「事業與財運」「身心」「紫微今日四化」「幸運色與穿搭建議」「今日一句提醒」七部分，結合東西方觀點。`,chart));
   $("#todayAI",el).appendChild(aiB);
   el.querySelectorAll(".insight-tabs button").forEach(b=>b.onclick=()=>{insightTab=b.dataset.k;renderToday(el)});
@@ -1679,17 +1741,18 @@ function renderToday(el){
 /* ============ Forecast ============ */
 let fcTab=store("xuanjing.fc")||"week";
 function renderForecast(el){
-  el.innerHTML=`<div class="stack"><span class="eyebrow">運勢</span><h1>未來的節奏<span class="lat">the long view</span></h1></div>
-  <div class="seg" role="group" aria-label="時間範圍">${[["week","本週"],["month","一個月"],["year","一年"],["decade","十年"]].map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${fcTab===k}">${n}</button>`).join("")}</div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">運勢</span><h1>未來嘅節奏<span class="lat">the long view</span></h1></div>
+  <div class="seg" role="group" aria-label="時間範圍">${[["week","本週"],["month","一個月"],["year","一年"],["decade","十年"]].map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${fcTab===k}">${n}${k!=="week"&&!isMember()?" ✦":""}</button>`).join("")}</div>
   <div id="fcBody" class="stack" style="gap:24px"></div>`;
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{fcTab=b.dataset.k;store("xuanjing.fc",fcTab);renderForecast(el)});
   const body=$("#fcBody",el);({week:fcWeek,month:fcMonth,year:fcYear,decade:fcDecade})[fcTab](body);
+  if(fcTab!=="week")lockPreview(body,{month:"你未來一個月嘅運勢",year:"你未來一年嘅運勢",decade:"你未來十年嘅人生走勢"}[fcTab]);
 }
 function fcWeek(el){
   const now=new Date();const days=[];for(let i=0;i<7;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);const di=dayInfo(chart,d),an=analyzeDay(chart,d,{light:true});if(an){di.an=an;di.total=an.dayScore}days.push(di)}rankLevels(days,d=>d.an?d.an.dayScore:null);
   const best=days.reduce((a,b)=>b.total>a.total?b:a), worst=days.reduce((a,b)=>b.total<a.total?b:a);
-  el.innerHTML=`<p>這七天最順的是 <b>${best.date.getMonth()+1}/${best.date.getDate()}（${TG[best.tg].kw}）</b>，最需要放慢的是 <b>${worst.date.getMonth()+1}/${worst.date.getDate()}（${TG[worst.tg].kw}）</b>。</p>
-  <div class="daylist">${days.map((d,i)=>`<div class="dayrow ${i===0?"now":""}"><div class="d"><b>${d.date.getDate()}</b>週${WD[d.date.getDay()]}</div><div style="min-width:0"><div>${(()=>{const lc=luckyColor(chart,d);return `<span class="cdot" style="background:${lc.best[1]}" title="幸運色 ${lc.best[0]}"></span>`})()}<b>${d.tg}</b> · ${esc(d.an?d.an.headline:TG[d.tg].head)}</div>${d.an?`<div class="wk-ar"><span>☀️ 旺 ${d.an.power.map(a=>a.n).slice(0,2).join("、")}</span><span>🌑 忌 ${d.an.trouble[0].n}</span>${d.an.zw?`<span>紫微流日${d.an.zw.daily.hua.find(x=>x.h==="忌")?.star||""}化忌入${d.an.zw.daily.hua.find(x=>x.h==="忌")?.pal||"—"}</span>`:""}</div>`:""}<div class="bar"><span style="width:${(d.total/5*100).toFixed(0)}%"></span></div></div><div class="mono mute" style="font-size:11px;text-align:right">${d.gz}<br>${d.moonLon!=null?"月"+SIGN_SHORT[Math.floor(d.moonLon/30)]:""}</div></div>`).join("")}</div>`;
+  el.innerHTML=`<p>呢七日最順嘅係 <b>${best.date.getMonth()+1}/${best.date.getDate()}（${TG[best.tg].kw}）</b>，最需要放慢嘅係 <b>${worst.date.getMonth()+1}/${worst.date.getDate()}（${TG[worst.tg].kw}）</b>。</p>
+  <div class="daylist">${days.map((d,i)=>`<div class="dayrow ${i===0?"now":""}"><div class="d"><b>${d.date.getDate()}</b>週${WD[d.date.getDay()]}</div><div style="min-width:0"><div>${(()=>{const lc=luckyColor(chart,d);return `<span class="cdot" style="background:${lc.best[1]}" title="幸運色 ${lc.best[0]}"></span>`})()}<b>${d.tg}</b> · ${esc(d.an?d.an.headline:TG[d.tg].head)}</div>${d.an?`<div class="wk-ar"><span>☀️ 旺 ${d.an.power.map(a=>a.n).slice(0,2).join("、")}</span><span>🌑 忌 ${d.an.trouble[0].n}</span>${d.an.zw?`<span>紫微流日${d.an.zw.daily.hua.find(x=>x.h==="忌")?.star||""}化忌入${d.an.zw.daily.hua.find(x=>x.h==="忌")?.pal||"—"}</span>`:""}</div>`:""}<div class="bar"><span style="width:${(d.total/5*100).toFixed(0)}%"></span></div></div><div class="mono mute" style="font-size:11.5px;text-align:right">${d.gz}<br>${d.moonLon!=null?"月"+SIGN_SHORT[Math.floor(d.moonLon/30)]:""}</div></div>`).join("")}</div>`;
   el.appendChild(aiBlock("生成本週計劃",()=>prompt(`為使用者寫本週（${ymd(days[0].date)} 至 ${ymd(days[6].date)}）的運勢與行動計劃。每日資料：${days.map(d=>`${ymd(d.date)} ${d.gz}日 ${d.tg}，月亮${d.moonLon!=null?SIGNS[Math.floor(d.moonLon/30)]:""}座${d.an?`，綜合分${d.an.dayScore.toFixed(1)}/5，旺${d.an.power.map(a=>a.n).join("、")}，忌${d.an.trouble[0].n}，主要行運${d.an.transits.filter(t=>t.tb!=="Moon").slice(0,2).map(t=>t.tp+t.asp+t.np).join("、")||"無"}${d.an.zw?`，紫微流日${d.an.zw.daily.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("、")}`:""}`:""}`).join("；")}。先一段本週總結，然後逐日一句重點與建議。`,chart)));
 }
 function fcMonth(el){
@@ -1710,9 +1773,9 @@ function fcYear(el){
   const months=[];for(let i=0;i<12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,15);const l=Solar.fromYmd(d.getFullYear(),d.getMonth()+1,15).getLunar();const g=l.getMonthInGanZhiExact();months.push({d,g,tg:tenGod(chart.bazi.dm,g[0]),an:analyzeDay(chart,d,{light:true,scope:"month"})})}rankLevels(months,m=>m.an?m.an.dayScore:null);
   let jup="";if(window.Astronomy&&chart.planets){const jl=Astronomy.Ecliptic(Astronomy.GeoVector("Jupiter",now,true)).elon, sl=Astronomy.Ecliptic(Astronomy.GeoVector("Saturn",now,true)).elon, sun=Math.floor(chart.planets[0].lon/30);
     const jh=houseOf(chart,jl)-1, sh=houseOf(chart,sl)-1;
-    jup=`木星在${SIGNS[Math.floor(jl/30)]}座（你第${jh+1}宮），為你帶來「${HOUSE_THEME[jh]}」的擴張；土星在${SIGNS[Math.floor(sl/30)]}座（第${sh+1}宮），要求你在「${HOUSE_THEME[sh]}」上打好基礎。`}
+    jup=`木星喺${SIGNS[Math.floor(jl/30)]}座（你第${jh+1}宮），會令「${HOUSE_THEME[jh]}」呢方面擴展；土星喺${SIGNS[Math.floor(sl/30)]}座（第${sh+1}宮），提你喺「${HOUSE_THEME[sh]}」打好基礎。`}
   const age=now.getFullYear()-Number(profile.date.slice(0,4));
-  el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年是你的「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年係你嘅「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>
   <div class="stack"><span class="eyebrow">未來 12 個月</span><div class="mlist">${months.map((m,i)=>{const a=m.an,k=m.lvl||"mid",yl=m.an&&m.an.bz?m.an.bz.layers.find(x=>x.label==="流月"):null,zl=a&&a.zw?a.zw.monthly:null,lu=zl&&zl.hua.find(x=>x.h==="祿"),ji=zl&&zl.hua.find(x=>x.h==="忌");
     return `<div class="mrow ${i===0?"now":""}" data-k="${k}"><div class="mr-d"><span class="mono">${m.d.getFullYear()%100}/${m.d.getMonth()+1}</span><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div><div class="mr-x"><p><b>${m.g}月 · ${m.tg}</b>${yl?`<span class="chip">${yl.fav>0?"喜用":yl.fav<0?"忌神":"中性"}</span>`:""}</p>${a?`<p class="mr-a">☀️ 旺 ${a.power.slice(0,2).map(x=>x.n).join("、")}　🌑 忌 ${a.trouble[0].n}</p>`:""}${zl?`<p class="mr-z">紫微流月：${lu?`${lu.star}化祿入${lu.pal}`:""}${ji?`；${ji.star}化忌入${ji.pal}`:""}</p>`:""}</div></div>`}).join("")}</div></div>`;
   el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${m.an.trouble[0].n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart)));
@@ -1721,9 +1784,9 @@ function fcDecade(el){
   const b=chart.bazi, now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0];
   const years=[];for(let y=cur.startYear;y<=cur.endYear;y++){const gz=Solar.fromYmd(y,6,1).getLunar().getYearInGanZhiByLiChun();years.push({y,gz,tg:tenGod(b.dm,gz[0])})}
   el.innerHTML=`<div class="stack"><span class="eyebrow">十年大運</span><h2>你 ${b.yunStart.y} 歲${b.yunStart.m?b.yunStart.m+"個月":""}起運，每十年換一步大運</h2><p class="mute">${profile.gender==="M"?"男":"女"}命，年干${b.pil[0][0]}${GAN.indexOf(b.pil[0][0])%2?"陰":"陽"}，大運${(GAN.indexOf(b.pil[0][0])%2===0)===(profile.gender==="M")?"順":"逆"}行。</p></div>
-  <div class="timeline">${b.yun.map(x=>{const t=tenGod(b.dm,x.gz[0]);const isNow=x===cur;return `<div class="tl ${isNow?"now":""}"><div class="age">${x.startYear}<br>– ${x.endYear}<br><span class="mute">虛歲${x.startAge}–${x.endAge}</span></div><div class="gz">${x.gz}</div><div style="min-width:0"><b>${t}運${isNow?" · 現在":""}</b><p style="font-size:13px">${esc(TG[t].life)}</p></div></div>`}).join("")}</div>
+  <div class="timeline">${b.yun.map(x=>{const t=tenGod(b.dm,x.gz[0]);const isNow=x===cur;return `<div class="tl ${isNow?"now":""}"><div class="age">${x.startYear}<br>– ${x.endYear}<br><span class="mute">虛歲${x.startAge}–${x.endAge}</span></div><div class="gz">${x.gz}</div><div style="min-width:0"><b>${t}運${isNow?" · 現在":""}</b><p style="font-size:14px">${esc(TG[t].life)}</p></div></div>`}).join("")}</div>
   ${chart.ziwei?(()=>{const z=chart.ziwei,age=now-z.by+1,find=st=>{const p=z.palaces.find(q=>q&&(q.stars.includes(st)||q.minor.includes(st)));return p?p.name:"—"};
-    return `<div class="stack"><span class="eyebrow">紫微大限 · 十年一宮</span><div class="timeline">${z.palaces.slice().filter(Boolean).sort((a,b)=>a.dx[0]-b.dx[0]).map(p=>{const isNow=age>=p.dx[0]&&age<=p.dx[1];const sh=SIHUA_T[p.stem]||[];return `<div class="tl ${isNow?"now":""}"><div class="age">${z.by+p.dx[0]-1}<br>– ${z.by+p.dx[1]-1}<br><span class="mute">${p.dx[0]}–${p.dx[1]}歲</span></div><div class="gz">${p.stem}${ZHI[p.b]}</div><div style="min-width:0"><b>大限命宮在${p.name}${isNow?" · 現在":""}</b><p style="font-size:12px">${p.stars.length?p.stars.join("、"):"空宮"} · ${PAL_MEAN[p.name]||""}為主線</p><p class="mute" style="font-size:11px">${sh.map((st,i)=>`${st}化${HUA[i]}入${find(st)}`).join("、")}</p></div></div>`}).join("")}</div></div>`})():""}
+    return `<div class="stack"><span class="eyebrow">紫微大限 · 十年一宮</span><div class="timeline">${z.palaces.slice().filter(Boolean).sort((a,b)=>a.dx[0]-b.dx[0]).map(p=>{const isNow=age>=p.dx[0]&&age<=p.dx[1];const sh=SIHUA_T[p.stem]||[];return `<div class="tl ${isNow?"now":""}"><div class="age">${z.by+p.dx[0]-1}<br>– ${z.by+p.dx[1]-1}<br><span class="mute">${p.dx[0]}–${p.dx[1]}歲</span></div><div class="gz">${p.stem}${ZHI[p.b]}</div><div style="min-width:0"><b>大限命宮在${p.name}${isNow?" · 現在":""}</b><p style="font-size:13px">${p.stars.length?p.stars.join("、"):"空宮"} · ${PAL_MEAN[p.name]||""}為主線</p><p class="mute" style="font-size:11.5px">${sh.map((st,i)=>`${st}化${HUA[i]}入${find(st)}`).join("、")}</p></div></div>`}).join("")}</div></div>`})():""}
   <div class="stack"><span class="eyebrow">現行大運 ${cur.gz} 內的流年</span><div class="months">${years.map(x=>`<div class="${x.y===now?"now":""}"><span class="mono">${x.y}</span><b>${x.gz}</b><span>${x.tg}</span></div>`).join("")}</div></div>`;
   el.appendChild(aiBlock("生成十年規劃",()=>prompt(`為使用者寫未來十年的人生規劃。現行大運 ${cur.gz}（${cur.startYear}-${cur.endYear}），對日主為${tenGod(b.dm,cur.gz[0])}；下一步大運 ${(b.yun[b.yun.indexOf(cur)+1]||{}).gz||""}。十年內流年：${years.map(x=>`${x.y} ${x.gz}(${x.tg})`).join("、")}。分「這十年的主題」「事業與財富路線」「感情與家庭」「健康」「逐年關鍵字與行動建議（每年一行）」。`,chart)));
 }
@@ -1732,7 +1795,7 @@ function fcDecade(el){
 function renderChart(el){
   const b=chart.bazi;const labels=["年柱","月柱","日柱","時柱"];
   el.innerHTML=`<div class="stack" style="position:relative"><span class="eyebrow">命盤 · ${esc(profile.name)}</span><h1>${chart.planets?`${chart.planets[0].sign}太陽 · ${chart.planets[1].sign}月亮${chart.asc?" · "+chart.asc.sign+"上升":""}`:""}</h1>
-  <p class="mute mono" style="font-size:11px">${esc(profile.date)} ${profile.timeUnknown?"時間不詳":esc(profile.time)} · ${esc(chart.city[0])} · 農曆${b.lunar.y}年${b.lunar.m<0?"閏":""}${Math.abs(b.lunar.m)}月${b.lunar.d}日</p></div>
+  <p class="mute mono" style="font-size:11.5px">${esc(profile.date)} ${profile.timeUnknown?"時間不詳":esc(profile.time)} · ${esc(chart.city[0])} · 農曆${b.lunar.y}年${b.lunar.m<0?"閏":""}${Math.abs(b.lunar.m)}月${b.lunar.d}日</p></div>
 
   <div class="stack"><span class="eyebrow">四柱八字 · 사주</span>
   <div class="pillars">${b.pil.map((x,i)=>`<div class="pillar ${i===2?"dm":""}"><span class="lbl">${labels[i]}</span>${x?`<span class="tg">${i===2?"日主":tenGod(b.dm,x[0])}</span><span class="g">${x[0]}</span><span class="g">${x[1]}</span><span class="tg">${tenGod(b.dm,ZHI_MAIN[ZHI.indexOf(x[1])])}</span>`:`<span class="g mute">—</span><span class="tg">時間不詳</span>`}</div>`).join("")}</div>
@@ -1743,18 +1806,18 @@ function renderChart(el){
 
   <div class="stack"><span class="eyebrow">西洋星盤</span>
   <div class="planets">${(chart.planets||[]).map(x=>`<div><span>${x.n}</span><span><b>${x.sign}</b> <span class="mono mute">${(x.lon%30).toFixed(0)}°</span></span></div>`).join("")}${chart.asc?`<div><span>上升</span><span><b>${chart.asc.sign}</b> <span class="mono mute">${(chart.asc.lon%30).toFixed(0)}°</span></span></div>`:""}</div>
-  ${chart.planets?`<p>你的太陽在${chart.planets[0].sign}座：${SIGN_KW[chart.planets[0].sign]}。月亮在${chart.planets[1].sign}座，情緒需要${SIGN_KW[chart.planets[1].sign]}的出口。${chart.asc?`上升${chart.asc.sign}座，令別人第一眼覺得你${SIGN_KW[chart.asc.sign]}。`:""}</p>`:""}
+  ${chart.planets?`<p>你嘅太陽喺${chart.planets[0].sign}座：${SIGN_KW[chart.planets[0].sign]}。月亮喺${chart.planets[1].sign}座，情緒需要一個${SIGN_KW[chart.planets[1].sign]}嘅出口。${chart.asc?`上升${chart.asc.sign}座，令人第一眼覺得你${SIGN_KW[chart.asc.sign]}。`:""}</p>`:""}
   </div>
 
   <div class="stack"><span class="eyebrow">紫微斗數</span>
-  ${chart.ziwei?`<div id="zwBox" class="stack"></div>${(()=>{const ps=chart._pats||(chart._pats=zwPatterns(chart.ziwei));return `<div class="stack pats"><span class="eyebrow">紫微格局 · 星曜組合</span>${ps.length?ps.map(p=>`<div class="pat ${p.good>0?"g":p.good<0?"b":"n"}"><b>${p.n}</b><span>${p.good>0?"吉格":p.good<0?"要留意":"特殊"}</span><p>${esc(p.d)}</p></div>`).join(""):`<p class="mute">命盤未見典型格局，以主星同四化為主。</p>`}</div>`})()}<div id="zwAI"></div>`:`<p class="note">紫微斗數需要出生時辰。到「我的」填寫出生時間後就會排盤。</p>`}
+  ${chart.ziwei?`<div id="zwBox" class="stack"></div>${(()=>{const ps=chart._pats||(chart._pats=zwPatterns(chart.ziwei));return `<div class="stack pats"><span class="eyebrow">紫微格局 · 星曜組合</span>${ps.length?ps.map(p=>`<div class="pat ${p.good>0?"g":p.good<0?"b":"n"}"><b>${p.n}</b><span>${p.good>0?"吉格":p.good<0?"要留意":"特殊"}</span><p>${esc(p.d)}</p></div>`).join(""):`<p class="mute">命盤未見典型格局，以主星同四化為主。</p>`}</div>`})()}<div id="zwAI"></div>`:`<p class="note">紫微斗數需要出生時辰。去「我的」填埋出生時間就會排盤。</p>`}
   </div>
   <div id="chartAI"></div>`;
   if(chart.ziwei){drawZw($("#zwBox",el));$("#zwAI",el).appendChild(aiBlock("解讀紫微盤（含所選大限／流年）",()=>{const z=chart.ziwei,o=zwHoro(z);
     const desc=z.palaces.map(p=>`${p.name}(${p.stem}${ZHI[p.b]}${p.shen?"，身宮":""})：${[...p.q.majorStars,...p.q.minorStars].map(s=>s.name+(s.brightness||"")+(s.mutagen?"化"+s.mutagen:"")).join("、")||"空宮"}；${p.misc.join("、")}；大限${p.dx.join("-")}`).join("\n");
     const ov=o?`\n所選${o.label}：${o.desc}，${o.label}命宮在${ZHI[(o.lv.index+2)%12]}（本命${z.palaces[(o.lv.index+2)%12].name}），${o.label}四化：${o.lv.mutagen.map((n,i)=>n+"化"+HUA[i]).join("、")}。請重點解讀這段時間：${o.label}命宮與本命宮位重疊的意義、四化落入哪些本命宮位，分「總論」「事業財運」「感情人際」「健康」「建議」。`:"\n請解讀本命盤：命身宮、三方四正、生年四化、主星廟陷、六吉六煞及雜曜的影響。";
     return prompt(`以紫微斗數解讀。${z.yy}，${z.bureauName}，命主${z.soul}，身主${z.body}。本命十二宮：\n${desc}${ov}`,chart)}));}
-  $("#chartAI",el).appendChild(aiBlock("解讀我的完整命盤",()=>prompt("綜合八字、紫微斗數和西洋星盤，解讀使用者的性格、天賦、感情模式、事業方向和人生課題。指出三個系統互相印證的地方，以及互相矛盾時應怎樣理解。",chart)));
+  $("#chartAI",el).appendChild(aiBlock("解讀我嘅完整命盤",()=>prompt("綜合八字、紫微斗數和西洋星盤，解讀使用者的性格、天賦、感情模式、事業方向和人生課題。指出三個系統互相印證的地方，以及互相矛盾時應怎樣理解。",chart)));
 }
 /* ===== 紫微 (iztro engine) ===== */
 const HUA=["祿","權","科","忌"];
@@ -1804,7 +1867,7 @@ function drawZw(box){
   const dc=LunarMonth.fromYm(zwSel.year,zwSel.month)?.getDayCount()||30;
   const DN=k=>Lunar.fromYmd(2000,1,k).getDayInChinese();
   const btn=(lvl,attr,val,txt,on)=>`<button type="button" data-l="${lvl}" data-${attr}="${val}" aria-pressed="${on}">${txt}</button>`;
-  box.innerHTML=`<div class="zwctl"><div class="seg" role="group" aria-label="盤面模式"><button type="button" data-mode="sanhe" aria-pressed="${zwSel.mode==='sanhe'}">三合 · 三方四正</button><button type="button" data-mode="fly" aria-pressed="${zwSel.mode==='fly'}">飛星 · 宮干四化</button></div></div><p class="mute" style="font-size:11px">撳任何一個宮位：${zwSel.mode==='fly'?'睇佢嘅宮干四化飛入邊幾宮':'標出佢嘅三方四正'}${zwSel.pick!=null?'（再撳一次取消）':''}</p>`+ziweiGrid(z,o)+flyTable(z)+`<div class="zsel">
+  box.innerHTML=`<div class="zwctl"><div class="seg" role="group" aria-label="盤面模式"><button type="button" data-mode="sanhe" aria-pressed="${zwSel.mode==='sanhe'}">三合 · 三方四正</button><button type="button" data-mode="fly" aria-pressed="${zwSel.mode==='fly'}">飛星 · 宮干四化</button></div></div><p class="mute" style="font-size:11.5px">撳任何一個宮位：${zwSel.mode==='fly'?'睇佢嘅宮干四化飛入邊幾宮':'標出佢嘅三方四正'}${zwSel.pick!=null?'（再撳一次取消）':''}</p>`+ziweiGrid(z,o)+flyTable(z)+`<div class="zsel">
    <div class="zrow"><span>本命</span><div>${btn(0,"x",0,"本命盤",zwSel.lvl===0)}</div></div>
    <div class="zrow"><span>大限</span><div>${decs.map((p,k)=>btn(1,"dec",k,`${p.dx[0]}–${p.dx[1]}<br>${p.stem}${ZHI[p.b]}`,zwSel.lvl===1&&zwSel.dec===k||zwSel.lvl>1&&zwSel.dec===k&&"part")).join("")}</div></div>
    <div class="zrow"><span>流年</span><div>${years.map(Y=>{const g=Solar.fromYmd(Y,6,1).getLunar().getYearInGanZhi();return btn(2,"year",Y,`${Y}<br>${g} ${Y-z.by+1}歲`,zwSel.lvl===2&&zwSel.year===Y||zwSel.lvl>2&&zwSel.year===Y&&"part")}).join("")}</div></div>
@@ -1847,12 +1910,12 @@ function ziweiGrid(z,o){
   const b=chart.bazi, mp=z.palaces[z.ming];
   html+=`<div class="zw-center">
    <span class="eyebrow">${z.yy} · ${z.bureauName}</span>
-   <span style="font-size:11px">命主 <b>${z.soul}</b>　身主 <b>${z.body}</b></span>
-   <span style="font-size:11px" class="mono">農曆 ${z.a.lunarDate} ${z.a.time}</span>
+   <span style="font-size:11.5px">命主 <b>${z.soul}</b>　身主 <b>${z.body}</b></span>
+   <span style="font-size:11.5px" class="mono">農曆 ${z.a.lunarDate} ${z.a.time}</span>
    <div class="c8">${b.pil.map(x=>x?`<span>${x[0]}<br>${x[1]}</span>`:"").join("")}</div>
-   <span style="font-size:11px">${b.yunStart.y}年${b.yunStart.m}月${b.yunStart.d}天 起大運</span>
+   <span style="font-size:11.5px">${b.yunStart.y}年${b.yunStart.m}月${b.yunStart.d}天 起大運</span>
    ${pick!=null?`<span class="ovbox">${zwSel.mode==='fly'?`<b>${z.palaces[pick].name}（${z.palaces[pick].stem}干）飛化</b><br>${SIHUA_T[z.palaces[pick].stem].map((n,i)=>{const t=z.palaces.find(x=>[...x.stars,...x.minor].includes(n));return `${n}${HUA[i]}→${t?t.name:'—'}`}).join(' ')}`:`<b>${z.palaces[pick].name}三方四正</b><br>${[(pick+6)%12,(pick+4)%12,(pick+8)%12].map(x=>z.palaces[x].name).join('、')}`}</span>`:''}
-   ${o?`<span class="ovbox"><b>${esc(o.desc)}</b><br>${o.lv.mutagen.map((n,i)=>`${n}${HUA[i]}`).join(" ")}</span>`:`<span style="font-size:11px">生年四化 ${z.sihua.map((n,i)=>`${n}${HUA[i]}`).join(" ")}</span>`}
+   ${o?`<span class="ovbox"><b>${esc(o.desc)}</b><br>${o.lv.mutagen.map((n,i)=>`${n}${HUA[i]}`).join(" ")}</span>`:`<span style="font-size:11.5px">生年四化 ${z.sihua.map((n,i)=>`${n}${HUA[i]}`).join(" ")}</span>`}
   </div></div></div>`;
   return html+`<p class="note">星名旁細字係廟旺利平陷；空心框係生年四化，「↑」係自化（本宮宮干化本宮星），虛線框係飛星模式下所撳宮位飛出嘅四化；實心框係所揀${o?o.label:"大限／流年"}四化。每宮「年」係流年歲數、「限」係小限歲數；左下三行係博士、將前、歲前十二神，右下係長生十二神同宮干支。</p>`;
 }
@@ -1915,14 +1978,14 @@ const SPREADS={one:{n:"今日一張",pos:["指引"]},three:{n:"過去 · 現在 
 let tarotSpread="three";
 function orTarot(el){
   const sp=SPREADS[tarotSpread];
-  el.innerHTML=`<p class="mute" style="font-size:12px">一副完整 78 張偉特塔羅（22 張大阿爾克那、56 張小阿爾克那）。默念你嘅問題，洗好牌之後，跟感覺親手揀牌。</p>
+  el.innerHTML=`<p class="mute" style="font-size:13px">一副完整 78 張偉特塔羅（22 張大阿爾克那、56 張小阿爾克那）。默念你嘅問題，洗好牌之後，跟感覺親手揀牌。</p>
   <div class="seg" role="group" aria-label="牌陣">${Object.entries(SPREADS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="${tarotSpread===k}">${{one:"一張",three:"三張",love:"感情",work:"事業",free:"自由"}[k]}</button>`).join("")}</div>
-  <p class="mute" style="font-size:11.5px;margin-top:-4px">${sp.pos?`${sp.n}：揀 ${sp.pos.length} 張（${sp.pos.join("、")}）`:"自由揀牌：想揀幾多張都得（最多 10 張），揀好撳「翻牌」。"}</p>
+  <p class="mute" style="font-size:12px;margin-top:-4px">${sp.pos?`${sp.n}：揀 ${sp.pos.length} 張（${sp.pos.join("、")}）`:"自由揀牌：想揀幾多張都得（最多 10 張），揀好撳「翻牌」。"}</p>
   <label class="f" for="tq">你嘅問題（可以留空）<input id="tq" placeholder="例如：我同佢會唔會有結果？" maxlength="200"></label>
   <button class="btn solid" type="button" id="shuffle">洗牌</button>
   <div id="table"></div><div id="spread"></div><div id="tAI"></div>`;
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{tarotSpread=b.dataset.k;orTarot(el)});
-  $("#shuffle",el).onclick=()=>{
+  $("#shuffle",el).onclick=()=>dailyFree("tarot","塔羅",()=>{
     const deck=[...DECK];for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
     const revs=deck.map(()=>Math.random()<.35),need=sp.pos?sp.pos.length:10,picked=[],N=deck.length;
     const tb=$("#table",el);$("#spread",el).innerHTML="";$("#tAI",el).innerHTML="";
@@ -1968,7 +2031,7 @@ function orTarot(el){
       ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。逐張解讀（結合牌位意思），再綜合成一個完整故事，最後畀一個具體建議。可輕輕連結使用者嘅星盤或八字。`,chart)));
     };
     const rb=$("#reveal",el);if(rb)rb.onclick=reveal;
-  };
+  });
 }
 /* shinjeom */
 function orShin(el){
@@ -1977,7 +2040,7 @@ function orShin(el){
   <div class="ritual" id="rit"><canvas id="rice"></canvas><span class="bell">搖鈴 · 擲米</span></div>
   <button class="btn solid" type="button" id="cast">搖鈴擲米</button>
   <div id="shinOut" class="stack"></div>`;
-  $("#cast",el).onclick=()=>{
+  $("#cast",el).onclick=()=>dailyFree("shin","神占",()=>{
     const q=$("#sq",el).value.trim();const rit=$("#rit",el);rit.classList.remove("ringing");void rit.offsetWidth;rit.classList.add("ringing");
     const cv=$("#rice",el),w=cv.width=cv.clientWidth*2,h=cv.height=cv.clientHeight*2,ctx=cv.getContext("2d");ctx.clearRect(0,0,w,h);
     const col=getComputedStyle(document.documentElement).getPropertyValue("--fg").trim()||"#000";
@@ -1988,9 +2051,9 @@ function orShin(el){
     const odd=N%2===1;const center=zones[0];
     const msgs=odd?["神明說：門已經開了，你只是不敢走進去。","祖先在看著你。這件事可以做，但不要一個人扛。","米落得很散：先處理身邊小事，大事自然會順。"]:["神明說：先停一停。三個月內答案會自己出現。","米聚在中間：你要的東西其實已經在手上。","有人在背後說你，與其解釋，不如做出成績。"];
     const out=$("#shinOut",el);
-    setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:19px">${esc(pick(msgs,Math.random))}</p>`;
+    setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:20px">${esc(pick(msgs,Math.random))}</p>`;
       out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart)));},1700);
-  };
+  });
 }
 /* dream */
 const DREAM_DICT=[["蛇","蛇常代表轉化、性能量或潛藏的威脅；韓國꿈해몽中大蛇可為태몽（胎夢）或財運。"],["牙","掉牙在周公解夢多與家人健康或失去有關；心理學上常反映對形象或控制感的焦慮。"],["水","清水主財與情緒流動，濁水代表困擾；洪水象徵情緒快要滿瀉。"],["飛","飛翔代表渴望自由、突破限制；飛不起來則是現實壓力。"],["跌","從高處跌下常反映失控感或對失敗的擔憂。"],["考試","考試夢多出現在被評價、準備不足的時期。"],["死","夢見死亡多數代表結束與重生，不是凶兆。"],["錢","撿到錢代表機會，掉錢代表擔心失去價值感。"],["火","火代表熱情、憤怒或興旺；韓國解夢中房子著火是大吉的財夢。"],["魚","魚常與財富、豐收與懷孕（胎夢）有關。"],["鬼","鬼魂象徵未處理的回憶或內疚。"],["懷孕","懷孕代表新計劃正在孕育。"],["追","被追趕代表你在逃避某個問題或情緒。"],["前任","夢見前任多是處理舊情緒，未必代表想復合。"],["貓","貓代表直覺、獨立，也可能是女性化的能量或小人。"],["狗","狗代表忠誠與友情。"],["結婚","結婚象徵承諾或兩種特質的整合。"],["豬","韓國人認為夢見豬是大財運，很多人會因此買彩票。"],["血","血代表生命力與付出，有時被解為財。"],["房子","房子代表自我，不同房間是內心不同部分。"],["龍","龍是大吉之兆，代表成就、貴人，也是常見的胎夢。"],["老虎","老虎代表權力與勇氣，在韓國是守護與胎夢的象徵。"]];
@@ -2022,11 +2085,11 @@ const DREAM_FEEL=["平靜","開心","驚慌","悲傷","奇異","重複夢","清�
 function dreamPrompt(t,feel){return prompt(`替使用者解夢。夢境：「${t}」。${feel.length?`醒來感覺／標籤：${feel.join("、")}。`:""}分「夢的核心象徵」「周公解夢 / 中國傳統」「韓國꿈해몽（如屬胎夢、財夢要指出）」「心理學角度」「給你的提醒」。`,chart)}
 function orDream(el){
   let feel=[];const today=ymd(new Date());
-  el.innerHTML=`<p>把夢境寫下來，越具體越好：人物、地點、顏色、感覺。每個夢都會存入你嘅<b>夢境日記</b>，之後可以隨時睇返。</p>
+  el.innerHTML=`<p>將個夢寫低，越具體越好：人物、地點、顏色、感覺。每個夢都會存入你嘅<b>夢境日記</b>，隨時可以睇返。</p>
   <label class="f" for="dd">日期<input id="dd" type="date" value="${today}" max="${today}"></label>
-  <label class="f" for="dq">昨晚的夢<textarea id="dq" maxlength="2000" placeholder="例如：我夢見自己在海邊撿到一條金色的魚，然後牙齒掉了⋯"></textarea></label>
+  <label class="f" for="dq">尋晚嘅夢<textarea id="dq" maxlength="2000" placeholder="例如：我夢見自己在海邊撿到一條金色的魚，然後牙齒掉了⋯"></textarea></label>
   <div class="feel" role="group" aria-label="醒來感覺">${DREAM_FEEL.map(f=>`<button type="button" data-f="${f}" aria-pressed="false">${f}</button>`).join("")}</div>
-  <button class="btn solid" type="button" id="dgo">記錄並解夢</button><div id="dOut" class="stack"></div><div id="dAI"></div>
+  <button class="btn solid" type="button" id="dgo">記錄夢境</button><div id="dOut" class="stack"></div><div id="dAI"></div>
   <section class="djournal"><div class="dj-head"><div><p class="kicker">Dream journal · 夢境日記</p><h3 class="dj-t">你記低嘅夢</h3></div><span class="mute dj-where" id="dWhere"></span></div><div id="dStats"></div><div id="dList"><p class="mute">載入中⋯</p></div></section>`;
   el.querySelectorAll(".feel button").forEach(b=>b.onclick=()=>{const f=b.dataset.f;feel=feel.includes(f)?feel.filter(x=>x!==f):[...feel,f];b.setAttribute("aria-pressed",feel.includes(f))});
   let cur=null;
@@ -2059,12 +2122,12 @@ function orDream(el){
        let armed=false;$("#djDel",sh).onclick=async e=>{if(!armed){armed=true;e.target.textContent="再撳一次確認刪除";return}const s=await dreamStore();await s.remove(d.id);$("#sheet").hidden=true;drawList()};
      });
   };
-  $("#dgo",el).onclick=async()=>{const t=$("#dq",el).value.trim();const out=$("#dOut",el);if(!t){out.innerHTML=`<p class="note">先寫下你的夢。</p>`;return}
+  $("#dgo",el).onclick=async()=>{const t=$("#dq",el).value.trim();const out=$("#dOut",el);if(!t){out.innerHTML=`<p class="note">先寫低你個夢。</p>`;return}
     const hits=DREAM_DICT.filter(([k])=>t.includes(k));
-    out.innerHTML=(hits.length?`<span class="eyebrow">夢中的象徵</span>${hits.map(([k,v])=>`<p><b>${k}</b>　${esc(v)}</p>`).join("")}`:`<p class="note">未找到常見象徵詞。按「完整解夢」由 AI 逐句分析。</p>`)+`<p class="mute" style="font-size:11px">✓ 已存入夢境日記</p>`;
+    out.innerHTML=(hits.length?`<span class="eyebrow">夢入面嘅象徵</span>${hits.map(([k,v])=>`<p><b>${k}</b>　${esc(v)}</p>`).join("")}`:`<p class="note">暫時搵唔到常見嘅象徵詞。「完整解夢」會逐句幫你分析。</p>`)+`<p class="mute" style="font-size:11.5px">✓ 已存入夢境日記</p>`;
     cur={id:"dream_"+Date.now().toString(36),kind:"dream",date:$("#dd",el).value||today,text:t,feel:[...feel],symbols:hits.map(h=>h[0]),created:new Date().toISOString(),interp:null};
     try{const s=await dreamStore();await s.save(cur)}catch(e){out.insertAdjacentHTML("beforeend",`<p class="note">儲存失敗：${esc(e&&e.message||"")}</p>`)}
-    drawList();$("button",ai).click();
+    drawList();
   };
   drawList();
 }
@@ -2074,7 +2137,8 @@ function orFace(el){
   el.innerHTML=`<p>上載一張清晰正面照（관상 面相）或手掌照（수상 手相），會分析五官輪廓、氣色或三大掌紋。</p>
   <div class="seg" role="group" aria-label="類別"><button type="button" data-k="face" aria-pressed="true">面相 관상</button><button type="button" data-k="palm" aria-pressed="false">手相 수상</button></div>
   <div class="dropzone" id="dz"><span class="mute" id="dzt">揀選或拖放相片（JPG / PNG）</span><input type="file" accept="image/*" id="fi" style="width:auto;border:0"></div>
-  <p class="note">相片只會傳送給 Claude 作本次分析，不會儲存。分析只供娛樂，不涉及健康診斷。</p><div id="fAI"></div>`;
+  <p class="note">相片只會用嚟做今次分析，唔會儲存。分析只供娛樂，唔涉及任何健康判斷。</p><div id="fAI"></div>`;
+  if(!IN_CLAUDE){el.innerHTML=`<p>面相（관상）同手相（수상）分析就快推出，敬請期待。</p>`;return}
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{kind=b.dataset.k;el.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   const setFile=f=>{if(!f||!f.type.startsWith("image/"))return;file=f;const url=URL.createObjectURL(f);$("#dz",el).querySelector("img")?.remove();const im=document.createElement("img");im.src=url;im.alt="已選相片";$("#dz",el).prepend(im);$("#dzt",el).textContent=f.name};
   $("#fi",el).onchange=e=>setFile(e.target.files[0]);
@@ -2087,14 +2151,14 @@ const ODU=[["Ogbe","IIII","光明、開始、一切順利；保持正直與耐�
 function orIfa(el){
   el.innerHTML=`<p>Ifá 是西非約魯巴（Yorùbá）的占卜體系，祭司 Babaláwo 會擲出占卜鏈 <b>Opele</b>（八片半殼），組成 256 種 <b>Odu</b> 之一。這裡是簡化的體驗版，正式占卜需由受過訓練的祭司進行。</p>
   <button class="btn solid" type="button" id="ifago">擲 Opele</button><div id="ifaOut" class="stack"></div><div id="ifaAI"></div>`;
-  $("#ifago",el).onclick=()=>{
+  $("#ifago",el).onclick=()=>dailyFree("ifa","Ifá 占卜",()=>{
     const leg=()=>Array.from({length:4},()=>Math.random()<.5?"I":"0").join("");
     const R=leg(),L=leg();const fR=ODU.find(o=>o[1]===R),fL=ODU.find(o=>o[1]===L);
     const name=R===L?`${fR[0]} Meji`:`${fR[0]}-${fL[0]}`;
     const legHTML=s=>`<div class="leg">${[...s].map(c=>`<div class="mark">${c==="I"?"<i></i>":"<i></i><i></i>"}</div>`).join("")}</div>`;
     $("#ifaOut",el).innerHTML=`<div class="opele">${legHTML(R)}${legHTML(L)}</div><span class="eyebrow">Odu</span><h2>${name}</h2><p><b>${fR[0]}</b>（右）${esc(fR[2])}</p>${R!==L?`<p><b>${fL[0]}</b>（左）${esc(fL[2])}</p>`:`<p class="mute">雙腿相同，稱為 Meji，是 16 個主要 Odu 之一，力量更純粹。</p>`}`;
     const ai=$("#ifaAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀 Odu",()=>prompt(`使用者體驗 Ifá 占卜，擲出 Odu「${name}」（右腿 ${fR[0]}，左腿 ${fL[0]}）。尊重地介紹這個 Odu 在約魯巴傳統中的意象與相關 Orisha，再轉化為給使用者的近況指引與一個可做的小儀式（例如供奉、感恩、行善）。提醒這是簡化體驗。`,chart)));
-  };
+  });
 }
 /* Runes */
 const RUNES=[["ᚠ","Fehu","財富、收穫"],["ᚢ","Uruz","力量、健康"],["ᚦ","Thurisaz","防禦、衝突"],["ᚨ","Ansuz","訊息、智慧"],["ᚱ","Raidho","旅程、移動"],["ᚲ","Kenaz","靈感、火光"],["ᚷ","Gebo","禮物、伙伴"],["ᚹ","Wunjo","喜悅、和諧"],["ᚺ","Hagalaz","突變、冰雹"],["ᚾ","Nauthiz","需要、限制"],["ᛁ","Isa","停滯、冷靜"],["ᛃ","Jera","收成、循環"],["ᛇ","Eihwaz","堅韌、轉化"],["ᛈ","Perthro","命運、秘密"],["ᛉ","Algiz","保護、守護靈"],["ᛊ","Sowilo","太陽、成功"],["ᛏ","Tiwaz","勇氣、正義"],["ᛒ","Berkano","成長、母性"],["ᛖ","Ehwaz","合作、信任"],["ᛗ","Mannaz","自我、人際"],["ᛚ","Laguz","水、直覺"],["ᛜ","Ingwaz","孕育、完成"],["ᛞ","Dagaz","黎明、突破"],["ᛟ","Othala","家族、傳承"]];
@@ -2103,12 +2167,12 @@ function orRunes(el){
   el.innerHTML=`<p>英倫及北歐的女巫與異教傳統常用 24 個 <b>Elder Futhark</b> 盧恩符文占卜。三枚符文代表命運三女神：<b>Urd</b>（過去）、<b>Verdandi</b>（現在）、<b>Skuld</b>（將來）。</p>
   <label class="f" for="rq">你的問題（可留空）<input id="rq" maxlength="200"></label>
   <button class="btn solid" type="button" id="rgo">從布袋抽三枚</button><div id="rOut" class="stack"></div><div id="rAI"></div>`;
-  $("#rgo",el).onclick=()=>{
+  $("#rgo",el).onclick=()=>dailyFree("runes","盧恩符文",()=>{
     const bag=[...RUNES].sort(()=>Math.random()-.5).slice(0,3).map(r=>({r,rev:!NOREV.has(r[1])&&Math.random()<.3}));const pos=["Urd · 過去","Verdandi · 現在","Skuld · 將來"];
-    $("#rOut",el).innerHTML=`<div class="runes">${bag.map((b,i)=>`<div class="stack" style="align-items:center;gap:6px"><span class="eyebrow">${pos[i]}</span><div class="rune ${b.rev?"rev":""}"><span class="glyph">${b.r[0]}</span></div><b>${b.r[1]}${b.rev?"（逆）":""}</b><span class="mute" style="font-size:12px">${b.r[2]}</span></div>`).join("")}</div>`;
+    $("#rOut",el).innerHTML=`<div class="runes">${bag.map((b,i)=>`<div class="stack" style="align-items:center;gap:6px"><span class="eyebrow">${pos[i]}</span><div class="rune ${b.rev?"rev":""}"><span class="glyph">${b.r[0]}</span></div><b>${b.r[1]}${b.rev?"（逆）":""}</b><span class="mute" style="font-size:13px">${b.r[2]}</span></div>`).join("")}</div>`;
     const q=$("#rq",el).value.trim();const ai=$("#rAI",el);ai.innerHTML="";
     ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart)));
-  };
+  });
 }
 
 /* ============ Me ============ */
@@ -2117,28 +2181,23 @@ function renderMe(el){
   <dl class="kv"><dt>出生日期</dt><dd class="mono">${esc(profile.date)}</dd><dt>出生時間</dt><dd class="mono">${profile.timeUnknown?"不詳":esc(profile.time)}</dd><dt>出生地</dt><dd>${esc(chart.city[0])}</dd><dt>性別</dt><dd>${profile.gender==="M"?"男":"女"}（用於大運順逆）</dd><dt>解讀語言</dt><dd>${esc(profile.lang)}</dd></dl>
   <div class="row"><button class="btn solid" type="button" id="edit">修改出生資料</button>${profile.demo?"":`<button class="btn" type="button" id="reset">回到示範命盤</button>`}</div>
   <hr class="rule">
-  <div class="stack"><span class="eyebrow">占卜 · Oracle</span><h2 style="font-family:var(--f-display);font-weight:300;font-size:21px">問一個問題</h2>
+  <div class="stack"><span class="eyebrow">占卜 · Oracle</span><h2 style="font-family:var(--f-display);font-weight:300;font-size:22px">問一個問題</h2>
   <div class="tiles" role="group" aria-label="占卜方法">${[["tarot","塔羅","Tarot · 타로"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].map(([k,n,e])=>`<button type="button" data-or="${k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div></div>
   <hr class="rule">
   <div class="stack"><span class="eyebrow">${BRAND.zh}包含</span>
   <p><b>計算型</b>：西洋星盤（太陽至冥王星、上升、天頂）、四柱八字與十神、五行、十年大運、紫微斗數十四主星與四化、每日流日與月相。</p>
   <p><b>占卜型</b>（喺呢頁）：78 張偉特塔羅（親手揀牌）、韓國神占（擲米）、面相手相、西非 Ifá Opele、北歐盧恩符文。</p><p><b>夢境</b>（底部「夢」）：解夢同夢境日記。</p>
   <p><b>運勢</b>：今日、本週、一個月、一年、十年，並可生成行動計劃。</p></div>
-  ${fbUser?`<hr class="rule"><div class="stack"><span class="eyebrow">帳戶</span><p style="font-size:13px">已登入：<b>${esc(fbUser.email||fbUser.displayName||"")}</b><br><span class="mute" style="font-size:12px">命盤、夢境日記同心情記錄會自動同步到雲端。</span></p><div class="row"><button class="btn" type="button" id="logout">登出</button></div></div>`:""}
-  ${IN_CLAUDE?"":`<hr class="rule"><div class="stack"><span class="eyebrow">AI 深入解讀</span>
-  <p class="mute" style="font-size:12px">其他功能全部喺你部機計，唔使上網都用到。想用 AI 寫長篇解讀、解夢同睇相，可以貼上你自己嘅 Anthropic API key（只會存喺呢部機）。</p>
-  <label class="f" for="akey">API key<input id="akey" type="password" autocomplete="off" placeholder="sk-ant-…" value="${esc(apiKey())}"></label>
-  <div class="row"><button class="btn solid" type="button" id="akeySave">儲存</button><button class="btn" type="button" id="akeyDel">刪除</button><small class="mute" id="akeyMsg"></small></div></div>`}
+  ${fbUser?`<hr class="rule"><div class="stack"><span class="eyebrow">帳戶</span><p style="font-size:14px">已登入：<b>${esc(fbUser.email||fbUser.displayName||"")}</b><br><span class="mute" style="font-size:13px">命盤、夢境日記同心情記錄會自動同步到雲端。</span><br><span style="font-size:13px">${isMember()?"✦ 你係 Soluna 會員":"免費版"}</span></p><div class="row"><button class="btn" type="button" id="logout">登出</button></div></div>`:""}
   <p class="note">${BRAND.zh}的內容供娛樂和自我反思之用。重要的健康、法律及財務決定，請諮詢相關專業人士。出生資料只儲存在你這部裝置的瀏覽器內。</p>`;
   el.querySelectorAll("[data-or]").forEach(b=>b.onclick=()=>{orTab=b.dataset.or;store("xuanjing.or",orTab);location.hash="#oracle"});
   const lo=$("#logout",el);if(lo)lo.onclick=()=>signOutAll();
-  const ks=$("#akeySave",el);if(ks){ks.onclick=()=>{try{localStorage.setItem(KEY_LS,$("#akey",el).value.trim())}catch(e){}$("#akeyMsg",el).textContent="已儲存"};$("#akeyDel",el).onclick=()=>{try{localStorage.removeItem(KEY_LS)}catch(e){}$("#akey",el).value="";$("#akeyMsg",el).textContent="已刪除"}}
   $("#edit",el).onclick=openEditor;const r=$("#reset",el);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
 }
 function openEditor(){
   const sh=$("#sheet");const p=profile.demo?{...DEMO,name:"",demo:true}:profile;
   sh.innerHTML=`<form class="panel" id="pf" autocomplete="off"><div class="row" style="justify-content:space-between"><h2>你的出生資料</h2><button type="button" class="btn small" id="close">關閉</button></div>
-  <p class="mute" style="font-size:12px">出生時間越準確，上升星座、時柱和紫微斗數越準。</p>
+  <p class="mute" style="font-size:13px">出生時間越準確，上升星座、時柱和紫微斗數越準。</p>
   <label class="f" for="pname">稱呼<input id="pname" required maxlength="20" value="${esc(p.name)}" placeholder="你的名字"></label>
   <div class="grid2"><label class="f" for="pdate">出生日期<input id="pdate" type="date" required min="1901-01-01" max="2099-12-31" value="${esc(p.date)}"></label>
   <label class="f" for="ptime">出生時間<input id="ptime" type="time" value="${esc(p.time)}"></label></div>

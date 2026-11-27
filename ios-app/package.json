@@ -1,0 +1,21 @@
+{
+  "name": "soluna-ios",
+  "private": true,
+  "version": "1.0.0",
+  "description": "曜 · Soluna iOS app (Capacitor wrapper around the web app in the repo root)",
+  "scripts": {
+    "web": "node scripts/copy-web.mjs",
+    "sync": "npm run web && npx cap sync ios",
+    "open": "npx cap open ios"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.3"
+  },
+  "dependencies": {
+    "@capacitor-firebase/authentication": "^8.6.0",
+    "@capacitor/core": "^8.6.3",
+    "@capacitor/ios": "^8.6.3",
+    "@revenuecat/purchases-capacitor": "^15.0.0",
+    "firebase": "^12.19.0"
+  }
+}

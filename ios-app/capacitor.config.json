@@ -1,0 +1,31 @@
+{
+  "appId": "app.soluna.ios",
+  "appName": "曜 Soluna",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0d0b14",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": [
+        "google.com",
+        "apple.com"
+      ]
+    }
+  },
+  "experimental": {
+    "ios": {
+      "spm": {
+        "swiftToolsVersion": "6.1",
+        "packageTraits": {
+          "@capacitor-firebase/authentication": [
+            "Google"
+          ]
+        }
+      }
+    }
+  }
+}

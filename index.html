@@ -352,6 +352,16 @@ svg text{fill:var(--fg)}
 textarea,input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--fg);border-radius:0;padding:10px 12px;width:100%}
 textarea{min-height:96px;resize:vertical}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute)}
+.obang{display:flex;justify-content:center;gap:24px;padding:26px 0 8px;min-height:190px;align-items:flex-end}
+.ob-flag{position:relative;width:44px;height:170px;border:0;background:none;padding:0;cursor:pointer;--ob:#efe9dd;transition:transform .3s}
+.ob-flag:nth-child(odd){transform:rotate(-4deg)}.ob-flag:nth-child(even){transform:rotate(3deg)}
+.ob-flag:hover{transform:translateY(-6px)}
+.ob-pole{position:absolute;left:50%;bottom:0;width:4px;height:100%;margin-left:-2px;background:linear-gradient(90deg,#6b4a2b,#a07a50,#6b4a2b);border-radius:2px}
+.ob-cloth{position:absolute;left:50%;top:6px;width:22px;height:120px;margin-left:-11px;border-radius:3px;background:repeating-linear-gradient(0deg,#f4efe6 0 7px,#e2dacb 7px 8px);box-shadow:0 2px 6px rgba(0,0,0,.25);transition:all .6s cubic-bezier(.3,.7,.2,1);font:500 13px/1.2 "Noto Serif TC",serif;writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;color:transparent;overflow:hidden}
+.ob-flag.open{transform:none}
+.ob-flag.open .ob-cloth{width:40px;margin-left:2px;background:var(--ob);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%)}
+.ob-flag.open[style*="#ece8df"] .ob-cloth{color:#4a4236;text-shadow:none}
+.ob-hint{text-align:center;font-size:13px}
 .ritual{position:relative;border:1px solid var(--fg);height:220px;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .ritual canvas{position:absolute;inset:0;width:100%;height:100%}
 .bell{font-family:var(--f-display);font-size:13px;letter-spacing:.3em;z-index:1;background:var(--bg);padding:4px 10px;border:1px solid var(--fg)}
@@ -1343,12 +1353,6 @@ function localMeihua(r,cat,q,main,hu,bi,T,good,endGood){
 /* ---- 神占 / Ifá / 盧恩 ---- */
 const ODU_VAL={Ogbe:1,Oyeku:-.5,Iwori:.3,Odi:-.5,Irosun:-.3,Owonrin:-.3,Obara:.5,Okanran:-.5,Ogunda:.3,Osa:-.5,Ika:-.3,Oturupon:-.3,Otura:.5,Irete:.3,Ose:.6,Ofun:.5};
 const RUNE_VAL={Fehu:.7,Uruz:.6,Thurisaz:-.4,Ansuz:.6,Raidho:.5,Kenaz:.6,Gebo:.8,Wunjo:.9,Hagalaz:-.7,Nauthiz:-.5,Isa:-.4,Jera:.7,Eihwaz:.2,Perthro:0,Algiz:.5,Sowilo:.9,Tiwaz:.6,Berkano:.6,Ehwaz:.5,Mannaz:.4,Laguz:.4,Ingwaz:.7,Dagaz:.8,Othala:.6};
-function localShin(q,N,odd,center,zones,msg){
-  const cat=classifyQ(q);const v=(odd?.3:-.1)+(center>=N*.2?.3:center<N*.08?-.3:0);
-  const dir=["東","南","西","北"];const mx=zones.slice(1).indexOf(Math.max(...zones.slice(1)));
-  return [qOpen(q,cat),`## 米卦\n擲米 ${N} 粒，${odd?"單數屬陽，事情有動力":"雙數屬陰，宜靜觀其變"}；中心聚米 ${center} 粒，${center>=N*.2?"心神集中，神明有回應":center<N*.08?"米散心散，先定心神再問":"心意一般，要多啲耐性"}；米最多落喺${dir[mx]}方，${dir[mx]}方位或者嗰個方向嘅人同事，同你呢件事有關。`,
-  `## 神明開示\n「${msg}」`,`## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${catBlock(cat,v)}`,q?"":`## 各方面\n${areasBlock({all:v})}`,`## 建議\n${odd?"可以行動，但唔好一個人扛，搵信得過嘅人幫手。":"先停一停，三日內唔好做重大決定。"}記得向祖先或者守護你嘅人道聲多謝。`].filter(Boolean).join("\n\n");
-}
 function localIfa(name,fR,fL,q){
   const cat=classifyQ(q);const v=((ODU_VAL[fR[0]]||0)+(ODU_VAL[fL[0]]||0))/2+(fR===fL?.1:0);
   return [qOpen(q,cat),`## Odu ${name}\n右腿 **${fR[0]}**：${fR[2]}${fR!==fL?`\n\n左腿 **${fL[0]}**：${fL[2]}`:"\n\n雙腿相同（Meji），訊息加倍清晰。"}`,
@@ -1537,7 +1541,7 @@ const AREA2CAT={love:"love",work:"career",money:"money",routine:"health",home:"f
 function areasFromAn(av){const v={};for(const [a,c] of Object.entries(AREA2CAT))if(av[a]!=null)v[c]=av[a]*.8;v.all=0;return v}
 function tgBlock(tg){const t=TG[tg];return `${t.life}\n\n宜：${t.yi.join("、")}。忌：${t.ji.join("、")}。`}
 function localToday(c){const now=new Date();const an=analyzeDay(c,now);if(!an)return "";const P=readingParas(c,an);const v=areasFromAn(Object.fromEntries(an.areas.map(a=>[a.k,a.net])));
-  return [`## 今日總論\n${an.headline}（綜合 ${an.dayScore.toFixed(1)}/5）`,...P.map(p=>`## ${p.k}\n${p.t}`),`## 各方面\n${areasBlock(v,["love","career","money","health","family"])}`,an.power.length?`## 今日旺\n${an.power.map(a=>`- ${a.n}：${areaText(a,"power")}`).join("\n")}`:"",an.pressure.length?`## 有拉扯\n${an.pressure.map(a=>`- ${a.n}：${areaText(a,"pressure")}`).join("\n")}`:"",an.trouble.length?`## 要留神\n${an.trouble.map(a=>`- ${a.n}：${areaText(a,"trouble")}`).join("\n")}`:""].filter(Boolean).join("\n\n")}
+  return [`## 今日總論\n${an.headline}（今日屬「${an.level}」，綜合 ${an.dayScore.toFixed(1)}/5）${an.veto.length>=2?`\n\n今日有幾個系統同時亮燈（${an.veto.join("、")}），宜靜不宜動，大決定可以遲幾日先做。`:""}`,...P.map(p=>`## ${p.k}\n${p.t}`),`## 各方面\n${areasBlock(v,["love","career","money","health","family"])}`,an.power.length?`## 今日旺\n${an.power.map(a=>`- ${a.n}：${areaText(a,"power")}`).join("\n")}`:"",an.pressure.length?`## 有拉扯\n${an.pressure.map(a=>`- ${a.n}：${areaText(a,"pressure")}`).join("\n")}`:"",an.trouble.length?`## 要留神\n${an.trouble.map(a=>`- ${a.n}：${areaText(a,"trouble")}`).join("\n")}`:""].filter(Boolean).join("\n\n")}
 function localWeek(c,days){const sorted=[...days].sort((a,b)=>(b.total||0)-(a.total||0));const av=avgAreas(days.map(d=>d.an));
   return [`## 本週主題\n最順係 ${fmtD(sorted[0].date)}（${TG[sorted[0].tg].kw}），最需要放慢係 ${fmtD(sorted[sorted.length-1].date)}（${TG[sorted[sorted.length-1].tg].kw}）。`,`## 逐日計劃\n${days.map(d=>`- **${fmtD(d.date)} 週${WDN[d.date.getDay()]} · ${d.gz} ${d.tg}**：${TG[d.tg].head} 宜${TG[d.tg].yi[0]}，忌${TG[d.tg].ji[0]}。${d.an?`旺${(d.an.power[0]||{n:"—"}).n}。`:""}`).join("\n")}`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health"])}`].join("\n\n")}
 function localMonth(c){const now=new Date();const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();const mgz=L0.getMonthInGanZhiExact(),tg=tenGod(c.bazi.dm,mgz[0]),tgz=tenGod(c.bazi.dm,ZHI_MAIN[ZHI.indexOf(mgz[1])]);
@@ -1975,6 +1979,9 @@ const TWEIGHT={Moon:.8,Sun:1.1,Mercury:1,Venus:1.15,Mars:1.3,Jupiter:1.5,Saturn:
 const ASPW={合:1,沖:.9,刑:.85,拱:.75,六合:.55};
 const NATW={太陽:1.25,月亮:1.25,上升:1.2,天頂:1.15,水星:1,金星:1,火星:1,木星:.9,土星:.9,天王星:.65,海王星:.65,冥王星:.65};
 const ZW_LAYER_W={流日:1,流月:.6,流年:.4,大限:.3};
+/* 時間尺度比重（本命底盤／八字流運／紫微疊宮／行運），總和 1 */
+const SCOPE_W={year:{nat:.30,bz:.30,zw:.25,w:.15},month:{nat:.20,bz:.25,zw:.30,w:.25},week:{nat:.10,bz:.15,zw:.25,w:.50},day:{nat:.10,bz:.20,zw:.25,w:.45}};
+const SYS_K={nat:.8,bz:.3,zw:1.35,w:.75};
 const BZ_LAYER_W={流日干:1,流日支:.5,流月:.5,流年:.35,大運:.3};
 const TSPD={Mercury:1.2,Venus:1.2,Mars:.5,Jupiter:.08,Saturn:.03,Uranus:.01,Neptune:.006,Pluto:.004};
 const BENEFIC=new Set(["Sun","Moon","Mercury","Venus","Jupiter"]);
@@ -2168,7 +2175,9 @@ const DECAN_GD=[["火星白羊","太陽白羊","金星白羊","土星獅子","�
 const NUM_T=["","開始同意志","平衡同選擇","創造同表達","結構同穩定","變動同挑戰","和諧同責任","反思同探索","力量同掌握","完成同智慧","循環同圓滿"];
 const reduceNum=n=>{while(n>9)n=String(n).split("").reduce((a,b)=>a+ +b,0);return n};
 function cardCorr(c){if(c.major){const g=MAJOR_GD[c.num];const r=reduceNum(c.num);return `${g[0]} · ${g[1]} · 數字 ${c.num}${c.num>9?`→${r}`:""}`}
-  const el=SUITS[c.suit][1];if(c.rank===0)return `${el}元素之根 · 數字 1`;if(c.rank<=9)return `${DECAN_GD[c.suit][c.rank-1]} · 數字 ${c.rank+1}`;return `${el}元素 · 宮廷牌`}
+  const el=SUITS[c.suit][1];if(c.rank===0)return `${el}元素之根 · 數字 1`;if(c.rank<=9){const d=DECAN_GD[c.suit][c.rank-1];return `${d} · ${decanDates(d.slice(-2),(c.rank-1)%3)} · 數字 ${c.rank+1}`}return `${["土","火","水","風"][c.rank-10]}中之${el} · 宮廷牌`}
+const SIGN_START={白羊:[3,21],金牛:[4,20],雙子:[5,21],巨蟹:[6,21],獅子:[7,23],處女:[8,23],天秤:[9,23],天蠍:[10,23],射手:[11,22],摩羯:[12,22],水瓶:[1,20],雙魚:[2,19]};
+function decanDates(sg,k){const [m,d]=SIGN_START[sg];const a=new Date(2001,m-1,d+k*10),b=new Date(2001,m-1,d+k*10+9);return `${a.getMonth()+1}月${a.getDate()}日至${b.getMonth()+1}月${b.getDate()}日`}
 const cardEl=c=>c.major?MAJOR_GD[c.num][2]:SUITS[c.suit][1];
 const EL_REL=(a,b)=>{if(a===b)return "同";const s=[a,b].sort().join("");return {"火風":"友","土水":"友","水火":"剋","土風":"剋"}[s]||"中"};
 function tarotSynth(drawn){
@@ -2204,6 +2213,7 @@ const ZHI_CHONG=(a,b)=>(a+6)%12===b;
 const ZHI_XING=(a,b)=>{const g=[[2,5,8],[1,10,7]];if(g.some(t=>t.includes(a)&&t.includes(b)&&a!==b))return true;if((a===0&&b===3)||(a===3&&b===0))return true;return a===b&&[4,6,9,11].includes(a)};
 const ZHI_HAI={0:7,7:0,1:6,6:1,2:5,5:2,3:4,4:3,8:11,11:8,9:10,10:9};
 const GAN_HE=(a,b)=>{const x=GAN.indexOf(a),y=GAN.indexOf(b);return Math.abs(x-y)===5};
+const GAN_CHONG=(a,b)=>{const i=GAN.indexOf(a),j=GAN.indexOf(b);return i>=0&&j>=0&&i!==4&&i!==5&&Math.abs(i-j)===6};
 function baziFlows(c,date){
   const b=c.bazi;if(!b||!window.Solar)return null;
   const L=Solar.fromYmd(date.getFullYear(),date.getMonth()+1,date.getDate()).getLunar();
@@ -2214,7 +2224,7 @@ function baziFlows(c,date){
   const layers=[mk("流日干",dgz[0]),mk("流日支",dgz[1],true),mk("流月",mgz[0]),mk("流年",ygz[0])];
   if(yun)layers.push(mk("大運",yun.gz[0]));
   const nd=ZHI.indexOf(b.pil[2][1]),ny=ZHI.indexOf(b.pil[0][1]),td=ZHI.indexOf(dgz[1]),ty=ZHI.indexOf(ygz[1]);
-  return {layers,dgz,mgz,ygz,yun,ys,male,dayClash:ZHI_CHONG(nd,td),dayHe:LIUHE[nd]===td,dayXing:ZHI_XING(nd,td),dayHai:ZHI_HAI[nd]===td,ganHe:GAN_HE(b.dm,dgz[0]),taisui:ZHI_CHONG(ny,ty)||ny===ty};
+  return {layers,dgz,mgz,ygz,yun,ys,male,dayClash:ZHI_CHONG(nd,td),dayHe:LIUHE[nd]===td,dayXing:ZHI_XING(nd,td),dayHai:ZHI_HAI[nd]===td,ganHe:GAN_HE(b.dm,dgz[0]),taisui:ZHI_CHONG(ny,ty)||ny===ty,dayTKDC:GAN_CHONG(b.dm,dgz[0])&&ZHI_CHONG(nd,td),yearTKDC:GAN_CHONG(b.dm,ygz[0])&&ZHI_CHONG(nd,ty),suiYun:!!(yun&&yun.gz===ygz)};
 }
 function bzSentence(f,which){
   const L=f.layers.find(x=>x.label===which);if(!L)return"";
@@ -2262,9 +2272,17 @@ function zwPatterns(z){
   if(["鈴星","文昌","陀羅","武曲"].every(inSF))add("鈴昌陀武",-1,"鈴星、文昌、陀羅、武曲會合，投資同大決定要特別審慎。",["money"]);
   return out;
 }
-/* relative levels: top ~35% good, bottom ~25% quiet, so a run of days/months is always readable */
-function rankLevels(items,get){const v=items.map(get).filter(x=>x!=null).sort((a,b)=>a-b);if(!v.length)return;const hi=v[Math.floor(v.length*.65)],lo=v[Math.floor(v.length*.25)];
-  items.forEach(it=>{const x=get(it);if(x==null)return;it.lvl=x>=hi&&x>lo?"good":x<=lo?"low":"mid";it.total=it.lvl==="good"?4.5:it.lvl==="low"?2:3})}
+/* 固定門檻：旺 ≥ +40；平 -15 至 +40；煩 -45 至 -15（或吉凶交戰）；忌 ≤ -45（或一票否決） */
+function rankLevels(items,get){items.forEach(it=>{const an=it.an;if(!an||!an.level)return;it.lvl=an.level==="旺"?"good":an.level==="平"?"mid":"low";it.lvlZh=an.level;it.total=an.dayScore})}
+function sysNorm(c,scope){
+  c._norm=c._norm||{};if(c._norm[scope])return c._norm[scope];
+  const now=new Date(),A={},D={nat:[],bz:[],zw:[],w:[]},n=scope==="month"||scope==="year"?24:45;
+  for(let i=0;i<n;i++){const d=scope==="month"||scope==="year"?new Date(now.getFullYear(),now.getMonth()+i-6,15):new Date(now.getFullYear(),now.getMonth(),now.getDate()+i-15);
+    const an=analyzeDay(c,d,{light:true,raw:true,scope:scope==="year"?"month":scope});if(!an)continue;
+    for(const k in D){let t=0;an.areas.forEach(a=>{const x=a.S[k][0]-a.S[k][1];(A[a.k+k]=A[a.k+k]||[]).push(x);t+=x});D[k].push(t/an.areas.length)}}
+  const ms=v=>{const m=v.reduce((s,x)=>s+x,0)/(v.length||1);return [m,Math.sqrt(v.reduce((s,x)=>s+(x-m)**2,0)/(v.length||1))]};
+  return c._norm[scope]={a:Object.fromEntries(Object.entries(A).map(([k,v])=>[k,ms(v)])),d:Object.fromEntries(Object.entries(D).map(([k,v])=>[k,ms(v)]))};
+}
 function analyzeDay(c,date,opts={}){
   if(!window.Astronomy||!c.planets)return null;
   const d0=new Date(date.getFullYear(),date.getMonth(),date.getDate(),12);
@@ -2289,38 +2307,53 @@ function analyzeDay(c,date,opts={}){
   transits.sort((a,b)=>Math.abs(b.w)-Math.abs(a.w));
   const zw=zwFlows(c,date), bz=baziFlows(c,date), pats=c.ziwei?(c._pats||(c._pats=zwPatterns(c.ziwei))):[];
   const areas=AREAS.map(a=>{
-    const r={...a,pos:0,neg:0,why:[],trs:[],hua:[],bz:[],pats:pats.filter(p=>p.areas.includes(a.k))};
-    for(const tr of transits)if(a.pts.includes(tr.np)){r.trs.push(tr);if(tr.w>0)r.pos+=tr.w;else r.neg-=tr.w}
+    const r={...a,pos:0,neg:0,S:{nat:[0,0],bz:[0,0],zw:[0,0],w:[0,0]},why:[],trs:[],hua:[],bz:[],pats:pats.filter(p=>p.areas.includes(a.k))};
+    const A=(k,v)=>{if(v>0){r.pos+=v;r.S[k][0]+=v}else if(v<0){r.neg-=v;r.S[k][1]-=v}};
+    for(const tr of transits)if(a.pts.includes(tr.np)){r.trs.push(tr);A("w",tr.w)}
     for(const [n,v] of Object.entries(tpos))if(a.h.includes(v.house)&&n!=="月亮"){
       const s=["木星","金星"].includes(n)?.6:["土星","火星","冥王星"].includes(n)?-.5:.15;
-      if(s>0)r.pos+=s;else r.neg-=s;
+      A("w",s);
       r.why.push(`${n}行經你第${v.house}宮（${v.sign}座）`)}
-    if(tpos["月亮"]&&a.h.includes(tpos["月亮"].house)){r.pos+=.3;r.why.push(`月亮今日走入你第${tpos["月亮"].house}宮，呢個範疇特別有感覺`)}
+    if(tpos["月亮"]&&a.h.includes(tpos["月亮"].house)){A("w",.3);r.why.push(`月亮今日走入你第${tpos["月亮"].house}宮，呢個範疇特別有感覺`)}
     if(zw)for(const L of (opts.scope==="month"?[zw.monthly,zw.yearly,zw.decadal]:[zw.daily,zw.monthly,zw.yearly,zw.decadal])){
-      for(const x of L.hua)if(a.pal.includes(x.pal)){const br=zwBright(c.ziwei,x.star);const v=HUA_W[x.h]*L.w*(x.h==="忌"?2-br:br);if(v>0)r.pos+=v;else r.neg-=v;r.hua.push({...x,label:L.label})}
-      if(L.label==="流日"&&a.pal.includes(L.ming)){r.pos+=.4;r.why.push(`紫微流日命宮落喺你本命${L.ming}`)}}
+      for(const x of L.hua)if(a.pal.includes(x.pal)){const br=zwBright(c.ziwei,x.star);const v=HUA_W[x.h]*L.w*(x.h==="忌"?2-br:br);A("zw",v);r.hua.push({...x,label:L.label})}
+      if(L.label==="流日"&&a.pal.includes(L.ming)){A("zw",.4);r.why.push(`紫微流日命宮落喺你本命${L.ming}`)}}
     if(bz){for(const L of bz.layers.filter(x=>opts.scope!=="month"||!x.label.startsWith("流日"))){const ars=[...TG_AREAS[L.tg]];if(L.tg==="正財"||L.tg==="偏財"){if(bz.male)ars.push("love")}if(L.tg==="正官"||L.tg==="七殺"){if(!bz.male)ars.push("love")}
-        if(ars.includes(a.k)){const v=L.w*((L.fav||0)*.8+TG_BIAS[L.tg]);if(v>0)r.pos+=v;else r.neg-=v;r.bz.push(L)}}
-      if(opts.scope!=="month"&&bz.dayClash&&["love","home"].includes(a.k)){r.neg+=.5;r.why.push(`今日${bz.dgz[1]}沖你日支${c.bazi.pil[2][1]}，${a.k==="love"?"伴侶之間":"屋企"}容易有摩擦`)}
-      if(opts.scope!=="month"&&bz.dayHe&&["love","social"].includes(a.k)){r.pos+=.45;r.why.push(`今日${bz.dgz[1]}同你日支六合，人緣同感情加分`)}
-      if(opts.scope!=="month"&&bz.dayXing&&["self","routine","home"].includes(a.k)){r.neg+=.35;r.why.push(`今日${bz.dgz[1]}同你日支${c.bazi.pil[2][1]}相刑，做事容易卡住，慢慢嚟`)}
-      if(opts.scope!=="month"&&bz.dayHai&&["social","love"].includes(a.k)){r.neg+=.25;r.why.push(`今日${bz.dgz[1]}同你日支相害，小心人際誤會`)}
-      if(opts.scope!=="month"&&bz.ganHe&&["love","social"].includes(a.k)){r.pos+=.35;r.why.push(`今日天干${bz.dgz[0]}同你日主${c.bazi.dm}相合，有人主動靠近你`)}
-      if(bz.taisui&&["self","home"].includes(a.k)){r.neg+=.25;r.why.push(`今年${bz.ygz}${ZHI.indexOf(bz.ygz[1])===ZHI.indexOf(c.bazi.pil[0][1])?"值":"沖"}太歲，凡事穩陣啲`)}}
-    for(const p of r.pats){const v=p.good>0?.25:p.good<0?-.25:0;if(v>0)r.pos+=v;else if(v<0)r.neg-=v}
-    if(zw&&a.stars)for(const L of [zw.daily,zw.monthly,zw.yearly])for(const x of L.hua)if(a.stars.includes(x.star)){const v=(x.h==="忌"?-1:x.h==="科"?1.2:.8)*L.w;if(v>0)r.pos+=v;else r.neg-=v;r.starHit=(r.starHit||"")+`${L.label}${x.star}化${x.h}，${x.h==="忌"?"考試文書要細心核對。":"讀書、考試同文書運有助力。"}`}
-    r.net=r.pos-r.neg;return r});
-  const by=[...areas].sort((a,b)=>b.net-a.net);
-  /* 按分數分類：拉扯大 → 煩；淨分正 → 旺；淨分負 → 忌；其餘唔顯示 */
-  const isPress=a=>Math.min(a.pos,a.neg)>=1.5&&Math.abs(a.net)<=.35*Math.max(a.pos,a.neg);
-  const pressure=by.filter(isPress).sort((a,b)=>Math.min(b.pos,b.neg)-Math.min(a.pos,a.neg));
-  const power=by.filter(a=>!isPress(a)&&a.net>=.5).slice(0,5);
-  const trouble=by.filter(a=>!isPress(a)&&a.net<=-.5).reverse();
+        if(ars.includes(a.k)){const v=L.w*((L.fav||0)*.8+TG_BIAS[L.tg]);A("bz",v);r.bz.push(L)}}
+      if(opts.scope!=="month"&&bz.dayClash&&["love","home"].includes(a.k)){A("bz",-.5);r.why.push(`今日${bz.dgz[1]}沖你日支${c.bazi.pil[2][1]}，${a.k==="love"?"伴侶之間":"屋企"}容易有摩擦`)}
+      if(opts.scope!=="month"&&bz.dayHe&&["love","social"].includes(a.k)){A("bz",.45);r.why.push(`今日${bz.dgz[1]}同你日支六合，人緣同感情加分`)}
+      if(opts.scope!=="month"&&bz.dayXing&&["self","routine","home"].includes(a.k)){A("bz",-.35);r.why.push(`今日${bz.dgz[1]}同你日支${c.bazi.pil[2][1]}相刑，做事容易卡住，慢慢嚟`)}
+      if(opts.scope!=="month"&&bz.dayHai&&["social","love"].includes(a.k)){A("bz",-.25);r.why.push(`今日${bz.dgz[1]}同你日支相害，小心人際誤會`)}
+      if(opts.scope!=="month"&&bz.ganHe&&["love","social"].includes(a.k)){A("bz",.35);r.why.push(`今日天干${bz.dgz[0]}同你日主${c.bazi.dm}相合，有人主動靠近你`)}
+      if(bz.taisui&&["self","home"].includes(a.k)){A("bz",-.25);r.why.push(`今年${bz.ygz}${ZHI.indexOf(bz.ygz[1])===ZHI.indexOf(c.bazi.pil[0][1])?"值":"沖"}太歲，凡事穩陣啲`)}}
+    for(const p of r.pats){A("nat",p.good>0?.6:p.good<0?-.6:0)}
+    if(zw&&a.stars)for(const L of [zw.daily,zw.monthly,zw.yearly])for(const x of L.hua)if(a.stars.includes(x.star)){const v=(x.h==="忌"?-1:x.h==="科"?1.2:.8)*L.w;A("zw",v);r.starHit=(r.starHit||"")+`${L.label}${x.star}化${x.h}，${x.h==="忌"?"考試文書要細心核對。":"讀書、考試同文書運有助力。"}`}
+    r.net=r.pos-r.neg;
+    return r});
+  if(opts.raw)return {areas};
+  /* 標準化：同你自己平時比（以未來一段時間做基準），再按時間尺度比重合併 */
+  const sc0=opts.scope||"day",sw=SCOPE_W[sc0],N=sysNorm(c,sc0),Z=(k,x,m)=>k==="nat"?Math.tanh(x/SYS_K.nat):Math.tanh((x-m[k][0])/Math.max(m[k][1],.15)/1.3);
+  areas.forEach(r=>{r.sys={};let sc=0;for(const k of ["nat","bz","zw","w"]){const v=Z(k,r.S[k][0]-r.S[k][1],{[k]:N.a[r.k+k]||[0,1]});r.sys[k]=v;sc+=sw[k]*v}r.score=Math.round(sc*100);
+    const vs=Object.entries(r.sys).filter(([k])=>k!=="nat"&&sw[k]>=.15).map(([,v])=>v);r.clash=Math.max(...vs)>=.65&&Math.min(...vs)<=-.65});
+  /* 一票否決：八字天剋地沖／歲運並臨、紫微雙化忌沖命、土冥緊密刑沖日月上升 */
+  const veto=[];
+  if(bz&&(opts.scope==="month"||opts.scope==="year"?bz.yearTKDC||bz.suiYun:bz.dayTKDC||bz.yearTKDC||bz.suiYun))veto.push(bz.suiYun?"歲運並臨":"天剋地沖");
+  if(zw){const ls=opts.scope==="month"||opts.scope==="year"?[zw.monthly,zw.yearly,zw.decadal]:[zw.daily,zw.monthly,zw.yearly,zw.decadal];if(ls.filter(L=>L.hua.some(x=>x.h==="忌"&&(x.pal==="命宮"||x.pal==="遷移"))).length>=2)veto.push("雙化忌沖命")}
+  if(transits.some(t=>(t.tb==="Saturn"||t.tb==="Pluto")&&["合","刑","沖"].includes(t.asp)&&["太陽","月亮","上升"].includes(t.np)&&t.orb<=1.5))veto.push("土冥刑沖");
+  const vetoOn=veto.length>=2;
+  areas.forEach(a=>{a.lvl=a.score>=40&&!a.clash?"旺":a.score<=-45?"忌":a.score<=-15||a.clash?"煩":"平";if(vetoOn&&["self","routine","money","home"].includes(a.k)&&a.lvl!=="旺")a.lvl="忌"});
+  const by=[...areas].sort((a,b)=>b.score-a.score);
+  const pressure=by.filter(a=>a.lvl==="煩");
+  const power=by.filter(a=>a.lvl==="旺").slice(0,5);
+  const trouble=by.filter(a=>a.lvl==="忌").reverse();
+  const isPress=a=>a.lvl==="煩";
   const top=transits.find(t=>t.tb!=="Moon")||transits[0];
   const hl=top?HEADLINES[top.cls]:HEADLINES.soft;
   const headline=hl[Math.floor(Math.abs(Math.sin(+d0/864e5))*hl.length)%hl.length];
-  const dayScore=Math.max(1,Math.min(5,3+areas.reduce((s,a)=>s+a.net,0)/areas.length*1.6));
-  return {date:d0,transits,areas,power,pressure,trouble,zw,bz,pats,tpos,top,headline,dayScore};
+  let total=0;for(const k of ["nat","bz","zw","w"]){const x=areas.reduce((s,a)=>s+a.S[k][0]-a.S[k][1],0)/areas.length;total+=sw[k]*Z(k,x,N.d)}total=Math.round(total*100);
+  const level=vetoOn?"忌":total>=40?"旺":total<=-45?"忌":total<=-15?"煩":"平";
+  const dayScore=Math.max(1,Math.min(5,3+total/50));
+  return {date:d0,transits,areas,power,pressure,trouble,zw,bz,pats,tpos,top,headline,dayScore,total,level,veto};
 }
 function huaSentence(L){
   const g=L.hua.find(x=>x.h==="祿"),b=L.hua.find(x=>x.h==="忌");
@@ -2858,27 +2891,45 @@ function orTarot(el){
     const rb=$("#reveal",el);if(rb)rb.onclick=reveal;
   });
 }
-/* shinjeom */
+/* shinjeom: 오방기 뽑기（五方旗抽旗）+ 삼재（三災） */
+const OBANG=[
+ {k:"red",n:"紅旗",ko:"빨간 깃발",god:"山神",col:"#b23a35",v:.8,t:"紅旗屬山神，主財運同喜事。你問嘅事有貴人同福氣撐住，可以主動行一步。",do:"今個月把握機會開口爭取，著少少紅色或者暖色。"},
+ {k:"yellow",n:"黃旗",ko:"노란 깃발",god:"祖先",col:"#c9a227",v:.6,t:"黃旗屬祖先，主庇蔭同家運。祖先喺背後護住你，事情會慢慢順，屋企人亦會幫到手。",do:"抽時間探下長輩、拜下祖先，或者同家人食餐飯。"},
+ {k:"white",n:"白旗",ko:"하얀 깃발",god:"神靈",col:"#ece8df",v:.2,t:"白旗屬神靈，主清淨同守護。事情未必即刻有結果，但你受到保護，心要清，唔好急。",do:"減少應酬，早啲休息，做決定之前靜一靜。"},
+ {k:"blue",n:"青旗",ko:"파란 깃발",god:"雜神",col:"#2f5a8a",v:-.3,t:"青旗主變動同心神不定。近排容易左搖右擺，或者有搬遷、轉換嘅念頭，先睇清楚再郁。",do:"三日內唔好簽重要文件；諗唔通就寫低兩邊利弊。"},
+ {k:"green",n:"綠旗",ko:"초록 깃발",god:"喪門",col:"#3c6b45",v:-.7,t:"綠旗主憂患同阻滯。最近事情會卡住、心情容易悶，呢段時間宜守唔宜攻。",do:"保持作息，照顧好身邊人；大決定遲一個月先做。"}];
+const SAMJAE={申:"寅卯辰",子:"寅卯辰",辰:"寅卯辰",亥:"巳午未",卯:"巳午未",未:"巳午未",寅:"申酉戌",午:"申酉戌",戌:"申酉戌",巳:"亥子丑",酉:"亥子丑",丑:"亥子丑"};
+function samjae(c,date=new Date()){
+  const yb=c&&c.bazi&&c.bazi.pil&&c.bazi.pil[0][1];if(!yb||!window.Solar)return null;
+  const ty=Solar.fromYmd(date.getFullYear(),date.getMonth()+1,date.getDate()).getLunar().getYearZhi();const g=SAMJAE[yb],i=g.indexOf(ty);
+  if(i<0){const nx=[...Array(12)].map((_,k)=>date.getFullYear()+k).find(y=>g.includes(Solar.fromYmd(y,6,1).getLunar().getYearZhi()));return {on:false,yb,next:nx}}
+  return {on:true,yb,ty,stage:["들삼재（入三災）","눌삼재（中三災）","날삼재（出三災）"][i],tip:["頭一年，新開始要穩陣，唔好貪快。","中間一年最需要小心，凡事留後路，保重身體同財物。","最後一年，壓力慢慢退，收尾要做好，唔好鬆懈。"][i]};
+}
 function orShin(el){
-  el.innerHTML=`<p>韓國巫堂（무당）以搖鈴、擲米、扇子感應神靈，對近況給出<b>直接的指示</b>。默念你的問題，搖鈴後擲米。</p>
-  <label class="f" for="sq">你想問神明的事<textarea id="sq" maxlength="300" placeholder="例如：我應該今年轉工嗎？"></textarea></label>
-  <div class="ritual" id="rit"><canvas id="rice"></canvas><span class="bell">搖鈴 · 擲米</span></div>
-  <button class="btn solid" type="button" id="cast">搖鈴擲米</button>
+  el.innerHTML=`<p>巫堂（무당）占卜時，會將五支捲埋嘅五方旗（오방기）遞俾你，由你憑感覺抽。旗嘅顏色就係神明嘅答覆。默念你嘅問題，抽兩支：第一支係答案，第二支係提示。</p>
+  <label class="f" for="sq">你想問神明嘅事<textarea id="sq" maxlength="300" placeholder="例如：我應唔應該今年轉工？"></textarea></label>
+  <div class="obang" id="obang" role="group" aria-label="五方旗">${[0,1,2,3,4].map(i=>`<button type="button" class="ob-flag" data-i="${i}" aria-label="第${i+1}支旗"><span class="ob-pole"></span><span class="ob-cloth"></span></button>`).join("")}</div>
+  <p class="mute ob-hint" id="obHint">輕輕撳一支旗</p>
   <div id="shinOut" class="stack"></div>`;
-  $("#cast",el).onclick=()=>dailyFree("shin","神占",()=>{
-    const q=$("#sq",el).value.trim();const rit=$("#rit",el);rit.classList.remove("ringing");void rit.offsetWidth;rit.classList.add("ringing");
-    const cv=$("#rice",el),w=cv.width=cv.clientWidth*2,h=cv.height=cv.clientHeight*2,ctx=cv.getContext("2d");ctx.clearRect(0,0,w,h);
-    const col=getComputedStyle(document.documentElement).getPropertyValue("--fg").trim()||"#000";
-    const zones=[0,0,0,0,0];const N=60+Math.floor(Math.random()*60);let i=0;
-    const pts=Array.from({length:N},()=>{const a=Math.random()*Math.PI*2,r=Math.pow(Math.random(),.7)*Math.min(w,h)*.48;return[w/2+r*Math.cos(a)*1.5,h/2+r*Math.sin(a),Math.random()*Math.PI]});
-    pts.forEach(([x,y])=>{const r=Math.hypot((x-w/2)/1.5,y-h/2)/(Math.min(w,h)*.48);if(r<.25)zones[0]++;else zones[1+Math.floor(((Math.atan2(y-h/2,x-w/2)+Math.PI)/(Math.PI*2))*4)%4]++});
-    const tick=()=>{for(let k=0;k<6&&i<N;k++,i++){const[x,y,a]=pts[i];ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(0,0,7,3,0,0,Math.PI*2);ctx.fill();ctx.restore()}if(i<N)requestAnimationFrame(tick)};setTimeout(tick,900);
-    const odd=N%2===1;const center=zones[0];
-    const msgs=odd?["神明說：門已經開了，你只是不敢走進去。","祖先在看著你。這件事可以做，但不要一個人扛。","米落得很散：先處理身邊小事，大事自然會順。"]:["神明說：先停一停。三個月內答案會自己出現。","米聚在中間：你要的東西其實已經在手上。","有人在背後說你，與其解釋，不如做出成績。"];
-    const shMsg=pick(msgs,Math.random);const out=$("#shinOut",el);
-    setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:20px">${esc(shMsg)}</p>`;
-      out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart),{local:()=>localShin(q,N,odd,center,zones,shMsg),save:()=>({kind:"神占",title:`米卦 ${N} 粒`,q,result:(out.querySelector(".headline")||{}).textContent||""})}));},1700);
-  });
+  let order=null,picks=[],q="";
+  const flags=[...el.querySelectorAll(".ob-flag")];
+  flags.forEach(f=>f.onclick=()=>{if(picks.length>=2||f.classList.contains("open"))return;
+    const go=()=>{if(!order){order=[...OBANG].sort(()=>Math.random()-.5);q=$("#sq",el).value.trim()}
+      const o=order[+f.dataset.i];picks.push(o);f.style.setProperty("--ob",o.col);f.classList.add("open");f.querySelector(".ob-cloth").textContent=o.n;
+      $("#obHint",el).textContent=picks.length===1?"再抽一支，睇神明嘅提示":"";
+      if(picks.length===2)setTimeout(()=>show(),700)};
+    if(!picks.length)dailyFree("shin","神占",go);else go()});
+  const show=()=>{const [a,b]=picks,sj=samjae(chart),out=$("#shinOut",el);
+    const v=a.v*.7+b.v*.3,lvl=v>=.45?"大吉":v>=.15?"吉":v>-.2?"平":"宜守";
+    out.innerHTML=`<span class="eyebrow">오방기 · 五方旗</span><p class="headline" style="font-size:20px">${a.n}（${a.god}）· ${b.n}（${b.god}）· ${lvl}</p><p>${a.t}</p>${sj?`<p class="mute">${sj.on?`你生肖屬${sj.yb}，今年係三災（삼재）嘅${sj.stage}。${sj.tip}`:`你今年唔係三災年${sj.next?`，下一輪由 ${sj.next} 年開始`:""}。`}</p>`:""}`;
+    out.appendChild(aiBlock("請神明開示",()=>prompt(`你而家係一位韓國巫堂（무당），用五方旗（오방기）為使用者占卜。${q?`問題：「${q}」。`:"使用者冇講問題，想聽神明對近況嘅話。"}第一支旗：${a.n}（${a.ko}，屬${a.god}，${a.t}）；第二支旗：${b.n}（${b.ko}，屬${b.god}）。${sj?sj.on?`使用者生肖地支${sj.yb}，今年正值三災嘅${sj.stage}。`:`使用者今年唔係三災年。`:""}用巫堂嘅口吻：先講你感應到嘅畫面，再按旗色俾直接、具體嘅指示（可以做同唔好做），最後一個化解或者祈福嘅小方法。用廣東話，溫柔但直接。`,chart),{local:()=>localShin(q,a,b,sj,v,lvl),save:()=>({kind:"神占",title:`${a.n}・${b.n}`,q,result:lvl})}));
+  };
+}
+function localShin(q,a,b,sj,v,lvl){
+  const cat=classifyQ(q);
+  return [qOpen(q,cat),`## 第一支旗：${a.n}\n${a.t}`,`## 第二支旗：${b.n}\n${b.t.split("。")[0]}。所以做法上：${b.do}`,
+    sj?`## 三災（삼재）\n${sj.on?`你生肖屬${sj.yb}，今年係三災嘅${sj.stage}。${sj.tip}`:`你今年唔係三災年${sj.next?`，下一輪三災由 ${sj.next} 年開始`:""}。`}`:"",
+    `## 答案\n${q?`「${q}」嘅答案${LVL_W[lvlOf(v)]}。`:""}${catBlock(cat,v)}`,`## 神明嘅提示\n${a.do}`].filter(Boolean).join("\n\n");
 }
 /* dream */
 const DREAM_DICT=[["蛇","蛇常代表轉化、性能量或潛藏的威脅；韓國꿈해몽中大蛇可為태몽（胎夢）或財運。"],["牙","掉牙在周公解夢多與家人健康或失去有關；心理學上常反映對形象或控制感的焦慮。"],["水","清水主財與情緒流動，濁水代表困擾；洪水象徵情緒快要滿瀉。"],["飛","飛翔代表渴望自由、突破限制；飛不起來則是現實壓力。"],["跌","從高處跌下常反映失控感或對失敗的擔憂。"],["考試","考試夢多出現在被評價、準備不足的時期。"],["死","夢見死亡多數代表結束與重生，不是凶兆。"],["錢","撿到錢代表機會，掉錢代表擔心失去價值感。"],["火","火代表熱情、憤怒或興旺；韓國解夢中房子著火是大吉的財夢。"],["魚","魚常與財富、豐收與懷孕（胎夢）有關。"],["鬼","鬼魂象徵未處理的回憶或內疚。"],["懷孕","懷孕代表新計劃正在孕育。"],["追","被追趕代表你在逃避某個問題或情緒。"],["前任","夢見前任多是處理舊情緒，未必代表想復合。"],["貓","貓代表直覺、獨立，也可能是女性化的能量或小人。"],["狗","狗代表忠誠與友情。"],["結婚","結婚象徵承諾或兩種特質的整合。"],["豬","韓國人認為夢見豬是大財運，很多人會因此買彩票。"],["血","血代表生命力與付出，有時被解為財。"],["房子","房子代表自我，不同房間是內心不同部分。"],["龍","龍是大吉之兆，代表成就、貴人，也是常見的胎夢。"],["老虎","老虎代表權力與勇氣，在韓國是守護與胎夢的象徵。"]];
@@ -2991,8 +3042,8 @@ async function mpTask(kind){
   if(!MP_V)MP_V=await import(base+"vendor/mediapipe/vision_bundle.mjs");
   const fs=await MP_V.FilesetResolver.forVisionTasks(base+"vendor/mediapipe/wasm");
   MP[kind]=kind==="face"
-    ?await MP_V.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/face_landmarker.task"},runningMode:"IMAGE",numFaces:1})
-    :await MP_V.HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/hand_landmarker.task"},runningMode:"IMAGE",numHands:1});
+    ?await MP_V.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/face_landmarker.task"+(IN_CLAUDE?".wasm":"")},runningMode:"IMAGE",numFaces:1})
+    :await MP_V.HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+"models/hand_landmarker.task"+(IN_CLAUDE?".wasm":"")},runningMode:"IMAGE",numHands:1});
   return MP[kind];
 }
 const fpD=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);

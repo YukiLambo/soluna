@@ -772,6 +772,29 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 .pw-tier.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 9%,transparent)}
 .plus.luna{border-color:color-mix(in srgb,var(--fg) 22%,transparent);background:color-mix(in srgb,var(--fg) 3%,var(--surface))}
 .ai-lockline{font-size:13px;margin:6px 0 0}
+.deep-row{display:flex;flex-direction:column;gap:3px;padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,transparent)}
+.deep-row>b{font-size:14.5px;font-weight:600}.deep-row p{margin:0;font-size:14.5px;line-height:1.75}
+.dg{font-style:normal;font-size:11px;padding:1px 6px;border-radius:8px;margin-left:6px;font-weight:500;border:1px solid currentColor}
+.dg.g{color:var(--gold)}.dg.b{color:var(--mute)}
+.mt-list{display:flex;flex-direction:column}
+.mt-row{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,transparent)}
+.mt-row b{font-size:14.5px}.mt-row p{margin:2px 0 0;font-size:13.5px;color:var(--mute)}.mt-d{font-size:12px;color:var(--mute);padding-top:2px}
+.mt-row.hard b{color:var(--fg)}.mt-row.soft b{color:var(--gold)}
+.tcard .corr{font-size:11px;color:var(--mute);margin-top:2px;line-height:1.4}
+.tsynth{margin-top:18px}
+.av-img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.you-av{overflow:visible}.you-av .av-img{position:absolute;inset:0}
+#hdrProfile{overflow:hidden;padding:0}#hdrProfile .av-img{width:100%;height:100%}
+.av-edit{display:flex;align-items:center;gap:12px}.you-av.small{width:52px;height:52px;font-size:22px;display:inline-flex;align-items:center;justify-content:center;cursor:default}
+.like{background:none;border:1px solid color-mix(in srgb,var(--fg) 25%,transparent);border-radius:50%;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;color:var(--mute);cursor:pointer;padding:0}
+.like .ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6}
+.like[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}.like[aria-pressed="true"] .ic{fill:currentColor}
+.saved-list.sv li{padding:0}.saved-list.sv button{display:flex;gap:12px;align-items:baseline;width:100%;padding:11px 0;background:none;border:0;color:var(--fg);font:inherit;font-size:14.5px;text-align:left;cursor:pointer}
+.saved-list.sv em{margin-left:auto;font-style:normal;font-size:12px;opacity:.7;white-space:nowrap}
+#svDel .ic{width:14px;height:14px;fill:currentColor;vertical-align:-2px}
+.gua-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
+.gua{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}.gua svg{width:64px;height:70px;fill:var(--fg)}.gua .mv{fill:var(--gold)}
+.gua figcaption{display:flex;flex-direction:column;align-items:center;gap:2px}.gua small{font-size:11.5px;color:var(--mute)}.gua b{font-family:var(--f-display);font-weight:400;font-size:16px}
 </style>
 
 <canvas id="skybg" aria-hidden="true"></canvas>
@@ -885,7 +908,8 @@ function computeChart(p){
   const A=window.Astronomy;
   if(A){
     const bodies=[["Sun","太陽","日"],["Moon","月亮","月"],["Mercury","水星","水"],["Venus","金星","金"],["Mars","火星","火"],["Jupiter","木星","木"],["Saturn","土星","土"],["Uranus","天王星","天"],["Neptune","海王星","海"],["Pluto","冥王星","冥"]];
-    res.planets=bodies.map(([b,n,s])=>{const lon=b==="Moon"?A.EclipticGeoMoon(utc).lon:A.Ecliptic(A.GeoVector(b,utc,true)).elon;return{b,n,s,lon,sign:SIGNS[Math.floor(lon/30)%12]}});
+    const ecl=(b,t)=>{if(b==="Moon"){const m=A.EclipticGeoMoon(t);return{lon:m.lon,lat:m.lat}}const e=A.Ecliptic(A.GeoVector(b,t,true));return{lon:e.elon,lat:e.elat}};const utc1=new Date(+utc+864e5);
+    res.planets=bodies.map(([b,n,s])=>{const e=ecl(b,utc),e1=ecl(b,utc1);const spd=((e1.lon-e.lon+540)%360)-180;return{b,n,s,lon:e.lon,lat:e.lat,spd,retro:spd<0,sign:SIGNS[Math.floor(e.lon/30)%12]}});
     if(!p.timeUnknown){
       const lst=(A.SiderealTime(utc)+city[3]/15+48)%24, th=lst*15*Math.PI/180, eps=23.4393*Math.PI/180, lat=city[2]*Math.PI/180;
       let asc=Math.atan2(Math.cos(th),-(Math.sin(th)*Math.cos(eps)+Math.tan(lat)*Math.sin(eps)))*180/Math.PI;asc=(asc+360)%360;
@@ -1113,6 +1137,7 @@ function profileContext(c){
   if(b){lines.push(`八字：${b.pil.map(x=>x||"（時柱不詳）").join(" ")}；日主${b.dm}${EL[ganEl(b.dm)]}，${b.strong?"偏強":"偏弱"}；五行 木${b.els[0]} 火${b.els[1]} 土${b.els[2]} 金${b.els[3]} 水${b.els[4]}`);
     const now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear);
     lines.push("大運："+b.yun.map(x=>`${x.gz}(${x.startYear}-${x.endYear})`).join("、")+(cur?`；現行大運 ${cur.gz}`:""));}
+  const D=deepPoints(c);if(D){lines.push(`深層星盤：北交點${SIGNS[Math.floor(D.nn/30)]}座、黑月莉莉絲${SIGNS[Math.floor(D.lil/30)]}座${c.mc?`、天頂${c.mc.sign}座`:""}；逆行：${c.planets.filter(p=>p.retro).map(p=>p.n).join("、")||"無"}；尊貴：${c.planets.map(p=>DIGN_LBL(dignity(p.n,p.lon))?p.n+DIGN_LBL(dignity(p.n,p.lon)):"").filter(Boolean).join("、")||"無"}；出界：${D.oob.map(x=>x.n).join("、")||"無"}；恆星：${D.stars.map(x=>x.pt+"合"+x.star).join("、")||"無"}；推運：太陽${SIGNS[Math.floor(D.prog.sun/30)]}座、月亮${SIGNS[Math.floor(D.prog.moon/30)]}座、推運月相${D.prog.ph[1]}`)}
   if(c.ziwei){const z=c.ziwei, mp=z.palaces[z.ming];lines.push(`紫微斗數：${z.bureauName}；命宮在${ZHI[z.ming]}，主星：${mp.stars.join("、")||"無主星（借對宮）"}；身宮在${ZHI[z.shen]}`)}
   return lines.join("\n");
 }
@@ -1126,10 +1151,18 @@ function prompt(task,c){
 ${c?"使用者資料：\n"+profileContext(c)+"\n":""}
 任務：${task}`;
 }
+const SAVED_K="soluna.saved";
+const savedAll=()=>store(SAVED_K)||[];
+function saveReading(it){const a=savedAll();a.unshift({id:"r"+Date.now(),date:ymd(new Date()),...it});store(SAVED_K,a.slice(0,200));return a[0].id}
+function unsaveReading(id){store(SAVED_K,savedAll().filter(x=>x.id!==id))}
+const HEART='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
 function aiBlock(label,taskFn,opts={}){
   const box=document.createElement("div");box.className="ai";
-  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">${canUse(label)?"深入了解":"付費了解 · "+(SOL_ONLY(label)?"Sol Pro":"Luna Plus")}</span><button class="btn small solid" type="button">${canUse(label)?esc(label):LOCK_IC+"付費了解"}</button></div>${canUse(label)?"":`<p class="ai-lockline mute">${esc(label)}：加入 ${SOL_ONLY(label)?"Sol Pro":"Luna Plus"}，就可以為你度身寫成。</p>`}<div class="ai-out"></div><p class="note" hidden></p>`;
-  const btn=$("button",box), out=$(".ai-out",box), note=$(".note",box);
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="eyebrow">${canUse(label)?"深入了解":"付費了解 · "+(SOL_ONLY(label)?"Sol Pro":"Luna Plus")}</span><span class="row" style="gap:8px">${opts.save?`<button type="button" class="like" aria-pressed="false" aria-label="收藏呢次占卜">${HEART}</button>`:""}<button class="btn small solid ai-go" type="button">${canUse(label)?esc(label):LOCK_IC+"付費了解"}</button></span></div>${canUse(label)?"":`<p class="ai-lockline mute">${esc(label)}：加入 ${SOL_ONLY(label)?"Sol Pro":"Luna Plus"}，就可以為你度身寫成。</p>`}<div class="ai-out"></div><p class="note" hidden></p>`;
+  const btn=$(".ai-go",box), out=$(".ai-out",box), note=$(".note",box);
+  const lk=$(".like",box);let sid=null;
+  if(lk)lk.onclick=()=>{if(sid){unsaveReading(sid);sid=null;lk.setAttribute("aria-pressed","false");toastMsg("已取消收藏");return}
+    const it=opts.save();it.text=out.innerText.trim().slice(0,6000);sid=saveReading(it);lk.setAttribute("aria-pressed","true");toastMsg("已收藏，可以喺「我的 › 收藏」重溫")};
   btn.onclick=async()=>{
     if(!canUse(label)){openPaywall(label);return}
     const task=typeof taskFn==="function"?taskFn():taskFn; if(task===null)return;
@@ -1139,7 +1172,7 @@ function aiBlock(label,taskFn,opts={}){
     try{
       const o={onText:({text})=>{out.innerHTML=md(text)},modelTier:"default"};
       if(opts.images)o.images=opts.images();
-      const {text}=await s(task,o);out.innerHTML=md(text);if(opts.onDone)try{opts.onDone(text)}catch(e){}
+      const {text}=await s(task,o);out.innerHTML=md(text);if(sid){const a=savedAll();const it=a.find(x=>x.id===sid);if(it){it.text=text.slice(0,6000);store(SAVED_K,a)}}if(opts.onDone)try{opts.onDone(text)}catch(e){}
     }catch(e){out.innerHTML=e&&e.text?md(e.text):"";note.hidden=false;note.textContent={not_granted:"你未允許此頁使用 Claude，所以 AI 解讀已隱藏。",signin:"請先登入。",locked:"呢個係會員內容，付款解鎖之後就可以睇。",rate_limited:"請求太頻繁，請稍等一會再試。",images_unavailable:"此環境暫時不能傳送相片。"}[e&&e.code]||"解讀未能完成，請稍後再試。"}
     btn.disabled=false;btn.textContent="重新解讀";
   };
@@ -1149,7 +1182,7 @@ function aiBlock(label,taskFn,opts={}){
 
 /* ============ Accounts (Firebase Auth + Firestore) — standalone app only ============ */
 const FIREBASE_CONFIG=window.SOLUNA_FIREBASE||null;
-const FB_V="11.0.2",SYNC_KEY=k=>k==="xuanjing.profile.v1"||k==="soluna.dreams"||k==="soluna.theme"||k.startsWith("soluna.mood.")||k.startsWith("soluna.useful.");
+const FB_V="11.0.2",SYNC_KEY=k=>k==="xuanjing.profile.v1"||k==="soluna.dreams"||k==="soluna.saved"||k==="soluna.avatar"||k==="soluna.theme"||k.startsWith("soluna.mood.")||k.startsWith("soluna.useful.");
 const encK=k=>k.replace(/\./g,"~"),decK=k=>k.replace(/~/g,".");
 let FB=null;
 async function fbLoad(){
@@ -1454,6 +1487,7 @@ const ASPW={合:1,沖:.9,刑:.85,拱:.75,六合:.55};
 const NATW={太陽:1.25,月亮:1.25,上升:1.2,天頂:1.15,水星:1,金星:1,火星:1,木星:.9,土星:.9,天王星:.65,海王星:.65,冥王星:.65};
 const ZW_LAYER_W={流日:1,流月:.6,流年:.4,大限:.3};
 const BZ_LAYER_W={流日干:1,流日支:.5,流月:.5,流年:.35,大運:.3};
+const TSPD={Mercury:1.2,Venus:1.2,Mars:.5,Jupiter:.08,Saturn:.03,Uranus:.01,Neptune:.006,Pluto:.004};
 const BENEFIC=new Set(["Sun","Moon","Mercury","Venus","Jupiter"]);
 const ASPECTS=[[0,"合","conj"],[60,"六合","soft"],[90,"刑","hard"],[120,"拱","soft"],[180,"沖","hard"]];
 const ASP_VERB={合:"放大",六合:"帶來機會",刑:"製造摩擦",拱:"推動順流",沖:"拉開距離"};
@@ -1536,6 +1570,126 @@ function zwFlows(c,date){
   const lv=(o,label,w0)=>{const w=ZW_LAYER_W[label]||w0;return({label,w,stem:o.heavenlyStem,branch:o.earthlyBranch,ming:z.a.palaces[o.index].name.replace("僕役","交友"),
     hua:o.mutagen.map((s,i)=>({h:HUA[i],star:s,pal:find(s)})).filter(x=>x.pal)})};
   return {daily:lv(h.daily,"流日",1),monthly:lv(h.monthly,"流月",.6),yearly:lv(h.yearly,"流年",.4),decadal:lv(h.decadal,"大限",.25),dec:h.decadal,lunar:h.lunarDate};
+}
+
+/* ===== 深層星盤：尊貴、逆行、赤緯、映點、恆星、莉莉絲、月交點、推運 ===== */
+const DIGN={太陽:{d:[4],e:[0],x:[10],f:[6]},月亮:{d:[3],e:[1],x:[9],f:[7]},水星:{d:[2,5],e:[5],x:[8,11],f:[11]},金星:{d:[1,6],e:[11],x:[0,7],f:[5]},火星:{d:[0,7],e:[9],x:[1,6],f:[3]},木星:{d:[8,11],e:[3],x:[2,5],f:[9]},土星:{d:[9,10],e:[6],x:[3,4],f:[0]}};
+function dignity(n,lon){const D=DIGN[n];if(!D)return 0;const si=Math.floor(((lon%360)+360)%360/30);return D.d.includes(si)?1:D.e.includes(si)?.7:D.x.includes(si)?-.7:D.f.includes(si)?-1:0}
+const DIGN_LBL=v=>v===1?"入廟":v===.7?"擢升":v===-.7?"失勢":v===-1?"落陷":"";
+const OBL=23.4393;
+const declOf=(lon,lat)=>{const r=Math.PI/180;return Math.asin(Math.sin(lat*r)*Math.cos(OBL*r)+Math.cos(lat*r)*Math.sin(OBL*r)*Math.sin(lon*r))/r};
+const RETRO_T={水星:"說話之前會諗多兩次，思考向內，適合研究、重溫同修改，唔急住下定論。",金星:"對愛同價值有自己一套標準，唔會人有我有；感情往往要經過反思先成熟。",火星:"衝勁唔係即刻爆出嚟，而係儲住再發；學識表達怒氣，會變成好持久嘅力量。",木星:"真正嘅信念同運氣係由內心長出嚟，唔靠外界認同。",土星:"對自己要求好嚴，責任感係自己畀自己嘅；學識放過自己，先會穩。",天王星:"改變先喺內心發生，外表未必睇得出，但你一直喺度重新定義自己。",海王星:"直覺同靈感好內斂，夢境同獨處時間對你特別重要。",冥王星:"轉化係靜靜咁喺內心進行，你有好強嘅自我修復能力。"};
+const OOB_T="出界（赤緯超出太陽軌跡）嘅行星唔跟常規出牌：佢嘅能量特別獨立、強烈，有時令人覺得你喺呢方面與別不同，亦係天賦所在。";
+const FIXED_STARS=[["大陵五 Algol",56.17,"強烈嘅情緒同意志，懂得面對陰影，就會變成保護人嘅力量。"],["昴宿星團 Alcyone",60.0,"敏感、有遠見，容易為理想付出眼淚，亦因此打動人。"],["畢宿五 Aldebaran",69.79,"正直同勇氣帶來成就，守住誠信就守住運氣。"],["參宿七 Rigel",76.83,"學習同教導嘅星，鍾意追求知識，亦適合帶領別人。"],["參宿四 Betelgeuse",88.75,"行動力強、易有名聲，成功嚟得快，要穩住根基。"],["天狼星 Sirius",104.08,"光芒好盛，熱誠同忠誠令人記得你，小心燃燒過度。"],["北河二 Castor",110.25,"聰明敏捷，文字同表達能力出眾。"],["北河三 Pollux",113.23,"有膽色同競爭心，要將勇氣用喺保護而唔係攻擊。"],["南河三 Procyon",115.78,"機會嚟得快去得快，把握時機就係關鍵。"],["軒轅十四 Regulus",149.83,"王者之星，有領導力同成就；保持謙厚，地位先會長久。"],["五帝座一 Denebola",171.62,"見解獨到、唔隨波逐流，學識包容就會少啲衝突。"],["角宿一 Spica",203.83,"最吉利嘅恆星之一，帶來天賦、保護同收成。"],["大角星 Arcturus",204.23,"開拓者，靠自己闖出新路，成就喺遠方或新領域。"],["心宿二 Antares",249.77,"熱烈、勇敢、極端；學識克制，就有非凡嘅成就。"],["織女一 Vega",285.32,"藝術同魅力之星，有才華，亦要分清理想同現實。"],["河鼓二 Altair",301.78,"大膽進取、行動果斷，適合開創。"],["壘壁陣四 Deneb Algedi",323.55,"有法律同公義感，人生會經歷由失去到重建嘅智慧。"],["北落師門 Fomalhaut",333.87,"理想主義同靈性之星，守住純粹嘅心，夢想會成真。"],["水委一 Achernar",345.3,"樂觀、有福氣，對宗教、哲學或遠方有緣。"],["室宿二 Scheat",359.37,"思想前衛、充滿創意，要小心衝動行事。"]];
+const MC_T={白羊:"你嘅天命係開創：做第一個、帶頭衝。",金牛:"你適合建立有價值、持久嘅嘢，例如財富、品味同美感。",雙子:"你嘅舞台係溝通：寫作、教學、媒體同連結人。",巨蟹:"你嘅事業同照顧人有關，令人有歸屬感係你嘅成就。",獅子:"你需要被睇見：創作、表演、領導都係你嘅天職。",處女:"你喺細節同專業入面發光，令事情變得更好係你嘅使命。",天秤:"你嘅天職係平衡同美：設計、外交、合作同公義。",天蠍:"你適合深入嘅工作：研究、心理、財務或轉化危機。",射手:"你嘅事業同探索有關：旅行、學問、信仰同傳播理念。",摩羯:"你天生有野心，會一步步爬上山頂，責任就係你嘅名聲。",水瓶:"你嘅天職係改革同創新，為群體帶來新方向。",雙魚:"你嘅事業需要靈感同同理心：藝術、療癒或幫助人。"};
+const LILITH_T={白羊:"你有一股唔肯被管嘅野性，學識擁抱自己嘅怒氣同獨立。",金牛:"你對身體同慾望有深刻嘅感受，學識唔為擁有而羞恥。",雙子:"你嘅聲音曾經被壓低，講出真心話就係你嘅解放。",巨蟹:"你對依賴同被照顧有矛盾，學識照顧自己嘅內在小朋友。",獅子:"你渴望被欣賞又怕太耀眼，容許自己發光。",處女:"你對完美有執念，學識接受唔完美嘅自己。",天秤:"你喺關係入面容易委屈自己，學識講「唔」。",天蠍:"你嘅慾望同力量好深，學識正視而唔係壓抑。",射手:"你嘅信念唔跟主流，勇敢活出自己嘅真理。",摩羯:"你對權威有反抗心，最終要成為自己嘅權威。",水瓶:"你喺群體入面常覺格格不入，呢份不同正正係你嘅禮物。",雙魚:"你嘅敏感同靈性曾經被誤解，相信你嘅直覺。"};
+const NODE_T={白羊:"今世要學識為自己行動、相信自己嘅判斷；放低過份遷就別人嘅習慣。",金牛:"今世要學識建立自己嘅價值同安穩；放低對危機同激烈情緒嘅依戀。",雙子:"今世要學識好奇、聆聽同溝通；放低「我已經知晒」嘅執著。",巨蟹:"今世要學識照顧內心同家庭；放低只顧成就同面子。",獅子:"今世要學識勇敢表達、活出創意；放低躲喺群體入面嘅安全感。",處女:"今世要學識踏實服務、照顧日常；放低逃避現實嘅習慣。",天秤:"今世要學識合作同體諒；放低凡事一個人搞掂嘅倔強。",天蠍:"今世要學識深入連結、分享同信任；放低對物質安全嘅執著。",射手:"今世要學識追尋意義同信念；放低過份分析同理性。",摩羯:"今世要學識承擔、建立自己嘅成就；放低對舒適同依賴嘅留戀。",水瓶:"今世要學識為群體、為未來諗；放低只想做主角嘅需要。",雙魚:"今世要學識放手、信任同慈悲；放低對完美同控制嘅執著。"};
+const PLUTO_H=["你嘅靈魂課題係重新認識自己：每次蛻變都令你更真實。","你嘅課題係自我價值：學識唔再用擁有嚟證明自己。","你嘅課題係思想同說話嘅力量：講真話會改變你同身邊嘅人。","你嘅課題喺家庭同根源：療癒家族模式就係你嘅轉化。","你嘅課題係創造同愛：勇敢表達，唔再怕被評價。","你嘅課題喺日常同身體：透過工作同健康習慣重建自己。","你嘅課題喺關係：學識喺親密入面保持完整嘅自己。","你嘅課題係信任同分享：喺失去同重生之間搵到力量。","你嘅課題係信念：不斷推翻舊嘅世界觀，搵到真正屬於你嘅真理。","你嘅課題係權力同成就：用你嘅影響力去建設，而唔係控制。","你嘅課題喺群體同理想：同志同道合嘅人一齊改變世界。","你嘅課題喺潛意識：面對內心深處，會帶嚟最大嘅解放。"];
+const PROG_PH=[[45,"新月期","人生進入新一輪循環，播種新方向，跟直覺行。"],[90,"眉月期","新方向開始成形，要努力擺脫舊習慣。"],[135,"上弦期","行動同建立嘅階段，會遇到考驗，要勇於做決定。"],[180,"盈凸期","調整同完善，耐心打磨你嘅計劃。"],[225,"滿月期","成果浮現、關係變得重要，睇清自己同別人。"],[270,"虧凸期","分享同傳承，將你學到嘅教畀人。"],[315,"下弦期","重新評估、放低唔再適合嘅嘢。"],[360,"殘月期","一個循環嘅尾聲，休息、沉澱，為下一段準備。"]];
+function deepPoints(c){
+  if(!window.Astronomy||!c.planets||c._deep)return c._deep||null;
+  const T=Astronomy.MakeTime(c.utc).tt/36525;
+  const lil=((83.3532465+4069.0137287*T-0.01032*T*T)%360+360)%360;
+  const nn=((125.0445479-1934.1362891*T+0.0020754*T*T)%360+360)%360;
+  const pts=c.planets.map(p=>({n:p.n,lon:p.lon,dec:declOf(p.lon,p.lat||0)}));
+  if(c.asc)pts.push({n:"上升",lon:c.asc.lon,dec:declOf(c.asc.lon,0)});if(c.mc)pts.push({n:"天頂",lon:c.mc.lon,dec:declOf(c.mc.lon,0)});
+  const yrs=(c.utc.getFullYear()+c.utc.getMonth()/12)-2000, prec=50.29*yrs/3600;
+  const stars=[];for(const [nm,l0,t] of FIXED_STARS){const l=(l0+prec+360)%360;for(const q of pts){const o=Math.abs(angDiff(q.lon,l));if(o<=1)stars.push({star:nm,pt:q.n,orb:o,t})}}
+  const oob=pts.filter(q=>Math.abs(q.dec)>OBL&&!["上升","天頂","太陽"].includes(q.n));
+  const par=[];for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j];if(["上升","天頂"].includes(a.n)&&["上升","天頂"].includes(b.n))continue;
+    if(Math.abs(a.dec-b.dec)<=1&&Math.sign(a.dec)===Math.sign(b.dec))par.push({a:a.n,b:b.n,k:"平行"});else if(Math.abs(a.dec+b.dec)<=1&&Math.sign(a.dec)!==Math.sign(b.dec))par.push({a:a.n,b:b.n,k:"反平行"})}
+  const ant=[];for(let i=0;i<pts.length;i++)for(let j=0;j<pts.length;j++){if(i>=j)continue;const a=pts[i],b=pts[j];const an=(180-a.lon+360)%360,ca=(360-a.lon)%360;
+    if(Math.abs(angDiff(an,b.lon))<=1.5)ant.push({a:a.n,b:b.n,k:"映點"});else if(Math.abs(angDiff(ca,b.lon))<=1.5)ant.push({a:a.n,b:b.n,k:"反映點"})}
+  // secondary progressions: a day for a year
+  const age=(Date.now()-c.utc)/864e5/365.2422, pd=new Date(+c.utc+age*864e5);
+  const ps=Astronomy.Ecliptic(Astronomy.GeoVector("Sun",pd,true)).elon, pm=Astronomy.EclipticGeoMoon(pd).lon;
+  const ang=(pm-ps+360)%360, ph=PROG_PH.find(x=>ang<x[0]);
+  return c._deep={lil,nn,sn:(nn+180)%360,stars,oob,par:par.slice(0,6),ant:ant.slice(0,6),prog:{sun:ps,moon:pm,ang,ph,age}};
+}
+function deepWesternHTML(c){
+  const D=deepPoints(c);if(!D)return "";const sg=l=>SIGNS[Math.floor(l/30)];const hs=l=>c.asc?`第${houseOf(c,l)}宮`:"";
+  const dig=c.planets.map(p=>({p,v:dignity(p.n,p.lon)})).filter(x=>x.v);
+  const retro=c.planets.filter(p=>p.retro&&RETRO_T[p.n]);
+  const pl=c.planets.find(p=>p.n==="冥王星");
+  const row=(t,b)=>`<div class="deep-row"><b>${t}</b><p>${b}</p></div>`;
+  return `<div class="stack deep"><span class="eyebrow">深層星盤</span>
+  ${dig.length?row("行星尊貴",dig.map(x=>`${x.p.n}喺${x.p.sign}座<b class="dg ${x.v>0?"g":"b"}">${DIGN_LBL(x.v)}</b>`).join("、")+"。入廟、擢升嘅行星發揮得自然有力；失勢、落陷嘅行星要用多啲功夫，但亦會練成獨特嘅智慧。"):""}
+  ${c.mc?row(`天頂 ${c.mc.sign}座 · 你嘅天職`,MC_T[c.mc.sign]):""}
+  ${row(`北交點 ${sg(D.nn)}座${hs(D.nn)?" · "+hs(D.nn):""} · 靈魂方向`,`${NODE_T[sg(D.nn)]}南交點喺${sg(D.sn)}座，代表你天生熟悉、但唔應該停留嘅舒適區。`)}
+  ${pl&&c.asc?row(`冥王星 ${hs(pl.lon)} · 靈魂最深嘅渴望`,PLUTO_H[houseOf(c,pl.lon)-1]):""}
+  ${row(`黑月莉莉絲 ${sg(D.lil)}座${hs(D.lil)?" · "+hs(D.lil):""}`,LILITH_T[sg(D.lil)])}
+  ${retro.length?row("逆行行星",retro.map(p=>`<b>${p.n}逆行</b>：${RETRO_T[p.n]}`).join("<br>")):""}
+  ${D.oob.length?row("赤緯出界",`${D.oob.map(x=>x.n).join("、")}出界。${OOB_T}`):""}
+  ${D.par.length?row("赤緯平行",D.par.map(x=>`${x.a}${x.k==="平行"?"∥":"⫲"}${x.b}`).join("、")+"：平行好似隱藏嘅合相，兩股能量會一齊運作；反平行就好似隱藏嘅對沖，需要平衡。"):""}
+  ${D.ant.length?row("映點",D.ant.map(x=>`${x.a}同${x.b}互為${x.k}`).join("、")+"：佢哋好似喺鏡入面互相照見，會暗地裏互相影響。"):""}
+  ${D.stars.length?row("恆星",D.stars.map(x=>`<b>${x.pt}合${x.star}</b>：${x.t}`).join("<br>")):""}
+  ${row(`推運月相 · ${D.prog.ph[1]}`,`按「一日當一年」推運，你而家嘅推運太陽喺${sg(D.prog.sun)}座、推運月亮喺${sg(D.prog.moon)}座${c.asc?`（本命第${houseOf(c,D.prog.moon)}宮，未來兩年嘅情緒焦點係「${HOUSE_THEME[houseOf(c,D.prog.moon)-1]}」）`:""}。${D.prog.ph[2]}`)}
+  </div>`;
+}
+/* ===== 一年重大行運：入相位、準確、離開 ===== */
+const OUTER_T={木星:{conj:"擴展同機會",soft:"順風同貴人",hard:"過度同膨脹，要量力而為"},土星:{conj:"承擔同重建",soft:"穩步累積成果",hard:"壓力同考驗，打好基礎"},天王星:{conj:"突破同覺醒",soft:"新鮮嘅自由同靈感",hard:"突如其來嘅轉變"},海王星:{conj:"夢想同靈性",soft:"直覺同慈悲",hard:"迷惘同幻滅，要睇清事實"},冥王星:{conj:"深層蛻變",soft:"內在力量增強",hard:"權力同控制嘅課題，放手先會重生"}};
+function majorTransits(c,days=365){
+  if(!window.Astronomy||!c.planets)return [];
+  const OUT=[["Jupiter","木星"],["Saturn","土星"],["Uranus","天王星"],["Neptune","海王星"],["Pluto","冥王星"]];
+  const nat=natalPoints(c).filter(p=>["太陽","月亮","水星","金星","火星","上升","天頂"].includes(p.n));
+  const t0=new Date();t0.setHours(12,0,0,0);const step=2,res=[];
+  const L={};for(const [b] of OUT)L[b]=[];for(let k=0;k<=days;k+=step){const d=new Date(+t0+k*864e5);for(const [b] of OUT)L[b].push(lonOf(b,d))}
+  for(const [b,n] of OUT)for(const np of nat)for(const [ang,an,cls] of ASPECTS){
+    const tgs=ang===0||ang===180?[(np.lon+ang)%360]:[(np.lon+ang)%360,(np.lon-ang+360)%360];
+    for(const tg of tgs){let cur=null;L[b].forEach((lon,i)=>{const o=Math.abs(angDiff(lon,tg));if(o<=1){if(!cur)cur={start:i,min:o,ex:i};if(o<cur.min){cur.min=o;cur.ex=i}cur.end=i}else if(cur){res.push({b,n,np:np.n,an,cls,...cur});cur=null}});if(cur)res.push({b,n,np:np.n,an,cls,...cur,open:true})}}
+  const dt=i=>new Date(+t0+i*step*864e5);
+  return res.map(r=>({...r,s:dt(r.start),e:dt(r.end),x:dt(r.ex),w:TWEIGHT[r.b]*(NATW[r.np]||1)*ASPW[r.an]})).sort((a,b)=>a.s-b.s);
+}
+function majorTransitsHTML(c){
+  const L=majorTransits(c);if(!L.length)return "";const f=d=>`${d.getFullYear()%100}/${d.getMonth()+1}`;
+  return `<div class="stack"><span class="eyebrow">未來一年重大行運</span><p class="mute" style="font-size:13.5px">外行星走得慢，佢哋同你本命行星嘅相位往往維持幾個月，係一年入面最重要嘅轉折。</p>
+  <div class="mt-list">${L.slice(0,12).map(r=>`<div class="mt-row ${r.cls}"><span class="mono mt-d">${f(r.s)}–${f(r.e)}${r.open?"+":""}</span><div><b>${r.n}${r.an}${r.np}</b><p>${OUTER_T[r.n][r.cls]}。${NAT_DESC[r.np]?`影響${NAT_DESC[r.np]}。`:""}最準確約喺 ${r.x.getMonth()+1}月${r.x.getDate()}日。</p></div></div>`).join("")}</div></div>`;
+}
+/* ===== 紫微：宮干飛化重點 ===== */
+function zwStarPal(z,n){return z.palaces.find(x=>x&&[...x.stars,...x.minor].includes(n))}
+function zwFlyNotes(z){
+  const out=[];const pn=p=>p.name.replace("宮","");const M=z.palaces[z.ming];
+  const mh=SIHUA_T[M.stem];const lu=zwStarPal(z,mh[0]),ji=zwStarPal(z,mh[3]);
+  if(lu)out.push(["命宮化祿",`命宮宮干${M.stem}，化祿（${mh[0]}）飛入${lu.name}：你嘅緣份同福氣自然流向「${PAL_MEAN[pn(lu)]||pn(lu)}」，喺呢方面付出最易有回報。${lu.b===z.ming?"化祿自化，你天生大方，但要小心來得快去得快。":""}`]);
+  if(ji)out.push(["命宮化忌",`化忌（${mh[3]}）飛入${ji.name}：你一生最上心、最放唔低嘅係「${PAL_MEAN[pn(ji)]||pn(ji)}」。${ji.b===z.ming?"化忌自化，容易自己同自己過唔去，學識放鬆。":`呢個執著會沖到對宮${z.palaces[(ji.b+6)%12].name}，要留意兩邊嘅平衡。`}`]);
+  const sl=zwStarPal(z,z.sihua[0]),sj=zwStarPal(z,z.sihua[3]);
+  if(sl&&sj){if(sl.b===sj.b)out.push(["祿忌同宮",`生年祿同忌都喺${sl.name}：呢方面得失同源，有收穫亦有牽掛，順其自然、唔好太執著。`]);
+    else if((sl.b+6)%12===sj.b)out.push(["祿忌交沖",`生年化祿喺${sl.name}、化忌喺對宮${sj.name}：兩邊互相拉扯，喺「${PAL_MEAN[pn(sl)]||pn(sl)}」同「${PAL_MEAN[pn(sj)]||pn(sj)}」之間要學識取捨。`]);
+    else out.push(["生年化忌",`生年化忌（${z.sihua[3]}）喺${sj.name}，沖對宮${z.palaces[(sj.b+6)%12].name}：呢個係你今世要用心經營、亦最易有波折嘅範疇。`])}
+  const selfs=[];z.palaces.forEach(p=>{if(!p)return;SIHUA_T[p.stem].forEach((n,i)=>{if([...p.stars,...p.minor].includes(n))selfs.push(`${p.name}自化${HUA[i]}`)})});
+  if(selfs.length)out.push(["自化",`${selfs.join("、")}。自化祿：大方但留唔住；自化權：自己逼自己；自化科：靠自己修養化解；自化忌：唔自覺嘅消耗，呢個宮位要多留意。`]);
+  if(!M.stars.length){const o=z.palaces[(z.ming+6)%12];out.push(["命無正曜",`命宮冇主星，借對宮${o.name}嘅${o.stars.join("、")||"星曜"}嚟睇：你嘅性格受環境影響大，可塑性強。`])}
+  return out;
+}
+/* 紫微星曜亮度係數 */
+const ZW_BRIGHT={廟:1.25,旺:1.15,得:1.05,利:1,平:.9,不:.85,陷:.75};
+function zwBright(z,star){if(!z)return 1;for(const p of z.palaces){if(!p)continue;const s=[...p.q.majorStars,...p.q.minorStars].find(t=>t.name===star);if(s)return ZW_BRIGHT[s.brightness]||1}return 1}
+/* ===== 塔羅：金色黎明對應、靈數、元素尊貴 ===== */
+const MAJOR_GD=[["風","Aleph","風"],["水星","Beth","風"],["月亮","Gimel","水"],["金星","Daleth","土"],["白羊","Heh","火"],["金牛","Vav","土"],["雙子","Zain","風"],["巨蟹","Cheth","水"],["獅子","Teth","火"],["處女","Yod","土"],["木星","Kaph","火"],["天秤","Lamed","風"],["水","Mem","水"],["天蠍","Nun","水"],["射手","Samekh","火"],["摩羯","Ayin","土"],["火星","Peh","火"],["水瓶","Tzaddi","風"],["雙魚","Qoph","水"],["太陽","Resh","火"],["火","Shin","火"],["土星","Tau","土"]];
+const DECAN_GD=[["火星白羊","太陽白羊","金星白羊","土星獅子","木星獅子","火星獅子","水星射手","月亮射手","土星射手"],["金星巨蟹","水星巨蟹","月亮巨蟹","火星天蠍","太陽天蠍","金星天蠍","土星雙魚","木星雙魚","火星雙魚"],["月亮天秤","土星天秤","木星天秤","金星水瓶","水星水瓶","月亮水瓶","木星雙子","火星雙子","太陽雙子"],["木星摩羯","火星摩羯","太陽摩羯","水星金牛","月亮金牛","土星金牛","太陽處女","金星處女","水星處女"]];
+const NUM_T=["","開始同意志","平衡同選擇","創造同表達","結構同穩定","變動同挑戰","和諧同責任","反思同探索","力量同掌握","完成同智慧","循環同圓滿"];
+const reduceNum=n=>{while(n>9)n=String(n).split("").reduce((a,b)=>a+ +b,0);return n};
+function cardCorr(c){if(c.major){const g=MAJOR_GD[c.num];const r=reduceNum(c.num);return `${g[0]} · ${g[1]} · 數字 ${c.num}${c.num>9?`→${r}`:""}`}
+  const el=SUITS[c.suit][1];if(c.rank===0)return `${el}元素之根 · 數字 1`;if(c.rank<=9)return `${DECAN_GD[c.suit][c.rank-1]} · 數字 ${c.rank+1}`;return `${el}元素 · 宮廷牌`}
+const cardEl=c=>c.major?MAJOR_GD[c.num][2]:SUITS[c.suit][1];
+const EL_REL=(a,b)=>{if(a===b)return "同";const s=[a,b].sort().join("");return {"火風":"友","土水":"友","水火":"剋","土風":"剋"}[s]||"中"};
+function tarotSynth(drawn){
+  const n=drawn.length;if(!n)return "";const maj=drawn.filter(d=>d.card.major).length,rev=drawn.filter(d=>d.rev).length;
+  const elc={火:0,水:0,風:0,土:0};drawn.forEach(d=>elc[cardEl(d.card)]++);
+  const top=Object.entries(elc).sort((a,b)=>b[1]-a[1]);const miss=Object.entries(elc).filter(x=>!x[1]).map(x=>x[0]);
+  const EL_MEAN={火:"行動、熱情同意志",水:"感受、關係同直覺",風:"思考、溝通同決定",土:"現實、金錢同身體"};
+  const nums={};drawn.forEach(d=>{const v=d.card.major?reduceNum(d.card.num):d.card.rank<=9?d.card.rank+1:null;if(v)nums[v]=(nums[v]||0)+1});
+  const rep=Object.entries(nums).filter(x=>x[1]>1);
+  const courts=drawn.filter(d=>!d.card.major&&d.card.rank>=10).length;
+  const flow=[];for(let i=1;i<n;i++){const r=EL_REL(cardEl(drawn[i-1].card),cardEl(drawn[i].card));flow.push(r)}
+  const tone=flow.filter(x=>x==="剋").length>flow.filter(x=>x==="友"||x==="同").length?"牌與牌之間有拉扯，事情要經過磨合先順":"牌與牌之間互相支持，事情發展相對順暢";
+  const L=[];
+  L.push(["破題",maj/n>=.5?`${maj} 張大牌，呢件事唔係小事，背後係人生課題，結果好大程度由你點樣成長決定。`:`以小牌為主，答案喺日常選擇入面，你有好大空間去改變。`]);
+  L.push(["能量",`以${top[0][0]}元素最強（${EL_MEAN[top[0][0]]}）${miss.length&&n>=3?`；缺少${miss.join("、")}元素，可能忽略咗${miss.map(x=>EL_MEAN[x].split("、")[0]).join("同")}。`:"。"}${rev?` ${rev} 張逆位，有啲能量受阻或者未準備好，需要向內調整。`:""}`]);
+  if(n>1)L.push(["連貫",`${tone}。${drawn.slice(1).map((d,i)=>{const r=flow[i];return r==="剋"?`「${drawn[i].card.name}」同「${d.card.name}」元素相剋`:r==="友"?`「${drawn[i].card.name}」同「${d.card.name}」元素相生`:""}).filter(Boolean).slice(0,2).join("；")}${flow.some(x=>x!=="中"&&x!=="同")?"。":""}`]);
+  if(rep.length||courts)L.push(["線索",`${rep.map(([v,k])=>`數字 ${v} 出現 ${k} 次（${NUM_T[v]}）`).join("；")}${rep.length&&courts?"；":""}${courts?`${courts} 張宮廷牌，代表有具體嘅人參與其中，或者你需要扮演某種角色。`:""}`]);
+  const last=drawn[n-1];L.push(["意向",`最後一張「${last.card.name}${last.rev?"（逆位）":""}」係方向：${last.rev?last.card.rev:last.card.up}。`]);
+  return `<div class="stack tsynth"><span class="eyebrow">牌陣結構</span>${L.map(([k,v])=>`<div class="deep-row"><b>${k}</b><p>${esc(v)}</p></div>`).join("")}</div>`;
 }
 /* ===== 八字 flows: 十神 + 喜忌 per layer ===== */
 /* 喜忌：子平月令格局為主（65%），扶抑旺衰為輔（35%） */
@@ -1624,7 +1778,8 @@ function analyzeDay(c,date,opts={}){
       for(const tg of ang===0||ang===180?[target]:[target,target2]){
         const ob=TORB[b]*ASP_ORBF[an],orb=Math.abs(angDiff(lon,tg));if(orb>ob)continue;
         const sign=cls==="soft"?1:cls==="hard"?-(HARD_SOFTEN[b]||1):CONJ_NATURE[b];
-        let w=(opts.scope==="month"?({Moon:0,Sun:.5,Mercury:.5,Venus:.5}[b]??1):1)*TWEIGHT[b]*ASPW[an]*(NATW[np.n]||1)*(1-orb/ob*.5)*sign;
+        const tsp=angDiff(lonOf(b,new Date(+d0+864e5)),lon),ndig=dignity(np.n,np.lon),tdig=dignity(n,lon);
+        let w=(opts.scope==="month"?({Moon:0,Sun:.5,Mercury:.5,Venus:.5}[b]??1):1)*TWEIGHT[b]*ASPW[an]*(NATW[np.n]||1)*(1-orb/ob*.5)*sign*(sign>0?1+.15*ndig:1-.15*ndig)*(1+.08*tdig*Math.sign(sign||1))*(b!=="Moon"&&b!=="Sun"&&Math.abs(tsp)<Math.abs(TSPD[b]||1)*.15?1.25:tsp<0?.88:1);
         const tr={tb:b,tp:n,np:np.n,asp:an,cls,orb,w,tlon:lon,nlon:np.lon,target:tg};
         if(!opts.light){Object.assign(tr,transitSpan(b,tg,ob,d0));tr.applying=tr.exact>d0;if(tr.applying)tr.w*=1.1}else{tr.start=tr.end=null;tr.exact=d0}
         tr.title=`${n}${an}你嘅${np.n} · ${ASP_VERB[an]}`;
@@ -1644,7 +1799,7 @@ function analyzeDay(c,date,opts={}){
       r.why.push(`${n}行經你第${v.house}宮（${v.sign}座）`)}
     if(tpos["月亮"]&&a.h.includes(tpos["月亮"].house)){r.pos+=.3;r.why.push(`月亮今日走入你第${tpos["月亮"].house}宮，呢個範疇特別有感覺`)}
     if(zw)for(const L of (opts.scope==="month"?[zw.monthly,zw.yearly,zw.decadal]:[zw.daily,zw.monthly,zw.yearly,zw.decadal])){
-      for(const x of L.hua)if(a.pal.includes(x.pal)){const v=HUA_W[x.h]*L.w;if(v>0)r.pos+=v;else r.neg-=v;r.hua.push({...x,label:L.label})}
+      for(const x of L.hua)if(a.pal.includes(x.pal)){const br=zwBright(c.ziwei,x.star);const v=HUA_W[x.h]*L.w*(x.h==="忌"?2-br:br);if(v>0)r.pos+=v;else r.neg-=v;r.hua.push({...x,label:L.label})}
       if(L.label==="流日"&&a.pal.includes(L.ming)){r.pos+=.4;r.why.push(`紫微流日命宮落喺你本命${L.ming}`)}}
     if(bz){for(const L of bz.layers.filter(x=>opts.scope!=="month"||!x.label.startsWith("流日"))){const ars=[...TG_AREAS[L.tg]];if(L.tg==="正財"||L.tg==="偏財"){if(bz.male)ars.push("love")}if(L.tg==="正官"||L.tg==="七殺"){if(!bz.male)ars.push("love")}
         if(ars.includes(a.k)){const v=L.w*((L.fav||0)*.8+TG_BIAS[L.tg]);if(v>0)r.pos+=v;else r.neg-=v;r.bz.push(L)}}
@@ -1847,7 +2002,7 @@ function renderToday(el){
 /* ============ Forecast ============ */
 let fcTab=store("xuanjing.fc")||"week";
 function renderForecast(el){
-  el.innerHTML=`<div class="stack"><span class="eyebrow">運勢</span><h1>未來嘅節奏<span class="lat">the long view</span></h1></div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">運勢</span><h1>未來嘅節奏<span class="lat">as time unfolds</span></h1></div>
   <div class="seg" role="group" aria-label="時間範圍">${[["week","本週"],["month","一個月"],["year","一年"],["decade","十年"]].map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${fcTab===k}">${n}${k!=="week"&&!isSol()?" ✦":""}</button>`).join("")}</div>
   <div id="fcBody" class="stack" style="gap:24px"></div>`;
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{fcTab=b.dataset.k;store("xuanjing.fc",fcTab);renderForecast(el)});
@@ -1881,7 +2036,7 @@ function fcYear(el){
     const jh=houseOf(chart,jl)-1, sh=houseOf(chart,sl)-1;
     jup=`木星喺${SIGNS[Math.floor(jl/30)]}座（你第${jh+1}宮），會令「${HOUSE_THEME[jh]}」呢方面擴展；土星喺${SIGNS[Math.floor(sl/30)]}座（第${sh+1}宮），提你喺「${HOUSE_THEME[sh]}」打好基礎。`}
   const age=now.getFullYear()-Number(profile.date.slice(0,4));
-  el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年係你嘅「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年係你嘅「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>${majorTransitsHTML(chart)}
   <div class="stack"><span class="eyebrow">未來 12 個月</span><div class="mlist">${months.map((m,i)=>{const a=m.an,k=m.lvl||"mid",yl=m.an&&m.an.bz?m.an.bz.layers.find(x=>x.label==="流月"):null,zl=a&&a.zw?a.zw.monthly:null,lu=zl&&zl.hua.find(x=>x.h==="祿"),ji=zl&&zl.hua.find(x=>x.h==="忌");
     return `<div class="mrow ${i===0?"now":""}" data-k="${k}"><div class="mr-d"><span class="mono">${m.d.getFullYear()%100}/${m.d.getMonth()+1}</span><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div><div class="mr-x"><p><b>${m.g}月 · ${m.tg}</b>${yl?`<span class="chip">${yl.fav>0?"喜用":yl.fav<0?"忌神":"中性"}</span>`:""}</p>${a?`<p class="mr-a">☀️ 旺 ${a.power.slice(0,2).map(x=>x.n).join("、")}　🌑 忌 ${a.trouble[0].n}</p>`:""}${zl?`<p class="mr-z">紫微流月：${lu?`${lu.star}化祿入${lu.pal}`:""}${ji?`；${ji.star}化忌入${ji.pal}`:""}</p>`:""}</div></div>`}).join("")}</div></div>`;
   el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${m.an.trouble[0].n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart)));
@@ -1911,17 +2066,18 @@ function renderChart(el){
   </div>
 
   <div class="stack"><span class="eyebrow">西洋星盤</span>
-  <div class="planets">${(chart.planets||[]).map(x=>`<div><span>${x.n}</span><span><b>${x.sign}</b> <span class="mono mute">${(x.lon%30).toFixed(0)}°</span></span></div>`).join("")}${chart.asc?`<div><span>上升</span><span><b>${chart.asc.sign}</b> <span class="mono mute">${(chart.asc.lon%30).toFixed(0)}°</span></span></div>`:""}</div>
+  <div class="planets">${(chart.planets||[]).map(x=>`<div><span>${x.n}</span><span><b>${x.sign}</b> <span class="mono mute">${(x.lon%30).toFixed(0)}°${x.retro?" ℞":""}</span>${DIGN_LBL(dignity(x.n,x.lon))?`<i class="dg ${dignity(x.n,x.lon)>0?"g":"b"}">${DIGN_LBL(dignity(x.n,x.lon))}</i>`:""}</span></div>`).join("")}${chart.asc?`<div><span>上升</span><span><b>${chart.asc.sign}</b> <span class="mono mute">${(chart.asc.lon%30).toFixed(0)}°</span></span></div>`:""}</div>
   ${chart.planets?`<p>你嘅太陽喺${chart.planets[0].sign}座：${SIGN_KW[chart.planets[0].sign]}。月亮喺${chart.planets[1].sign}座，情緒需要一個${SIGN_KW[chart.planets[1].sign]}嘅出口。${chart.asc?`上升${chart.asc.sign}座，令人第一眼覺得你${SIGN_KW[chart.asc.sign]}。`:""}</p>`:""}
   </div>
+  ${deepWesternHTML(chart)}
 
   <div class="stack"><span class="eyebrow">紫微斗數</span>
-  ${chart.ziwei?`<div id="zwBox" class="stack"></div>${(()=>{const ps=chart._pats||(chart._pats=zwPatterns(chart.ziwei));return `<div class="stack pats"><span class="eyebrow">紫微格局 · 星曜組合</span>${ps.length?ps.map(p=>`<div class="pat ${p.good>0?"g":p.good<0?"b":"n"}"><b>${p.n}</b><span>${p.good>0?"吉格":p.good<0?"要留意":"特殊"}</span><p>${esc(p.d)}</p></div>`).join(""):`<p class="mute">命盤未見典型格局，以主星同四化為主。</p>`}</div>`})()}<div id="zwAI"></div>`:`<p class="note">紫微斗數需要出生時辰。去「我的」填埋出生時間就會排盤。</p>`}
+  ${chart.ziwei?`<div id="zwBox" class="stack"></div>${(()=>{const ps=chart._pats||(chart._pats=zwPatterns(chart.ziwei));return `<div class="stack pats"><span class="eyebrow">紫微格局 · 星曜組合</span>${ps.length?ps.map(p=>`<div class="pat ${p.good>0?"g":p.good<0?"b":"n"}"><b>${p.n}</b><span>${p.good>0?"吉格":p.good<0?"要留意":"特殊"}</span><p>${esc(p.d)}</p></div>`).join(""):`<p class="mute">命盤未見典型格局，以主星同四化為主。</p>`}</div><div class="stack deep"><span class="eyebrow">飛化重點</span>${zwFlyNotes(chart.ziwei).map(([t,b])=>`<div class="deep-row"><b>${t}</b><p>${esc(b)}</p></div>`).join("")}</div>`})()}<div id="zwAI"></div>`:`<p class="note">紫微斗數需要出生時辰。去「我的」填埋出生時間就會排盤。</p>`}
   </div>
   <div id="chartAI"></div>`;
   if(chart.ziwei){drawZw($("#zwBox",el));$("#zwAI",el).appendChild(aiBlock("解讀紫微盤（含所選大限／流年）",()=>{const z=chart.ziwei,o=zwHoro(z);
     const desc=z.palaces.map(p=>`${p.name}(${p.stem}${ZHI[p.b]}${p.shen?"，身宮":""})：${[...p.q.majorStars,...p.q.minorStars].map(s=>s.name+(s.brightness||"")+(s.mutagen?"化"+s.mutagen:"")).join("、")||"空宮"}；${p.misc.join("、")}；大限${p.dx.join("-")}`).join("\n");
-    const ov=o?`\n所選${o.label}：${o.desc}，${o.label}命宮在${ZHI[(o.lv.index+2)%12]}（本命${z.palaces[(o.lv.index+2)%12].name}），${o.label}四化：${o.lv.mutagen.map((n,i)=>n+"化"+HUA[i]).join("、")}。請重點解讀這段時間：${o.label}命宮與本命宮位重疊的意義、四化落入哪些本命宮位，分「總論」「事業財運」「感情人際」「健康」「建議」。`:"\n請解讀本命盤：命身宮、三方四正、生年四化、主星廟陷、六吉六煞及雜曜的影響。";
+    const ov=o?`\n所選${o.label}：${o.desc}，${o.label}命宮在${ZHI[(o.lv.index+2)%12]}（本命${z.palaces[(o.lv.index+2)%12].name}），${o.label}四化：${o.lv.mutagen.map((n,i)=>n+"化"+HUA[i]).join("、")}。請重點解讀這段時間：${o.label}命宮與本命宮位重疊的意義、四化落入哪些本命宮位，分「總論」「事業財運」「感情人際」「健康」「建議」。`:"\n請解讀本命盤：先論命身宮主星性質同廟陷，再看三方四正、生年四化及宮干飛化（化祿化忌飛入何宮、自化、祿忌交沖），六吉六煞及雜曜（如紅鸞天喜天刑天姚）的影響，按星曜組合判斷而唔好單星論斷。";
     return prompt(`以紫微斗數解讀。${z.yy}，${z.bureauName}，命主${z.soul}，身主${z.body}。本命十二宮：\n${desc}${ov}`,chart)}));}
   $("#chartAI",el).appendChild(aiBlock("解讀我嘅完整命盤",()=>prompt("綜合八字、紫微斗數和西洋星盤，解讀使用者的性格、天賦、感情模式、事業方向和人生課題。指出三個系統互相印證的地方，以及互相矛盾時應怎樣理解。",chart)));
 }
@@ -2030,11 +2186,72 @@ function ziweiGrid(z,o){
 const ORICON={"tarot": "<svg viewBox=\"0 0 40 40\"><rect x=\"9\" y=\"5\" width=\"16\" height=\"27\" rx=\"1\" transform=\"rotate(-10 17 18)\"/><rect x=\"15\" y=\"8\" width=\"16\" height=\"27\" rx=\"1\"/><path d=\"M23 15 L25 20 L23 25 L21 20Z\" class=\"f\"/></svg>", "shin": "<svg viewBox=\"0 0 40 40\"><path d=\"M20 6 V10 M13 24 C13 14 27 14 27 24 L29 28 H11 Z\"/><circle cx=\"20\" cy=\"31\" r=\"2\" class=\"f\"/><ellipse cx=\"9\" cy=\"35\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"31\" cy=\"34\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"25\" cy=\"37\" rx=\"1.6\" ry=\".8\" class=\"f\"/></svg>", "dream": "<svg viewBox=\"0 0 40 40\"><path d=\"M25 6 A14 14 0 1 0 34 26 A11 11 0 1 1 25 6Z\"/><path d=\"M30 9 L31 11 L33 12 L31 13 L30 15 L29 13 L27 12 L29 11Z\" class=\"f\"/></svg>", "face": "<svg viewBox=\"0 0 40 40\"><path d=\"M13 30 C9 22 10 8 20 8 C30 8 31 22 27 30 C24 34 16 34 13 30Z\"/><path d=\"M15 18 H18 M22 18 H25 M20 19 V24 H18 M17 28 C19 29 21 29 23 28\"/></svg>", "ifa": "<svg viewBox=\"0 0 40 40\"><path d=\"M8 8 C14 12 14 30 8 34 M32 8 C26 12 26 30 32 34 M8 8 Q20 2 32 8\"/><ellipse cx=\"12\" cy=\"14\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"12\" cy=\"24\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"14\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"24\" rx=\"2.4\" ry=\"3.4\"/></svg>", "runes": "<svg viewBox=\"0 0 40 40\"><path d=\"M10 34 V14 C10 6 30 6 30 14 V34 Z\"/><path d=\"M20 12 V30 M20 16 L26 12 M20 22 L26 18\"/></svg>"};
 let orTab=store("xuanjing.or")||"tarot";if(orTab==="dream")orTab="tarot";
 function renderOracle(el){
-  const tabs=[["tarot","塔羅","Tarot · 타로"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]];
-  el.innerHTML=`<a class="back-link" href="#me">${ic("arrow")} 返回我的</a><div class="stack"><span class="eyebrow">占卜</span><h1>問一個問題<span class="lat">ask the oracle</span></h1></div>
+  const tabs=[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom I Ching"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].filter(([k])=>k!=="face"||IN_CLAUDE);
+  el.innerHTML=`<a class="back-link" href="#me">${ic("arrow")} 返回我的</a><div class="stack"><span class="eyebrow">占卜</span><h1>問一個問題<span class="lat">ask, then listen</span></h1></div>
   <div class="tiles" role="group" aria-label="占卜方法">${tabs.map(([k,n,e])=>`<button type="button" data-k="${k}" aria-pressed="${orTab===k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div><div id="orBody" class="stack" style="gap:22px"></div>`;
   el.querySelectorAll(".tiles button").forEach(b=>b.onclick=()=>{orTab=b.dataset.k;store("xuanjing.or",orTab);renderOracle(el)});
-  ({tarot:orTarot,shin:orShin,face:orFace,ifa:orIfa,runes:orRunes})[orTab]($("#orBody",el));
+  (({tarot:orTarot,meihua:orMeihua,shin:orShin,face:orFace,ifa:orIfa,runes:orRunes})[orTab]||orTarot)($("#orBody",el));
+}
+
+/* ===== 梅花易數（先天數起卦、體用生剋） ===== */
+ORICON.meihua='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M11 9h18M11 14h7M22 14h7M11 19h18M11 24h7M22 24h7M11 29h18"/><circle cx="31" cy="31" r="3"/></svg>';
+const BAGUA=[null,{n:"乾",x:"天",el:3,l:[1,1,1],img:"天、父親、領袖、剛健"},{n:"兌",x:"澤",el:3,l:[1,1,0],img:"澤、少女、喜悅、口才"},{n:"離",x:"火",el:1,l:[1,0,1],img:"火、中女、光明、文采"},{n:"震",x:"雷",el:0,l:[1,0,0],img:"雷、長男、行動、震動"},{n:"巽",x:"風",el:0,l:[0,1,1],img:"風、長女、進入、順從"},{n:"坎",x:"水",el:4,l:[0,1,0],img:"水、中男、險阻、智慧"},{n:"艮",x:"山",el:2,l:[0,0,1],img:"山、少男、停止、穩重"},{n:"坤",x:"地",el:2,l:[0,0,0],img:"地、母親、包容、承載"}];
+const triOf=l=>BAGUA.findIndex(t=>t&&t.l.join("")===l.join(""));
+const GUA64={"11":"乾為天","12":"天澤履","13":"天火同人","14":"天雷無妄","15":"天風姤","16":"天水訟","17":"天山遯","18":"天地否","21":"澤天夬","22":"兌為澤","23":"澤火革","24":"澤雷隨","25":"澤風大過","26":"澤水困","27":"澤山咸","28":"澤地萃","31":"火天大有","32":"火澤睽","33":"離為火","34":"火雷噬嗑","35":"火風鼎","36":"火水未濟","37":"火山旅","38":"火地晉","41":"雷天大壯","42":"雷澤歸妹","43":"雷火豐","44":"震為雷","45":"雷風恆","46":"雷水解","47":"雷山小過","48":"雷地豫","51":"風天小畜","52":"風澤中孚","53":"風火家人","54":"風雷益","55":"巽為風","56":"風水渙","57":"風山漸","58":"風地觀","61":"水天需","62":"水澤節","63":"水火既濟","64":"水雷屯","65":"水風井","66":"坎為水","67":"水山蹇","68":"水地比","71":"山天大畜","72":"山澤損","73":"山火賁","74":"山雷頤","75":"山風蠱","76":"山水蒙","77":"艮為山","78":"山地剝","81":"地天泰","82":"地澤臨","83":"地火明夷","84":"地雷復","85":"地風升","86":"地水師","87":"地山謙","88":"坤為地"};
+const GUA_T={乾:"自強不息，時機成熟可以主動",履:"小心踏步，以禮待人就安全",同人:"同心協力，多同人合作",無妄:"順其自然，唔好妄動",姤:"不期而遇，留意突然出現嘅人同事",訟:"有爭拗，退一步比爭贏好",遯:"適時退避，保存實力",否:"上下不通，暫時忍耐等轉機",夬:"果斷決定，但唔好太過激",兌:"喜悅溝通，真誠講出嚟",革:"改變嘅時候到咗，除舊佈新",隨:"隨機應變，跟對嘅人",大過:"負擔過重，要搵支撐",困:"處境受困，守住信念終會脫困",咸:"心有感應，關係自然靠近",萃:"人同資源聚集，適合團結",大有:"豐收在望，懂得分享",睽:"意見相左，求同存異",離:"光明依附，要搵啱嘅依靠",噬嗑:"排除障礙，需要決斷",鼎:"推陳出新，建立新格局",未濟:"未完成，最後一步要更小心",旅:"在外漂泊，低調謹慎",晉:"步步高升，光明前進",大壯:"氣勢正盛，但唔好恃強",歸妹:"關係名份未正，慎重考慮",豐:"盛極一時，把握當下",震:"突如其來嘅震動，鎮定應對",恆:"持之以恆，關係同事業都要耐性",解:"困難解除，放鬆向前",小過:"小事可以，大事暫緩",豫:"愉快預備，未雨綢繆",小畜:"小有積蓄，時機未到要再儲",中孚:"以誠待人，信任係關鍵",家人:"家庭和睦，由內而外",益:"互惠受益，適合投入",巽:"順勢而入，柔中帶剛",渙:"人心渙散，要重新凝聚",漸:"循序漸進，好事慢慢嚟",觀:"靜觀其變，先睇清楚",需:"耐心等待，時機會嚟",節:"有節制，量入為出",既濟:"已經完成，守成比開創重要",屯:"萬事起頭難，堅持就會生根",井:"資源源源不絕，修養自己",坎:"重重險阻，以誠信同智慧渡過",蹇:"前路艱難，停一停搵人幫",比:"親近合作，搵到同路人",大畜:"大有積蓄，厚積薄發",損:"有捨先有得",賁:"修飾外表，但重內涵",頤:"養身養心，注意說話同飲食",蠱:"整頓積弊，撥亂反正",蒙:"啟蒙學習，虛心求教",艮:"適可而止，靜下來",剝:"逐漸剝落，暫守勿進",泰:"天地交泰，萬事亨通",臨:"好運降臨，積極把握",明夷:"光明受損，韜光養晦",復:"一陽來復，重新開始",升:"步步上升，努力有回報",師:"需要組織同紀律",謙:"謙虛受益，退一步海闊天空",坤:"厚德載物，順勢配合"};
+const gShort=k=>{const n=GUA64[k];return n.endsWith("為天")||n.endsWith("為澤")||n.endsWith("為火")||n.endsWith("為雷")||n.endsWith("為風")||n.endsWith("為水")||n.endsWith("為山")||n.endsWith("為地")?n[0]:n.slice(2)};
+const MH_CAT=[["general","一般運勢"],["love","感情婚姻"],["money","求財"],["career","事業求名"],["health","健康"],["travel","出行"],["lost","失物"],["deal","交易合作"]];
+const TIYONG={用生體:["大吉","外力幫你，有貴人同助力，事情易成。"],比和:["吉","雙方同氣，順利，合作愉快。"],體克用:["小吉","事情可成，但要你主動出力爭取。"],體生用:["耗","你付出多、收穫少，要量力而為。"],用克體:["凶","外力壓住你，宜守唔宜進，或者改變策略。"]};
+const MH_CAT_T={general:{吉:"整體順利，可以按計劃進行。",凶:"近期阻滯較多，先守後攻。"},love:{吉:"感情有進展，雙方心意相通，有機會修成正果。",凶:"關係有阻力，或者一方未準備好，唔好勉強。"},money:{吉:"財運可期，投資或收入有回報。",凶:"財來財去，避免高風險決定。"},career:{吉:"努力被看見，升遷、考試或面試有利。",凶:"競爭大，未必一步到位，先充實自己。"},health:{吉:"身體恢復得快，保持作息就好。",凶:"要多休息，必要時睇醫生，唔好拖。"},travel:{吉:"出行順利，有收穫。",凶:"行程易有延誤，預留時間同做足準備。"},lost:{吉:"有機會搵返，留意身邊近處。",凶:"較難尋回，或者要好耐先出現。"},deal:{吉:"條件談得攏，可以成交。",凶:"條件未成熟，唔好急住簽。"}};
+const WX_REL=(a,b)=>a===b?"比和":(a+1)%5===b?"生":(b+1)%5===a?"被生":(a+2)%5===b?"克":"被克";
+function seasonEl(m){return [2,3].includes(m)?0:[5,6].includes(m)?1:[8,9].includes(m)?3:[11,12].includes(m)?4:2}
+function castMeihua(mode,a,b){
+  const now=new Date();const L=Solar.fromDate(now).getLunar();const hz=Math.floor((now.getHours()+1)/2)%12+1;
+  let up,lo,mv;
+  if(mode==="time"){const yz=ZHI.indexOf(L.getYearZhi())+1,m=Math.abs(L.getMonth()),d=L.getDay();up=(yz+m+d)%8||8;lo=(yz+m+d+hz)%8||8;mv=(yz+m+d+hz)%6||6}
+  else{up=a%8||8;lo=b%8||8;mv=(a+b+hz)%6||6}
+  const lines=[...BAGUA[lo].l,...BAGUA[up].l];
+  const hu=[triOf(lines.slice(1,4)),triOf(lines.slice(2,5))];
+  const bl=[...lines];bl[mv-1]=1-bl[mv-1];const bian=[triOf(bl.slice(0,3)),triOf(bl.slice(3,6))];
+  const ti=mv<=3?up:lo, yong=mv<=3?lo:up;
+  const r=WX_REL(BAGUA[ti].el,BAGUA[yong].el);
+  const key={比和:"比和",生:"體生用",被生:"用生體",克:"體克用",被克:"用克體"}[r];
+  const se=seasonEl(Math.abs(L.getMonth()));const tiS=BAGUA[ti].el===se?"旺":(se+1)%5===BAGUA[ti].el?"相":"休囚";
+  const bianTi=mv<=3?bian[1]:bian[0], bianYong=mv<=3?bian[0]:bian[1];
+  const end=WX_REL(BAGUA[ti].el,BAGUA[bianYong].el);
+  const huR=[WX_REL(BAGUA[ti].el,BAGUA[hu[0]].el),WX_REL(BAGUA[ti].el,BAGUA[hu[1]].el)];
+  return {up,lo,mv,lines,hu,bian,bl,ti,yong,key,tiS,end,huR,L,hz};
+}
+const relWord=r=>({比和:"同氣相助",生:"你要付出",被生:"得到幫助",克:"你主導",被克:"受到壓制"}[r]);
+function guaSVG(lines,mv,label,name){return `<figure class="gua"><svg viewBox="0 0 60 66" aria-label="${name}">${lines.map((v,i)=>{const y=58-i*10;return v?`<rect x="4" y="${y}" width="52" height="5" rx="1"/>`:`<rect x="4" y="${y}" width="22" height="5" rx="1"/><rect x="34" y="${y}" width="22" height="5" rx="1"/>`}).join("")}${mv?`<circle cx="58" cy="${58-(mv-1)*10+2.5}" r="2" class="mv"/>`:""}</svg><figcaption><small>${label}</small><b>${name}</b></figcaption></figure>`}
+let mhMode="time";
+function orMeihua(el){
+  el.innerHTML=`<p class="mute" style="font-size:13.5px">梅花易數係宋代邵雍嘅占法：以時間或者數字起卦，得出本卦、互卦、變卦，再睇「體」（代表你）同「用」（代表事情）嘅五行生剋嚟斷吉凶。</p>
+  <div class="seg" role="group" aria-label="起卦方法"><button type="button" data-m="time" aria-pressed="${mhMode==="time"}">時間起卦</button><button type="button" data-m="num" aria-pressed="${mhMode==="num"}">數字起卦</button></div>
+  <label class="f" for="mhc">問咩範疇<select id="mhc">${MH_CAT.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label>
+  <label class="f" for="mhq">你嘅問題<input id="mhq" maxlength="200" placeholder="例如：呢份工應唔應該接？"></label>
+  ${mhMode==="num"?`<p class="mute" style="font-size:13px">心誠默念問題，第一時間諗到嘅兩個數字（1–999）。</p><div class="grid2"><label class="f" for="mha">第一個數字<input id="mha" type="number" min="1" max="999" inputmode="numeric"></label><label class="f" for="mhb">第二個數字<input id="mhb" type="number" min="1" max="999" inputmode="numeric"></label></div>`:`<p class="mute" style="font-size:13px">用而家嘅農曆年、月、日、時起卦。心中有問題嗰一刻起卦最準。</p>`}
+  <button class="btn solid" type="button" id="mhGo">起卦</button><div id="mhOut" class="stack"></div><div id="mhAI"></div>`;
+  el.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mhMode=b.dataset.m;orMeihua(el)});
+  $("#mhGo",el).onclick=()=>{
+    let a=0,b=0;if(mhMode==="num"){a=parseInt($("#mha",el).value,10);b=parseInt($("#mhb",el).value,10);if(!(a>0&&b>0)){toastMsg("請輸入兩個數字");return}}
+    dailyFree("meihua","梅花易數",()=>{
+      const r=castMeihua(mhMode,a,b),cat=$("#mhc",el).value,q=$("#mhq",el).value.trim();
+      const main=String(r.up)+r.lo,hu=String(r.hu[1])+r.hu[0],bi=String(r.bian[1])+r.bian[0];
+      const T=TIYONG[r.key],good=["大吉","吉","小吉"].includes(T[0]);const endGood=["比和","被生","克"].includes(r.end);
+      const tiG=BAGUA[r.ti],yG=BAGUA[r.yong];
+      $("#mhOut",el).innerHTML=`<span class="eyebrow">${r.L.getYearInGanZhi()}年 ${Math.abs(r.L.getMonth())}月${r.L.getDay()}日 ${ZHI[r.hz-1]}時 · ${MH_CAT.find(x=>x[0]===cat)[1]}</span>
+      <div class="gua-row">${guaSVG(r.lines,r.mv,"本卦 · 開始",GUA64[main])}${guaSVG([...BAGUA[r.hu[0]].l,...BAGUA[r.hu[1]].l],0,"互卦 · 過程",GUA64[hu])}${guaSVG(r.bl,0,"變卦 · 結果",GUA64[bi])}</div>
+      <p class="headline" style="font-size:22px">${T[0]} · ${r.key}</p>
+      <div class="deep-row"><b>體用</b><p>動爻喺第 ${r.mv} 爻。體卦${tiG.n}（${tiG.x}，${EL[tiG.el]}）代表你，${r.tiS==="旺"?"正當令，有底氣":r.tiS==="相"?"得時令相生，有支持":"唔當令，力量較弱"}；用卦${yG.n}（${yG.x}，${EL[yG.el]}）代表事情。${T[1]}</p></div>
+      <div class="deep-row"><b>本卦 · ${GUA64[main]}</b><p>${GUA_T[gShort(main)]||""}。</p></div>
+      <div class="deep-row"><b>互卦 · 過程</b><p>${GUA64[hu]}：${GUA_T[gShort(hu)]||""}。過程中${relWord(r.huR[0])}、${relWord(r.huR[1])}。</p></div>
+      <div class="deep-row"><b>變卦 · 結果</b><p>${GUA64[bi]}：${GUA_T[gShort(bi)]||""}。最後${endGood?"對你有利":"仍要小心"}（變卦用卦${relWord(r.end)}）。</p></div>
+      <div class="deep-row"><b>${MH_CAT.find(x=>x[0]===cat)[1]}</b><p>${MH_CAT_T[cat][good?"吉":"凶"]}${good!==endGood?(endGood?"開頭有阻滯，但結果會轉好。":"開頭順利，但後段要留神。"):""}</p></div>`;
+      const ai=$("#mhAI",el);ai.innerHTML="";
+      ai.appendChild(aiBlock("解讀呢支卦",()=>prompt(`以梅花易數斷卦。使用者問「${q||"近況"}」（範疇：${MH_CAT.find(x=>x[0]===cat)[1]}）。${mhMode==="time"?"時間起卦":`數字起卦（${a}、${b}）`}：本卦${GUA64[main]}，動爻第${r.mv}爻，互卦${GUA64[hu]}，變卦${GUA64[bi]}。體卦${tiG.n}${EL[tiG.el]}（${r.tiS}），用卦${yG.n}${EL[yG.el]}，${r.key}；互卦對體：${r.huR.join("、")}；變卦用卦對體：${r.end}。請按體用生剋為主、卦氣旺衰為輔，結合本卦（開始）、互卦（過程）、變卦（結果）同八卦類象，具體回答問題，講埋應期（大約幾時有結果）同可以點做。`,chart),{save:()=>({kind:"梅花易數",title:`${GUA64[main]} → ${GUA64[bi]}`,q,result:`${T[0]} · ${r.key}；本卦${GUA64[main]}，互卦${GUA64[hu]}，變卦${GUA64[bi]}`})}));
+    });
+  };
 }
 /* tarot data */
 const MAJORS=[["愚者","新開始、冒險、純真","魯莽、猶豫、逃避"],["魔術師","行動力、創造、資源齊備","操控、空談、能力未發揮"],["女祭司","直覺、秘密、內在智慧","壓抑直覺、資訊不明"],["皇后","豐盛、滋養、女性力量","依賴、過度付出、停滯"],["皇帝","權威、結構、穩定","控制欲、固執、缺乏紀律"],["教皇","傳統、指導、信仰","打破常規、教條束縛"],["戀人","愛情、選擇、價值一致","失衡、錯誤選擇、分歧"],["戰車","意志、勝利、前進","失控、方向不明、受阻"],["力量","勇氣、柔性力量、耐心","自我懷疑、軟弱、情緒失控"],["隱者","內省、獨處、尋找答案","孤立、拒絕成長"],["命運之輪","轉機、循環、命運","厄運、抗拒改變"],["正義","公平、真相、因果","不公、逃避責任"],["倒吊人","暫停、換個角度、犧牲","拖延、無謂的犧牲"],["死神","結束、轉化、重生","抗拒結束、停滯"],["節制","平衡、調和、耐心","失衡、過度、急躁"],["惡魔","慾望、束縛、執著","掙脫、覺醒、戒除"],["高塔","突變、崩塌、真相揭露","避過災難、恐懼改變"],["星星","希望、療癒、靈感","失望、失去信心"],["月亮","不安、幻象、潛意識","真相浮現、走出迷惘"],["太陽","成功、喜悅、活力","短暫陰霾、過度樂觀"],["審判","覺醒、召喚、重生","自我批判、錯過時機"],["世界","完成、圓滿、整合","未完成、缺最後一步"]];
@@ -2129,12 +2346,13 @@ function orTarot(el){
     const reveal=()=>{
       const drawn=picked.map((i,k)=>({card:deck[i],rev:revs[i],pos:sp.pos?sp.pos[k]:`第 ${k+1} 張`}));
       tb.innerHTML="";const box=$("#spread",el);
-      box.innerHTML=`<div class="spread" style="--n:${Math.min(drawn.length,3)}">${drawn.map((d,i)=>`<div class="tcard" data-i="${i}"><span class="pos">${d.pos}</span><div class="face"><div class="inner"><div class="side back">${CARD_BACK}</div><div class="side front${d.rev?" rev":""}">${cardImg(d.card)}</div></div></div><span class="nm">${d.card.name}${d.rev?" · 逆位":""}</span><span class="kw">${esc(d.rev?d.card.rev:d.card.up)}</span></div>`).join("")}</div>`;
+      box.innerHTML=`<div class="spread" style="--n:${Math.min(drawn.length,3)}">${drawn.map((d,i)=>`<div class="tcard" data-i="${i}"><span class="pos">${d.pos}</span><div class="face"><div class="inner"><div class="side back">${CARD_BACK}</div><div class="side front${d.rev?" rev":""}">${cardImg(d.card)}</div></div></div><span class="nm">${d.card.name}${d.rev?" · 逆位":""}</span><span class="kw">${esc(d.rev?d.card.rev:d.card.up)}</span><span class="corr">${esc(cardCorr(d.card))}</span></div>`).join("")}</div>`;
       box.querySelectorAll(".tcard").forEach((t,i)=>setTimeout(()=>t.classList.add("flipped"),350+i*420));
       box.querySelectorAll(".front img").forEach((im,i)=>im.onerror=()=>{im.parentNode.innerHTML=cardFront(drawn[i].card)});
       box.scrollIntoView({behavior:"smooth",block:"start"});
+      box.insertAdjacentHTML("beforeend",tarotSynth(drawn));
       const q=$("#tq",el).value.trim(),ai=$("#tAI",el);ai.innerHTML="";
-      ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。逐張解讀（結合牌位意思），再綜合成一個完整故事，最後畀一個具體建議。可輕輕連結使用者嘅星盤或八字。`,chart)));
+      ai.appendChild(aiBlock("解讀呢組牌",()=>prompt(`使用者親手抽了偉特塔羅「${sp.n}」${q?`，問題是：「${q}」`:"（冇指定問題，作一般指引）"}。牌面：${drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":"（正位）"}`).join("；")}。牌面對應：${drawn.map(d=>`${d.card.name}=${cardCorr(d.card)}`).join("；")}。請按以下次序解讀：①破題（呢組牌整體講緊咩）②逐張評估（牌義＋牌位＋正逆位，結合神話原型同心理象徵，唔好死背關鍵字）③連貫（相鄰牌嘅元素尊貴：火風相生、水土相生、火水同風土相剋，以及數字重複）④依據（指出牌面上邊個細節支持你嘅判斷）⑤意向（具體可行嘅建議）。可輕輕連結使用者嘅星盤或八字。`,chart),{save:()=>({kind:"塔羅",title:sp.n,q,result:drawn.map(d=>`${d.pos}：${d.card.name}${d.rev?"（逆位）":""}`).join("　")})}));
     };
     const rb=$("#reveal",el);if(rb)rb.onclick=reveal;
   });
@@ -2158,7 +2376,7 @@ function orShin(el){
     const msgs=odd?["神明說：門已經開了，你只是不敢走進去。","祖先在看著你。這件事可以做，但不要一個人扛。","米落得很散：先處理身邊小事，大事自然會順。"]:["神明說：先停一停。三個月內答案會自己出現。","米聚在中間：你要的東西其實已經在手上。","有人在背後說你，與其解釋，不如做出成績。"];
     const out=$("#shinOut",el);
     setTimeout(()=>{out.innerHTML=`<span class="eyebrow">米卦 · ${N} 粒 · ${odd?"單數（陽）":"雙數（陰）"} · 中心 ${center} 粒</span><p class="headline" style="font-size:20px">${esc(pick(msgs,Math.random))}</p>`;
-      out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart)));},1700);
+      out.appendChild(aiBlock("請神明開示",()=>prompt(`你現在扮演一位韓國巫堂（무당）進行「神占（신점）」。使用者${q?`問：「${q}」`:"沒有說出問題，只想聽神明對近況的話"}。儀式結果：搖鈴後擲米 ${N} 粒（${odd?"單數，陽":"雙數，陰"}），中心聚米 ${center} 粒，四方分佈 ${zones.slice(1).join("/")}。用巫堂的口吻：開頭說你感應到的畫面，然後給「直接、具體」的指示（可做與不可做、時間點、要注意的人），語氣果斷但不恐嚇，可提到祖先或守護神。結尾一句祝福。`,chart),{save:()=>({kind:"神占",title:`米卦 ${N} 粒`,q,result:(out.querySelector(".headline")||{}).textContent||""})}));},1700);
   });
 }
 /* dream */
@@ -2290,7 +2508,7 @@ function orIfa(el){
     const name=R===L?`${fR[0]} Meji`:`${fR[0]}-${fL[0]}`;
     const legHTML=s=>`<div class="leg">${[...s].map(c=>`<div class="mark">${c==="I"?"<i></i>":"<i></i><i></i>"}</div>`).join("")}</div>`;
     $("#ifaOut",el).innerHTML=`<div class="opele">${legHTML(R)}${legHTML(L)}</div><span class="eyebrow">Odu</span><h2>${name}</h2><p><b>${fR[0]}</b>（右）${esc(fR[2])}</p>${R!==L?`<p><b>${fL[0]}</b>（左）${esc(fL[2])}</p>`:`<p class="mute">雙腿相同，稱為 Meji，是 16 個主要 Odu 之一，力量更純粹。</p>`}`;
-    const ai=$("#ifaAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀 Odu",()=>prompt(`使用者體驗 Ifá 占卜，擲出 Odu「${name}」（右腿 ${fR[0]}，左腿 ${fL[0]}）。尊重地介紹這個 Odu 在約魯巴傳統中的意象與相關 Orisha，再轉化為給使用者的近況指引與一個可做的小儀式（例如供奉、感恩、行善）。提醒這是簡化體驗。`,chart)));
+    const ai=$("#ifaAI",el);ai.innerHTML="";ai.appendChild(aiBlock("解讀 Odu",()=>prompt(`使用者體驗 Ifá 占卜，擲出 Odu「${name}」（右腿 ${fR[0]}，左腿 ${fL[0]}）。尊重地介紹這個 Odu 在約魯巴傳統中的意象與相關 Orisha，再轉化為給使用者的近況指引與一個可做的小儀式（例如供奉、感恩、行善）。提醒這是簡化體驗。`,chart),{save:()=>({kind:"Ifá",title:`Odu ${name}`,q:"",result:`右腿 ${fR[0]}，左腿 ${fL[0]}`})}));
   });
 }
 /* Runes */
@@ -2304,7 +2522,7 @@ function orRunes(el){
     const bag=[...RUNES].sort(()=>Math.random()-.5).slice(0,3).map(r=>({r,rev:!NOREV.has(r[1])&&Math.random()<.3}));const pos=["Urd · 過去","Verdandi · 現在","Skuld · 將來"];
     $("#rOut",el).innerHTML=`<div class="runes">${bag.map((b,i)=>`<div class="stack" style="align-items:center;gap:6px"><span class="eyebrow">${pos[i]}</span><div class="rune ${b.rev?"rev":""}"><span class="glyph">${b.r[0]}</span></div><b>${b.r[1]}${b.rev?"（逆）":""}</b><span class="mute" style="font-size:13px">${b.r[2]}</span></div>`).join("")}</div>`;
     const q=$("#rq",el).value.trim();const ai=$("#rAI",el);ai.innerHTML="";
-    ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart)));
+    ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart),{save:()=>({kind:"盧恩符文",title:"三女神牌陣",q,result:bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位）":""}`).join("　")})}));
   });
 }
 
@@ -2353,7 +2571,7 @@ function openProduct(k){
 }
 function renderShop(el){
   const card=p=>`<button type="button" class="pcard" data-p="${p.k}"><span class="pcard-en">${p.en}</span><b>${p.n}</b><span class="mute">${p.blurb}</span><span class="pcard-price">${owns(p.k)?"已解鎖":p.price}</span></button>`;
-  el.innerHTML=`<div class="stack"><span class="eyebrow">Soluna 商店</span><h1>更深入了解你自己<span class="lat">go deeper</span></h1><p class="mute">兩種會員任你揀；每份報告亦可以另外購買，都係按你嘅八字、紫微同星盤即時寫成。</p></div>
+  el.innerHTML=`<div class="stack"><span class="eyebrow">Soluna 商店</span><h1>更深入了解你自己<span class="lat">know thyself</span></h1><p class="mute">兩種會員任你揀；每份報告亦可以另外購買，都係按你嘅八字、紫微同星盤即時寫成。</p></div>
   <div id="sPlus" class="stack" style="gap:14px">${["sol","luna"].map(t=>{const T=TIER[t];const L=t==="sol"?["Luna Plus 全部內容","命盤深讀（八字、紫微、星盤）","一個月、一年、十年完整運勢同行動計劃","報告享會員價"]:["塔羅同各種占卜無限次","今日運勢同行運深入解讀","完整解夢","本週計劃"];
     return `<section class="plus${t==="luna"?" luna":""}"><p class="kicker">${t==="sol"?"☉ 全包":"☽ 入門"}</p><h2>${T.full}</h2><p class="mute" style="margin-top:-6px">${t==="sol"?"照亮你嘅全部：由今日到未來十年。":"每日陪住你，好似月光咁溫柔。"}</p>
     <ul class="pw-list">${L.map(x=>`<li>${x}</li>`).join("")}</ul>
@@ -2374,7 +2592,7 @@ function renderMe(el){
   const pl=chart.planets;const sg=[pl?["☉",pl[0].sign]:null,pl?["☽",pl[1].sign]:null,chart.asc?["↑",chart.asc.sign]:null].filter(Boolean);
   const TABS=[["chart","命盤"],["oracle","占卜"],["saved","收藏"],["set","設定"]];
   if(!TABS.some(t=>t[0]===meTab))meTab="chart";
-  el.innerHTML=`<div class="you-head"><button type="button" class="you-av" id="youAv" aria-label="修改我嘅出生資料">${esc((profile.demo?"示":(profile.name||"我")).slice(0,1))}<span class="you-edit" aria-hidden="true">✎</span></button>
+  el.innerHTML=`<div class="you-head"><button type="button" class="you-av" id="youAv" aria-label="修改我嘅出生資料">${avatarHTML()}<span class="you-edit" aria-hidden="true">✎</span></button>
   <div class="you-id"><h1>${esc(profile.name)}</h1><p class="you-signs">${sg.map(([i,n])=>`<span><i>${i}</i>${esc(n)}</span>`).join("")}</p>${profile.demo?`<p class="mute" style="font-size:12.5px;margin:2px 0 0">示範命盤 · 撳頭像輸入你嘅資料</p>`:""}</div></div>
   <div class="you-tabs" role="tablist">${TABS.map(([k,n])=>`<button type="button" role="tab" data-mt="${k}" aria-selected="${k===meTab}">${n}</button>`).join("")}</div>
   <div id="youBody"></div>`;
@@ -2384,7 +2602,7 @@ function renderMe(el){
   if(meTab==="chart"){renderChart(body);const h=body.firstElementChild;if(h&&h.querySelector(".eyebrow"))h.remove();return}
   if(meTab==="oracle"){
     body.innerHTML=`<div class="stack"><p class="mute" style="font-size:13.5px">${isMember()?"會員可以無限次占卜。":`每日 ${FREE_PER_DAY} 次免費（今日仲有 ${freeLeft()} 次）${ENT.credits?`，另有 ${ENT.credits} 次已購買次數`:""}。`}</p><h2 style="font-family:var(--f-display);font-weight:300;font-size:22px">問一個問題</h2>
-    <div class="tiles" role="group" aria-label="占卜方法">${[["tarot","塔羅","Tarot · 타로"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].filter(([k])=>k!=="face"||IN_CLAUDE).map(([k,n,e])=>`<button type="button" data-or="${k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div>
+    <div class="tiles" role="group" aria-label="占卜方法">${[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].filter(([k])=>k!=="face"||IN_CLAUDE).map(([k,n,e])=>`<button type="button" data-or="${k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div>
     ${isMember()?"":`<button type="button" class="btn" id="morePk" style="margin-top:6px">購買更多占卜次數</button>`}</div>`;
     body.querySelectorAll("[data-or]").forEach(b=>b.onclick=()=>{orTab=b.dataset.or;store("xuanjing.or",orTab);location.hash="#oracle"});
     const mp=$("#morePk",body);if(mp)mp.onclick=()=>{location.hash="#shop"};
@@ -2392,9 +2610,15 @@ function renderMe(el){
   }
   if(meTab==="saved"){
     const mine=PRODUCTS.filter(x=>owns(x.k));
-    body.innerHTML=`<div class="stack"><span class="eyebrow">我的報告</span>${mine.length?`<div class="pgrid">${mine.map(x=>`<button type="button" class="pcard" data-pk="${x.k}"><small>${esc(x.en)}</small><b>${esc(x.n)}</b><span class="mute">撳入去睇完整報告</span></button>`).join("")}</div>`:`<p class="mute" style="font-size:14px">你仲未解鎖任何報告。想更深入了解自己，可以去<a href="#shop">商店</a>睇吓。</p>`}</div>
+    const sv=savedAll();
+    body.innerHTML=`<div class="stack"><span class="eyebrow">收藏嘅占卜</span>${sv.length?`<ul class="saved-list sv">${sv.map(x=>`<li><button type="button" data-sv="${esc(x.id)}"><span class="mono mute">${esc(x.date)}</span><span><b>${esc(x.kind)}</b>${x.q?`「${esc(x.q.slice(0,40))}」`:` · ${esc(x.title||"")}`}</span><em>${x.text?"有解讀":""}</em></button></li>`).join("")}</ul>`:`<p class="mute" style="font-size:14px">占卜完撳 ♡，就可以將問題同結果收藏喺度，隨時重溫。</p>`}</div><hr class="rule">
+    <div class="stack"><span class="eyebrow">我的報告</span>${mine.length?`<div class="pgrid">${mine.map(x=>`<button type="button" class="pcard" data-pk="${x.k}"><small>${esc(x.en)}</small><b>${esc(x.n)}</b><span class="mute">撳入去睇完整報告</span></button>`).join("")}</div>`:`<p class="mute" style="font-size:14px">你仲未解鎖任何報告。想更深入了解自己，可以去<a href="#shop">商店</a>睇吓。</p>`}</div>
     <hr class="rule"><div class="stack"><span class="eyebrow">夢境日記</span><div id="savedDreams"><p class="mute">載入中⋯</p></div><div class="row"><button type="button" class="btn" id="newDream">記錄新嘅夢</button></div></div>`;
     body.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>openProduct(b.dataset.pk));
+    body.querySelectorAll("[data-sv]").forEach(b=>b.onclick=()=>{const x=savedAll().find(y=>y.id===b.dataset.sv);if(!x)return;
+      openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title">${esc(x.kind)} · ${esc(x.date)}</span><span></span></div>
+      ${x.q?`<p class="kicker">你嘅問題</p><p class="sh-p" style="color:var(--fg)">${esc(x.q)}</p>`:""}<p class="kicker">${esc(x.title||"結果")}</p><p class="sh-p" style="color:var(--fg)">${esc(x.result||"")}</p>
+      ${x.text?`<p class="kicker">解讀</p><div class="ai-out">${md(x.text)}</div>`:""}<button class="btn small" type="button" id="svDel" style="align-self:flex-start">${HEART} 取消收藏</button>`,sh=>{$("#svDel",sh).onclick=()=>{unsaveReading(x.id);$("#sheet").hidden=true;renderMe(el)}})});
     $("#newDream",body).onclick=()=>{location.hash="#dream"};
     (async()=>{const box=$("#savedDreams",body);try{const st=await dreamStore();const all=(await st.list()).sort((a,b)=>(b.date+(b.created||"")).localeCompare(a.date+(a.created||"")));
       box.innerHTML=all.length?`<ul class="saved-list">${all.slice(0,12).map(d=>`<li><span class="mono mute">${esc(d.date||"")}</span><span>${esc((d.text||"").slice(0,60))}${(d.text||"").length>60?"⋯":""}</span>${d.interp?`<em>已解夢</em>`:""}</li>`).join("")}</ul>${all.length>12?`<p class="mute" style="font-size:13px">仲有 ${all.length-12} 個夢，喺「夢」頁可以睇晒。</p>`:""}`:`<p class="mute" style="font-size:14px">仲未有記錄。發完夢記低佢，日後可以睇返。</p>`}catch(e){box.innerHTML=`<p class="note">暫時載入唔到，請稍後再試。</p>`}})();
@@ -2418,9 +2642,15 @@ function renderMe(el){
   const lo=$("#logout",body);if(lo)lo.onclick=()=>signOutAll();
   const r=$("#reset",body);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
 }
+function avatarHTML(){const a=store("soluna.avatar");return a&&/^data:image\/(jpeg|png|webp);base64,/.test(a)?`<img class="av-img" src="${a}" alt="">`:esc((profile.demo?"示":(profile.name||"我")).slice(0,1))}
+function pickAvatar(done){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
+  inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const im=new Image();const url=URL.createObjectURL(f);
+    im.onload=()=>{const S=192,cv=document.createElement("canvas");cv.width=cv.height=S;const k=Math.min(im.width,im.height);cv.getContext("2d").drawImage(im,(im.width-k)/2,(im.height-k)/2,k,k,0,0,S,S);URL.revokeObjectURL(url);
+      store("soluna.avatar",cv.toDataURL("image/jpeg",.82));done&&done()};im.onerror=()=>toastMsg("呢張相讀唔到，試吓另一張");im.src=url};inp.click()}
 function openEditor(){
   const sh=$("#sheet");const p=profile.demo?{...DEMO,name:"",demo:true}:profile;
   sh.innerHTML=`<form class="panel" id="pf" autocomplete="off"><div class="row" style="justify-content:space-between"><h2>你的出生資料</h2><button type="button" class="btn small" id="close">關閉</button></div>
+  <div class="av-edit"><span class="you-av small">${avatarHTML()}</span><button type="button" class="btn small" id="avPick">更換相片</button>${store("soluna.avatar")?`<button type="button" class="linkbtn" id="avDel">移除</button>`:""}</div>
   <p class="mute" style="font-size:13px">出生時間越準確，上升星座、時柱和紫微斗數越準。</p>
   <label class="f" for="pname">稱呼<input id="pname" required maxlength="20" value="${esc(p.name)}" placeholder="你的名字"></label>
   <div class="grid2"><label class="f" for="pdate">出生日期<input id="pdate" type="date" required min="1901-01-01" max="2099-12-31" value="${esc(p.date)}"></label>
@@ -2432,6 +2662,8 @@ function openEditor(){
   <button class="btn solid" type="submit">儲存並排盤</button></form>`;
   sh.hidden=false;
   $("#close").onclick=()=>{sh.hidden=true};sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
+  const refreshAv=()=>{const r=$(".av-edit .you-av");if(r)r.innerHTML=avatarHTML();route();sh.hidden=false};
+  $("#avPick").onclick=()=>pickAvatar(()=>{openEditor()});const ad=$("#avDel");if(ad)ad.onclick=()=>{store("soluna.avatar",null);openEditor()};
   $("#pf").onsubmit=e=>{e.preventDefault();
     profile={name:$("#pname").value.trim()||"我",date:$("#pdate").value,time:$("#ptime").value||"12:00",timeUnknown:$("#punk").checked||!$("#ptime").value,city:+$("#pcity").value,gender:$("#pgen").value,lang:$("#plang").value,demo:false};
     store("xuanjing.profile.v1",profile);recompute();sh.hidden=true;location.hash="#today";route();window.scrollTo(0,0)};
@@ -2439,12 +2671,12 @@ function openEditor(){
 
 /* ============ router ============ */
 function renderDream(el){
-  el.innerHTML=`<div class="stack"><span class="eyebrow">夢境 · Dream journal</span><h1>記住每一個夢<span class="lat">dreams, kept</span></h1></div><div id="drBody" class="stack" style="gap:22px"></div>`;
+  el.innerHTML=`<div class="stack"><span class="eyebrow">夢境 · Dream journal</span><h1>記住每一個夢<span class="lat">what the night remembers</span></h1></div><div id="drBody" class="stack" style="gap:22px"></div>`;
   orDream($("#drBody",el));
 }
 const VIEWS={today:renderToday,forecast:renderForecast,chart:el=>{meTab="chart";renderMe(el)},dream:renderDream,oracle:renderOracle,me:renderMe,shop:renderShop};
 function route(){
-  const hp=document.getElementById("hdrProfile");if(hp)hp.textContent=(profile.demo?"示":(profile.name||"我")).slice(0,1);
+  const hp=document.getElementById("hdrProfile");if(hp)hp.innerHTML=avatarHTML();
   const v=(location.hash||"#today").slice(1);const key=VIEWS[v]?v:"today";
   document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.v===(key==="oracle"||key==="chart"?"me":key)?"page":"false"));
   const shx=$("#sheet");if(shx)shx.hidden=true;

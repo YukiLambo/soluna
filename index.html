@@ -915,6 +915,7 @@ function computeChart(p){
       let asc=Math.atan2(Math.cos(th),-(Math.sin(th)*Math.cos(eps)+Math.tan(lat)*Math.sin(eps)))*180/Math.PI;asc=(asc+360)%360;
       res.asc={lon:asc,sign:SIGNS[Math.floor(asc/30)]};
       let mc=Math.atan2(Math.sin(th),Math.cos(th)*Math.cos(eps))*180/Math.PI;mc=(mc+360)%360;res.mc={lon:mc,sign:SIGNS[Math.floor(mc/30)]};
+      res.cusps=placidusCusps(lst*15,23.4393,city[2],asc,mc);
     }
   }
   // BaZi
@@ -1365,6 +1366,39 @@ function localZiwei(c){
   return L.join("\n\n");
 }
 
+/* ---- Lilly 尊貴計分（廟旺三分界面、宮位、順逆、焦傷）與日夜盤 ---- */
+const SIGN_LORD=["火星","金星","水星","月亮","太陽","水星","金星","火星","木星","土星","土星","木星"];
+const EXALT={太陽:0,月亮:1,水星:5,金星:11,火星:9,木星:3,土星:6};
+const TRIP=[["太陽","木星"],["金星","月亮"],["土星","水星"],["火星","火星"]];
+const TERMS=[[["木星",6],["金星",12],["水星",20],["火星",25],["土星",30]],[["金星",8],["水星",14],["木星",22],["土星",27],["火星",30]],[["水星",6],["木星",12],["金星",17],["火星",24],["土星",30]],[["火星",7],["金星",13],["水星",19],["木星",26],["土星",30]],[["木星",6],["金星",11],["土星",18],["水星",24],["火星",30]],[["水星",7],["金星",17],["木星",21],["火星",28],["土星",30]],[["土星",6],["水星",14],["木星",21],["金星",28],["火星",30]],[["火星",7],["金星",11],["水星",19],["木星",24],["土星",30]],[["木星",12],["金星",17],["水星",21],["土星",26],["火星",30]],[["水星",7],["木星",14],["金星",22],["土星",26],["火星",30]],[["水星",7],["金星",13],["木星",20],["火星",25],["土星",30]],[["金星",12],["木星",16],["水星",19],["火星",28],["土星",30]]];
+const FACE_ORD=["火星","太陽","金星","水星","月亮","土星","木星"];
+const HOUSE_ACC=[0,5,3,1,4,3,-2,4,-2,2,5,4,-5];
+const CLASSIC7=["太陽","月亮","水星","金星","火星","木星","土星"];
+function isDayChart(c){if(!c.asc)return null;return houseOf(c,c.planets[0].lon)>=7}
+function lillyScore(c,p){const L=((p.lon%360)+360)%360,s=Math.floor(L/30),deg=L%30,day=isDayChart(c)!==false;let ess=0;const why=[];
+  if(SIGN_LORD[s]===p.n){ess+=5;why.push("入廟")}if(EXALT[p.n]===s){ess+=4;why.push("擢升")}
+  if(TRIP[s%4][day?0:1]===p.n){ess+=3;why.push("三分")}
+  if(TERMS[s].find(t=>deg<t[1])[0]===p.n){ess+=2;why.push("界")}if(FACE_ORD[Math.floor(L/10)%7]===p.n){ess+=1;why.push("面")}
+  if(SIGN_LORD[(s+6)%12]===p.n){ess-=5;why.push("失勢")}if(EXALT[p.n]===(s+6)%12){ess-=4;why.push("落陷")}
+  if(!why.some(w=>["入廟","擢升","三分","界","面"].includes(w))){ess-=5;why.push("遊走")}
+  let acc=0;if(c.asc){const h=houseOf(c,L);acc+=HOUSE_ACC[h]}
+  if(!["太陽","月亮"].includes(p.n)){acc+=p.retro?-5:4;if(p.retro)why.push("逆行");
+    const ds=Math.abs(angDiff(L,c.planets[0].lon));if(ds<17/60){acc+=5;why.push("日心")}else if(ds<8.5){acc-=5;why.push("焦傷")}else if(ds<17){acc-=4;why.push("日光下")}}
+  for(const q of c.planets)if(q!==p&&CLASSIC7.includes(q.n)&&Math.abs(angDiff(L,q.lon))<1){if(["木星","金星"].includes(q.n)){acc+=5;why.push(`合${q.n}`)}if(["火星","土星"].includes(q.n)){acc-=5;why.push(`合${q.n}`)}}
+  return {n:p.n,ess,acc,tot:ess+acc,why}}
+const LORD1_H=["命主星守命宮：你嘅人生由自己主導，個性鮮明，凡事親力親為。","命主星落二宮：你一生同金錢、資源同自我價值關係密切，賺錢能力係你嘅課題。","命主星落三宮：你靠溝通、學習同兄弟朋友推動人生，適合寫作、教學、短途奔走。","命主星落四宮：家庭、根源同房產係你嘅重心，晚運通常比早年穩定。","命主星落五宮：你需要創作、戀愛同樂趣，子女或者作品係你嘅驕傲。","命主星落六宮：你喺工作同服務中找到意義，亦要特別照顧身體。","命主星落七宮：你嘅人生同伴侶、合夥人緊緊相連，透過關係認識自己。","命主星落八宮：你經歷過或者會經歷深刻嘅轉變，善於處理別人嘅資源同危機。","命主星落九宮：遠方、學問、信仰同出國係你嘅方向，人生視野寬廣。","命主星落十宮：事業同社會地位係你嘅舞台，有機會出名或者擔當要職。","命主星落十一宮：朋友、團體同理想帶動你，人脈就係你嘅資產。","命主星落十二宮：你內心世界豐富，適合幕後、靈性或者助人嘅工作，要學識唔好將自己收埋。"];
+function lillyNotes(c){if(!c.planets)return "";const S=c.planets.filter(p=>CLASSIC7.includes(p.n)).map(p=>lillyScore(c,p)).sort((a,b)=>b.tot-a.tot);
+  const L=[];const day=isDayChart(c);
+  if(day!==null)L.push(`- **${day?"日生盤":"夜生盤"}**：${day?"太陽喺地平線之上。日間派系嘅行星係太陽、木星、土星；木星係你最得力嘅吉星，火星嘅挑戰相對較大，要學識引導佢嘅衝勁。":"太陽喺地平線之下。夜間派系嘅行星係月亮、金星、火星；金星係你最得力嘅吉星，土星嘅考驗相對較重，要俾自己時間慢慢成熟。"}`);
+  if(c.asc){const lord=SIGN_LORD[Math.floor(c.asc.lon/30)],ls=S.find(x=>x.n===lord),lp=c.planets.find(p=>p.n===lord);const h=houseOf(c,lp.lon);
+    L.push(`- **命主星**：上升${c.asc.sign}座，命主星係${lord}，落${lp.sign}座第 ${h} 宮（${ls.why.join("、")||"無特別尊貴"}，得分 ${ls.tot}）。${LORD1_H[h-1]}${ls.tot>=5?"命主星有力，你做事有底氣，容易得到想要嘅結果。":ls.tot<=-5?"命主星受制，你要比人付出多啲，但每一步都會令你更強。":"命主星力量中等，順逆視乎你點樣運用。"}`)}
+  const top=S[0],low=S[S.length-1];
+  L.push(`- **最有力嘅行星**：${top.n}（${top.why.filter(w=>!w.startsWith("合")).join("、")||"—"}，${top.tot} 分）。${PLANET_GIFT[top.n]}`);
+  L.push(`- **最需要照顧嘅行星**：${low.n}（${low.why.join("、")||"—"}，${low.tot} 分）。${PLANET_LESSON[low.n]}`);
+  return "## 古典判斷\n"+L.join("\n")}
+const PLANET_GIFT={太陽:"你嘅自信同領導力係最大本錢。",月亮:"你嘅感受力同照顧人嘅能力好突出。",水星:"你嘅頭腦、口才同學習力係天賦。",金星:"你有美感同人緣，關係同藝術方面容易得益。",火星:"你有行動力同勇氣，遇到挑戰反而更強。",木星:"你運氣好、心胸廣，容易遇到貴人。",土星:"你有耐性同紀律，可以建立長久嘅成就。"};
+const PLANET_LESSON={太陽:"要學識肯定自己，唔使事事等人認同。",月亮:"情緒容易起伏，要建立令自己安心嘅日常。",水星:"諗嘢容易散或者過度擔心，寫低思緒會有幫助。",金星:"感情或者金錢上容易失衡，要學識珍惜自己。",火星:"怒氣同衝動要搵健康嘅出口，例如運動。",木星:"要小心過度樂觀或者承諾太多。",土星:"壓力同自我要求較重，要容許自己慢慢嚟。"};
+
 /* ---- 古典星盤要點：元素、模式、半球、角宮、年齡主星 ---- */
 const AGE_RULER=[[4,"月亮","童年由月亮主管：情感同安全感係成長嘅基礎。"],[14,"水星","求學期由水星主管：好奇、學習同溝通係呢段時間嘅主題。"],[22,"金星","青春期由金星主管：愛、美感同人際關係最重要。"],[41,"太陽","壯年由太陽主管：建立身份、事業同自我實現。"],[56,"火星","中年由火星主管：行動力同魄力，為自己相信嘅嘢奮鬥。"],[68,"木星","成熟期由木星主管：智慧、分享同回饋。"],[200,"土星","晚年由土星主管：沉澱、總結同傳承。"]];
 const EL_PLANE=["火象：你靠熱情同靈感推動人生","土象：你重實際同感官，一步一步建立","風象：你用思想同溝通理解世界","水象：你用感受同直覺生活"];
@@ -1381,7 +1415,7 @@ function classicalNotes(c){if(!c.planets)return "";const P=c.planets.filter(p=>[
 function localChart(c){
   const b=c.bazi;const L=[];
   if(c.planets)L.push(`## 星盤\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。月亮${c.planets[1].sign}座，情緒需要${SIGN_KW[c.planets[1].sign]}。${c.asc?`上升${c.asc.sign}座，畀人第一印象係${SIGN_KW[c.asc.sign]}。`:""}${c.mc?`天頂${c.mc.sign}座：${MC_T[c.mc.sign]}`:""}`);
-  {const cn=classicalNotes(c);if(cn)L.push(cn)}
+  {const cn=classicalNotes(c);if(cn)L.push(cn);const ln=lillyNotes(c);if(ln)L.push(ln)}
   const D=deepPoints(c);if(D)L.push(`北交點${SIGNS[Math.floor(D.nn/30)]}座：${NODE_T[SIGNS[Math.floor(D.nn/30)]]}`);
   if(b)L.push(`## 八字\n日主${b.dm}（${EL[ganEl(b.dm)]}），${b.strong?"身強":"身弱"}，${b.geju}。${DM_DESC[b.dm]}\n\n${b.gejuD}`);
   if(c.ziwei)L.push(localZiwei(c));
@@ -1783,7 +1817,16 @@ const HUA_W={祿:1.2,權:.8,科:.7,忌:-1.4};
 function lonOf(body,d){const A=Astronomy;return body==="Moon"?A.EclipticGeoMoon(d).lon:A.Ecliptic(A.GeoVector(body,d,true)).elon}
 const angDiff=(a,b)=>{let x=((a-b)%360+540)%360-180;return x};
 function natalPoints(c){const pts=c.planets.map(p=>({n:p.n,lon:p.lon}));if(c.asc)pts.push({n:"上升",lon:c.asc.lon});if(c.mc)pts.push({n:"天頂",lon:c.mc.lon});return pts}
-function houseOf(c,lon){const base=c.asc?Math.floor(c.asc.lon/30):Math.floor(c.planets[0].lon/30);return ((Math.floor(lon/30)-base+12)%12)+1}
+function placidusCusps(ramc,epsD,latD,asc,mc){const r=Math.PI/180,e=epsD*r,ph=latD*r;
+  const lonFromRA=ra=>((Math.atan2(Math.sin(ra*r),Math.cos(ra*r)*Math.cos(e))/r)+360)%360;
+  const cusp=(f,below)=>{let lam=(below?mc+180:mc)+(below?-1:1)*f*90;for(let i=0;i<30;i++){const d=Math.asin(Math.sin(e)*Math.sin(lam*r));const x=Math.tan(ph)*Math.tan(d);if(Math.abs(x)>=1)return NaN;const ad=Math.asin(x)/r;
+    const ra=below?ramc+180-f*(90-ad):ramc+f*(90+ad);const n=lonFromRA(ra);if(Math.abs(((n-lam+540)%360)-180)<1e-6){lam=n;break}lam=n}return lam};
+  const c11=cusp(1/3,false),c12=cusp(2/3,false),c2=cusp(2/3,true),c3=cusp(1/3,true);
+  if([c11,c12,c2,c3].some(isNaN))return null;
+  const q=[asc,c2,c3,(mc+180)%360];const top=[(asc+180)%360,(c2+180)%360,(c3+180)%360,mc,c11,c12];
+  return [asc,c2,c3,(mc+180)%360,(c11+180)%360,(c12+180)%360,(asc+180)%360,(c2+180)%360,(c3+180)%360,mc,c11,c12]}
+let HOUSE_SYS=(()=>{try{return JSON.parse(localStorage.getItem("soluna.houses"))||"placidus"}catch(e){return "placidus"}})();
+function houseOf(c,lon){if(HOUSE_SYS==="placidus"&&c.cusps&&c.asc){const L=((lon%360)+360)%360;for(let i=0;i<12;i++){const a=c.cusps[i],b=c.cusps[(i+1)%12],w=(b-a+360)%360,d=(L-a+360)%360;if(d<w)return i+1}}const base=c.asc?Math.floor(c.asc.lon/30):Math.floor(c.planets[0].lon/30);return ((Math.floor(lon/30)-base+12)%12)+1}
 function transitSpan(body,target,orb,d0){
   const off=dd=>Math.abs(angDiff(lonOf(body,dd),target));
   const fast=["Moon"].includes(body),step=fast?1/24:["Sun","Mercury","Venus","Mars"].includes(body)?1:4,max=fast?3:["Sun","Mercury","Venus","Mars"].includes(body)?60:400;
@@ -2872,6 +2915,7 @@ function renderMe(el){
   body.innerHTML=`<button type="button" class="shop-entry" id="goShop"><span><span class="kicker">Soluna 商店</span><b>${isMember()?`你係 ${TIER[ENT.tier].full} 會員 ✦`:"更深入了解你自己"}</b><span class="mute">Luna Plus、Sol Pro 會員、愛情、事業、財運同年度報告</span></span><span aria-hidden="true">→</span></button>
   <div class="set-list">
     <button type="button" id="setEdit"><span>出生資料</span><span class="mute">修改 →</span></button>
+    ${chart.asc?`<button type="button" id="setHouse"><span>宮制</span><span class="mute">${HOUSE_SYS==="placidus"?"Placidus":"整宮制"} · 切換 →</span></button>`:""}
     <button type="button" id="setTheme"><span>外觀</span><span class="mute">${isLight()?"淺色":"深色"} · 切換 →</span></button>
     ${profile.demo?"":`<button type="button" id="reset"><span>回到示範命盤</span><span class="mute">→</span></button>`}
     ${fbUser?`<div class="set-row"><span>帳戶<br><small class="mute">${esc(fbUser.email||fbUser.displayName||"")} · ${tierLabel()}</small></span><button class="btn small" type="button" id="logout">登出</button></div>`:""}
@@ -2883,6 +2927,7 @@ function renderMe(el){
   <p class="note">${BRAND.zh}的內容供娛樂和自我反思之用。重要的健康、法律及財務決定，請諮詢相關專業人士。</p>`;
   $("#goShop",body).onclick=()=>{location.hash="#shop"};
   $("#setEdit",body).onclick=openEditor;
+  {const sh=$("#setHouse",body);if(sh)sh.onclick=()=>{HOUSE_SYS=HOUSE_SYS==="placidus"?"whole":"placidus";store("soluna.houses",HOUSE_SYS);chart._deep=null;toastMsg(HOUSE_SYS==="placidus"?"已轉用 Placidus 宮制":"已轉用整宮制");renderMe(el)}}
   $("#setTheme",body).onclick=()=>{const t=$("#themeBtn");if(t)t.click();renderMe(el)};
   const lo=$("#logout",body);if(lo)lo.onclick=()=>signOutAll();
   const r=$("#reset",body);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};

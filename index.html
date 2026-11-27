@@ -1429,22 +1429,22 @@ const AREA2CAT={love:"love",work:"career",money:"money",routine:"health",home:"f
 function areasFromAn(av){const v={};for(const [a,c] of Object.entries(AREA2CAT))if(av[a]!=null)v[c]=av[a]*.8;v.all=0;return v}
 function tgBlock(tg){const t=TG[tg];return `${t.life}\n\n宜：${t.yi.join("、")}。忌：${t.ji.join("、")}。`}
 function localToday(c){const now=new Date();const an=analyzeDay(c,now);if(!an)return "";const P=readingParas(c,an);const v=areasFromAn(Object.fromEntries(an.areas.map(a=>[a.k,a.net])));
-  return [`## 今日總論\n${an.headline}（綜合 ${an.dayScore.toFixed(1)}/5）`,...P.map(p=>`## ${p.k}\n${p.t}`),`## 各方面\n${areasBlock(v,["love","career","money","health","family"])}`,`## 今日旺\n${an.power.map(a=>`- ${a.n}：${areaText(a,"power")}`).join("\n")}`,`## 要留神\n${an.trouble.map(a=>`- ${a.n}：${areaText(a,"trouble")}`).join("\n")}`].join("\n\n")}
+  return [`## 今日總論\n${an.headline}（綜合 ${an.dayScore.toFixed(1)}/5）`,...P.map(p=>`## ${p.k}\n${p.t}`),`## 各方面\n${areasBlock(v,["love","career","money","health","family"])}`,an.power.length?`## 今日旺\n${an.power.map(a=>`- ${a.n}：${areaText(a,"power")}`).join("\n")}`:"",an.pressure.length?`## 有拉扯\n${an.pressure.map(a=>`- ${a.n}：${areaText(a,"pressure")}`).join("\n")}`:"",an.trouble.length?`## 要留神\n${an.trouble.map(a=>`- ${a.n}：${areaText(a,"trouble")}`).join("\n")}`:""].filter(Boolean).join("\n\n")}
 function localWeek(c,days){const sorted=[...days].sort((a,b)=>(b.total||0)-(a.total||0));const av=avgAreas(days.map(d=>d.an));
-  return [`## 本週主題\n最順係 ${fmtD(sorted[0].date)}（${TG[sorted[0].tg].kw}），最需要放慢係 ${fmtD(sorted[sorted.length-1].date)}（${TG[sorted[sorted.length-1].tg].kw}）。`,`## 逐日計劃\n${days.map(d=>`- **${fmtD(d.date)} 週${WDN[d.date.getDay()]} · ${d.gz} ${d.tg}**：${TG[d.tg].head} 宜${TG[d.tg].yi[0]}，忌${TG[d.tg].ji[0]}。${d.an?`旺${d.an.power[0].n}。`:""}`).join("\n")}`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health"])}`].join("\n\n")}
+  return [`## 本週主題\n最順係 ${fmtD(sorted[0].date)}（${TG[sorted[0].tg].kw}），最需要放慢係 ${fmtD(sorted[sorted.length-1].date)}（${TG[sorted[sorted.length-1].tg].kw}）。`,`## 逐日計劃\n${days.map(d=>`- **${fmtD(d.date)} 週${WDN[d.date.getDay()]} · ${d.gz} ${d.tg}**：${TG[d.tg].head} 宜${TG[d.tg].yi[0]}，忌${TG[d.tg].ji[0]}。${d.an?`旺${(d.an.power[0]||{n:"—"}).n}。`:""}`).join("\n")}`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health"])}`].join("\n\n")}
 function localMonth(c){const now=new Date();const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();const mgz=L0.getMonthInGanZhiExact(),tg=tenGod(c.bazi.dm,mgz[0]),tgz=tenGod(c.bazi.dm,ZHI_MAIN[ZHI.indexOf(mgz[1])]);
   const cells=[];for(let i=0;i<30;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);const an=analyzeDay(c,d,{light:true});cells.push({d,an})}
   const ok=cells.filter(x=>x.an).sort((a,b)=>b.an.dayScore-a.an.dayScore);const av=avgAreas(cells.map(x=>x.an));const zw=zwFlows(c,now);
-  return [`## 本月總論\n流月${mgz}，對你係「${tg}」月，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流月\n${huaSentence(zw.monthly)}`:"",`## 最好嘅日子\n${ok.slice(0,5).map(x=>`${fmtD(x.d)}（${x.an.power[0].n}）`).join("、")}：適合主動爭取、見重要嘅人。`,`## 宜低調嘅日子\n${ok.slice(-4).map(x=>fmtD(x.d)).join("、")}：避免重大決定，多休息。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family"])}`,`## 本月行動\n1. ${TG[tg].yi[0]}\n2. ${TG[tg].yi[1]||TG[tgz].yi[0]}\n3. 避免${TG[tg].ji[0]}`].filter(Boolean).join("\n\n")}
+  return [`## 本月總論\n流月${mgz}，對你係「${tg}」月，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流月\n${huaSentence(zw.monthly)}`:"",`## 最好嘅日子\n${ok.slice(0,5).map(x=>`${fmtD(x.d)}（${(x.an.power[0]||{n:"—"}).n}）`).join("、")}：適合主動爭取、見重要嘅人。`,`## 宜低調嘅日子\n${ok.slice(-4).map(x=>fmtD(x.d)).join("、")}：避免重大決定，多休息。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family"])}`,`## 本月行動\n1. ${TG[tg].yi[0]}\n2. ${TG[tg].yi[1]||TG[tgz].yi[0]}\n3. 避免${TG[tg].ji[0]}`].filter(Boolean).join("\n\n")}
 function localYear(c){const now=new Date();const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();const ygz=L0.getYearInGanZhiByLiChun(),tg=tenGod(c.bazi.dm,ygz[0]),tgz=tenGod(c.bazi.dm,ZHI_MAIN[ZHI.indexOf(ygz[1])]);
   const months=[];for(let i=0;i<12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,15);months.push({d,an:analyzeDay(c,d,{light:true,scope:"month"})})}
   const ok=months.filter(m=>m.an).sort((a,b)=>b.an.dayScore-a.an.dayScore);const av=avgAreas(months.map(m=>m.an));const zw=zwFlows(c,now);const mt=majorTransits(c).slice(0,5);
-  return [`## 今年總論\n${ygz}年對你係「${tg}」年，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流年\n${huaSentence(zw.yearly)}${zw.yearly.hua.length?`四化落點：${zw.yearly.hua.map(x=>`${x.star}化${x.h}入${x.pal}`).join("、")}。`:""}`:"",mt.length?`## 重大行運\n${mt.map(r=>`- **${r.n}${r.an}${r.np}**（${fmtD(r.s)}–${fmtD(r.e)}）：${OUTER_T[r.n][r.cls]}。`).join("\n")}`:"",`## 最旺月份\n${ok.slice(0,3).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：把握呢幾個月推進重要計劃。`,`## 要小心嘅月份\n${ok.slice(-2).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：穩守為主，注意健康同人際。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family","study"])}`,`## 逐月重點\n${months.map(m=>`- ${m.d.getFullYear()%100}/${m.d.getMonth()+1}：${m.an?`旺${m.an.power.slice(0,2).map(a=>a.n).join("、")}，留意${m.an.trouble[0].n}`:"—"}`).join("\n")}`].filter(Boolean).join("\n\n")}
+  return [`## 今年總論\n${ygz}年對你係「${tg}」年，地支藏${tgz}。\n\n${tgBlock(tg)}`,zw?`## 紫微流年\n${huaSentence(zw.yearly)}${zw.yearly.hua.length?`四化落點：${zw.yearly.hua.map(x=>`${x.star}化${x.h}入${x.pal}`).join("、")}。`:""}`:"",mt.length?`## 重大行運\n${mt.map(r=>`- **${r.n}${r.an}${r.np}**（${fmtD(r.s)}–${fmtD(r.e)}）：${OUTER_T[r.n][r.cls]}。`).join("\n")}`:"",`## 最旺月份\n${ok.slice(0,3).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：把握呢幾個月推進重要計劃。`,`## 要小心嘅月份\n${ok.slice(-2).map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1}`).join("、")}：穩守為主，注意健康同人際。`,`## 各方面\n${areasBlock(areasFromAn(av),["love","career","money","health","family","study"])}`,`## 逐月重點\n${months.map(m=>`- ${m.d.getFullYear()%100}/${m.d.getMonth()+1}：${m.an?`旺${m.an.power.slice(0,2).map(a=>a.n).join("、")}，留意${(m.an.trouble[0]||{n:"—"}).n}`:"—"}`).join("\n")}`].filter(Boolean).join("\n\n")}
 function localDecade(c){const b=c.bazi,now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0];const nx=b.yun[b.yun.indexOf(cur)+1];const t=tenGod(b.dm,cur.gz[0]);
   const yrs=[];for(let y=cur.startYear;y<=cur.endYear;y++){const gz=Solar.fromYmd(y,6,1).getLunar().getYearInGanZhiByLiChun();yrs.push({y,gz,tg:tenGod(b.dm,gz[0])})}
   const zw=c.ziwei?zwFlows(c,new Date()):null;
   return [`## 呢十年嘅主題\n大運${cur.gz}（${cur.startYear}–${cur.endYear}），對你係「${t}」運。\n\n${tgBlock(t)}`,zw?`## 紫微大限\n${huaSentence(zw.decadal)}`:"",`## 事業同財富\n${TG[t].s.work>0?"事業有上升空間，適合爭取更大嘅舞台。":TG[t].s.work<0?"事業要穩紮穩打，避免冒進。":"事業平穩發展。"}${TG[t].s.money>0?"財運向好，宜長線投資同置業。":TG[t].s.money<0?"財務要保守，防破耗。":"財運平穩，量入為出。"}`,`## 感情同家庭\n${TG[t].s.love>0?"感情有好發展，有利結婚或者關係升溫。":TG[t].s.love<0?"感情要多啲包容同溝通。":"感情平穩，用心經營。"}`,`## 健康\n${TG[t].s.health>=0?"整體精神唔錯，保持運動習慣。":"要留意作息同壓力，定期檢查。"}`,`## 逐年關鍵字\n${yrs.map(x=>`- ${x.y} ${x.gz}（${x.tg}）：${TG[x.tg].kw}，宜${TG[x.tg].yi[0]}`).join("\n")}`,nx?`## 下一步\n${nx.startYear} 年起轉入${nx.gz}大運（${tenGod(b.dm,nx.gz[0])}運），提早準備：${TG[tenGod(b.dm,nx.gz[0])].yi[0]}。`:""].filter(Boolean).join("\n\n")}
-function localArea(c,an,a){const cls=an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":"pressure";const cat=AREA2CAT[a.k]||"general";
+function localArea(c,an,a){const cls=areaCls(an,a);const cat=AREA2CAT[a.k]||"general";
   return [`## ${a.n}`,areaText(a,cls),`## 點樣做\n${CAT_ADV[cat][a.net>.25?"g":a.net<-.25?"b":"m"]}`].join("\n\n")}
 function localTransit(c,tr){const d=TR_DO[tr.tp]||["",""];return [`## ${tr.tp}${tr.asp}你嘅${tr.np}`,tr.text,tr.more||"",`## 可以做\n${d[0]}`,`## 要避免\n${d[1]}`,`**時間**：${fmtD(tr.start)} 開始，${fmtD(tr.exact)} 最準，${fmtD(tr.end)} 結束。${tr.applying?"相位正在靠近，影響會越來越明顯。":"相位正在離開，影響慢慢減退。"}`].filter(Boolean).join("\n\n")}
 function localProduct(p){const c=chart;const z=c.ziwei;const D=deepPoints(c);
@@ -2099,11 +2099,11 @@ function analyzeDay(c,date,opts={}){
     if(zw&&a.stars)for(const L of [zw.daily,zw.monthly,zw.yearly])for(const x of L.hua)if(a.stars.includes(x.star)){const v=(x.h==="忌"?-1:x.h==="科"?1.2:.8)*L.w;if(v>0)r.pos+=v;else r.neg-=v;r.starHit=(r.starHit||"")+`${L.label}${x.star}化${x.h}，${x.h==="忌"?"考試文書要細心核對。":"讀書、考試同文書運有助力。"}`}
     r.net=r.pos-r.neg;return r});
   const by=[...areas].sort((a,b)=>b.net-a.net);
-  const trouble=[by[by.length-1]];
-  const rest=by.filter(a=>a!==trouble[0]);
-  const pressure=[...rest].sort((a,b)=>Math.min(b.pos,b.neg)-Math.min(a.pos,a.neg)||b.neg-a.neg).slice(0,1);
-  const power=rest.filter(a=>!pressure.includes(a)&&a.net>.25).slice(0,4);
-  if(!power.length)power.push(rest.find(a=>!pressure.includes(a)));
+  /* 按分數分類：拉扯大 → 煩；淨分正 → 旺；淨分負 → 忌；其餘唔顯示 */
+  const isPress=a=>Math.min(a.pos,a.neg)>=1.5&&Math.abs(a.net)<=.35*Math.max(a.pos,a.neg);
+  const pressure=by.filter(isPress).sort((a,b)=>Math.min(b.pos,b.neg)-Math.min(a.pos,a.neg));
+  const power=by.filter(a=>!isPress(a)&&a.net>=.5).slice(0,5);
+  const trouble=by.filter(a=>!isPress(a)&&a.net<=-.5).reverse();
   const top=transits.find(t=>t.tb!=="Moon")||transits[0];
   const hl=top?HEADLINES[top.cls]:HEADLINES.soft;
   const headline=hl[Math.floor(Math.abs(Math.sin(+d0/864e5))*hl.length)%hl.length];
@@ -2140,6 +2140,7 @@ function readingParas(c,an){
   P.push({k:"呢段人生",t:life});
   return P;
 }
+const areaCls=(an,a)=>an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":an.pressure.includes(a)?"pressure":a.net>=0?"power":"trouble";
 function areaText(a,cls){
   const parts=[];if(a.stars&&a.starHit)parts.push(a.starHit);
   for(const tr of a.trs.slice(0,2))parts.push(`${tr.tp}${tr.asp}你嘅${tr.np}：${TR_ADV[tr.tp][tr.cls]}`);
@@ -2158,7 +2159,7 @@ function miniOrbit(tr){
 const fmtD=d=>d?`${d.getMonth()+1}/${d.getDate()}`:"—";
 function openSheet(html,bind){const sh=$("#sheet");sh.innerHTML=`<section class="panel read-sheet" role="dialog" aria-modal="true">${html}</section>`;sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};sh.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{sh.hidden=true});bind&&bind(sh)}
 function openArea(c,an,k){
-  const a=an.areas.find(x=>x.k===k);const cls=an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":"pressure";
+  const a=an.areas.find(x=>x.k===k);const cls=areaCls(an,a);
   const z=c.ziwei,pal=z?z.palaces.find(p=>p&&p.name===a.pal[0]):null;
   openSheet(`<div class="sh-top"><button class="btn small" type="button" data-close aria-label="返回">${ic("close")}</button><span class="sh-title">${a.n} · ${a.en}</span><span></span></div>
    <h3 class="sh-h">${esc(AREA_HEAD[cls][a.k])}</h3>
@@ -2171,7 +2172,7 @@ function openArea(c,an,k){
 function sixScore(a){return Math.max(1,Math.min(5,Math.round(3+a.net*.9)))}
 function sixHTML(c,an){
   return `<section class="six"><div class="sec-head"><div><p class="kicker">Six areas · 六大範疇</p><h2>學業、事業、愛情、財運、家庭、朋友</h2></div></div>
-  ${SIX.map(([k,n])=>{const a=an.areas.find(x=>x.k===k),cls=an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":(a.net>.25?"power":a.net<-.25?"trouble":"pressure"),sc=sixScore(a);
+  ${SIX.map(([k,n])=>{const a=an.areas.find(x=>x.k===k),cls=areaCls(an,a),sc=sixScore(a);
    const z=c.ziwei,pal=z?z.palaces.find(p=>p&&p.name===a.pal[0]):null;
    return `<button type="button" class="six-row" data-ar="${k}"><div class="six-top"><span class="six-n">${n}</span>${dots(sc)}<span class="six-tag ${cls}">${cls==="power"?"☀︎":cls==="trouble"?"●":"◐"}</span></div>
     <p class="six-h">${esc(AREA_HEAD[cls][k])}</p><p class="six-x">${esc(SIX_ADV[k][cls])}${pal&&pal.stars.length?` 本命${pal.name}有${pal.stars.join("、")}：${pal.stars.map(s=>ZW_KW[s]).filter(Boolean)[0]||""}。`:""}</p></button>`}).join("")}</section>`;
@@ -2210,7 +2211,7 @@ function renderToday(el){
   const L2=`流日 ${di.gz} 對你的日主${chart.bazi.dm}是「${di.tg}」，地支藏「${di.tgz}」：${t.kw}與${TG[di.tgz].kw}交織。`;
   const rel=di.he?"今日地支同你日支六合，人緣好，適合傾合作或者約會。":di.clash?"今日地支同你日支相沖，講嘢之前停一停，關係需要多啲彈性。":"今日人際平穩，一句簡單直接嘅關心，好過精心安排。";
   const an=analyzeDay(chart,now), paras=an?readingParas(chart,an):[];
-  const clsOf=a=>an.power.includes(a)?"power":an.trouble.includes(a)?"trouble":"pressure";
+  const clsOf=a=>areaCls(an,a);
   const A=k=>an?an.areas.find(x=>x.k===k):null;
   if(an){const m=k=>Math.max(1,Math.min(5,Math.round(3+A(k).net*.9)));di.sc={love:m("love"),work:m("work"),money:m("money"),health:m("routine")};di.total=(di.sc.love+di.sc.work+di.sc.money+di.sc.health)/4}
   const love=di.sc.love, work=di.sc.work, money=di.sc.money;
@@ -2227,9 +2228,10 @@ function renderToday(el){
     <div class="day-strip" role="tablist" aria-label="揀日子">${[-2,-1,0,1,2].map(o=>{const d=new Date(today0.getFullYear(),today0.getMonth(),today0.getDate()+o);return `<button type="button" role="tab" data-o="${o}" aria-selected="${o===viewOffset}"><span>${o===0?"TODAY":d.toLocaleDateString("en-GB",{weekday:"short"}).toUpperCase()}</span><b>${d.getDate()}</b></button>`}).join("")}</div>
     <h2 class="rd-h">${esc(an.headline)}</h2>
     <ul class="pp">
-      <li>${AREA_IC.power}<span><em class="pp-k">Lucky in · 旺</em>${linkA(an.power)}</span></li>
-      <li>${AREA_IC.pressure}<span><em class="pp-k">Uneasy in · 煩</em>${linkA(an.pressure)}</span></li>
-      <li>${AREA_IC.trouble}<span><em class="pp-k">Avoid · 忌</em>${linkA(an.trouble)}</span></li>
+      ${an.power.length?`<li>${AREA_IC.power}<span><em class="pp-k">Lucky in · 旺</em>${linkA(an.power)}</span></li>`:""}
+      ${an.pressure.length?`<li>${AREA_IC.pressure}<span><em class="pp-k">Uneasy in · 煩</em>${linkA(an.pressure)}</span></li>`:""}
+      ${an.trouble.length?`<li>${AREA_IC.trouble}<span><em class="pp-k">Avoid · 忌</em>${linkA(an.trouble)}</span></li>`:""}
+      ${!an.power.length&&!an.pressure.length&&!an.trouble.length?`<li>${AREA_IC.pressure}<span><em class="pp-k">Steady · 平</em>今日各方面都平穩</span></li>`:""}
     </ul>
     ${paras.map(p=>`<p class="rd-p"><span class="rd-k">${p.k}</span>${esc(p.t)}</p>`).join("")}
     <div class="useful"><span>有冇用？</span><button type="button" data-u="1" aria-label="有用" aria-pressed="${store("soluna.useful."+ymd(now))===1}">${ic("thumb")}</button><button type="button" data-u="-1" aria-label="冇用" aria-pressed="${store("soluna.useful."+ymd(now))===-1}">${ic("thumbd")}</button></div>
@@ -2299,8 +2301,8 @@ function fcWeek(el){
   const now=new Date();const days=[];for(let i=0;i<7;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);const di=dayInfo(chart,d),an=analyzeDay(chart,d,{light:true});if(an){di.an=an;di.total=an.dayScore}days.push(di)}rankLevels(days,d=>d.an?d.an.dayScore:null);
   const best=days.reduce((a,b)=>b.total>a.total?b:a), worst=days.reduce((a,b)=>b.total<a.total?b:a);
   el.innerHTML=`<p>呢七日最順嘅係 <b>${best.date.getMonth()+1}/${best.date.getDate()}（${TG[best.tg].kw}）</b>，最需要放慢嘅係 <b>${worst.date.getMonth()+1}/${worst.date.getDate()}（${TG[worst.tg].kw}）</b>。</p>
-  <div class="daylist">${days.map((d,i)=>`<div class="dayrow ${i===0?"now":""}"><div class="d"><b>${d.date.getDate()}</b>週${WD[d.date.getDay()]}</div><div style="min-width:0"><div>${(()=>{const lc=luckyColor(chart,d);return `<span class="cdot" style="background:${lc.best[1]}" title="幸運色 ${lc.best[0]}"></span>`})()}<b>${d.tg}</b> · ${esc(d.an?d.an.headline:TG[d.tg].head)}</div>${d.an?`<div class="wk-ar"><span>☀️ 旺 ${d.an.power.map(a=>a.n).slice(0,2).join("、")}</span><span>🌑 忌 ${d.an.trouble[0].n}</span>${d.an.zw?`<span>紫微流日${d.an.zw.daily.hua.find(x=>x.h==="忌")?.star||""}化忌入${d.an.zw.daily.hua.find(x=>x.h==="忌")?.pal||"—"}</span>`:""}</div>`:""}<div class="bar"><span style="width:${(d.total/5*100).toFixed(0)}%"></span></div></div><div class="mono mute" style="font-size:11.5px;text-align:right">${d.gz}<br>${d.moonLon!=null?"月"+SIGN_SHORT[Math.floor(d.moonLon/30)]:""}</div></div>`).join("")}</div>`;
-  el.appendChild(aiBlock("生成本週計劃",()=>prompt(`為使用者寫本週（${ymd(days[0].date)} 至 ${ymd(days[6].date)}）的運勢與行動計劃。每日資料：${days.map(d=>`${ymd(d.date)} ${d.gz}日 ${d.tg}，月亮${d.moonLon!=null?SIGNS[Math.floor(d.moonLon/30)]:""}座${d.an?`，綜合分${d.an.dayScore.toFixed(1)}/5，旺${d.an.power.map(a=>a.n).join("、")}，忌${d.an.trouble[0].n}，主要行運${d.an.transits.filter(t=>t.tb!=="Moon").slice(0,2).map(t=>t.tp+t.asp+t.np).join("、")||"無"}${d.an.zw?`，紫微流日${d.an.zw.daily.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("、")}`:""}`:""}`).join("；")}。先一段本週總結，然後逐日一句重點與建議。`,chart),{local:()=>localWeek(chart,days)}));
+  <div class="daylist">${days.map((d,i)=>`<div class="dayrow ${i===0?"now":""}"><div class="d"><b>${d.date.getDate()}</b>週${WD[d.date.getDay()]}</div><div style="min-width:0"><div>${(()=>{const lc=luckyColor(chart,d);return `<span class="cdot" style="background:${lc.best[1]}" title="幸運色 ${lc.best[0]}"></span>`})()}<b>${d.tg}</b> · ${esc(d.an?d.an.headline:TG[d.tg].head)}</div>${d.an?`<div class="wk-ar"><span>☀️ 旺 ${d.an.power.map(a=>a.n).slice(0,2).join("、")}</span><span>🌑 忌 ${(d.an.trouble[0]||{n:"—"}).n}</span>${d.an.zw?`<span>紫微流日${d.an.zw.daily.hua.find(x=>x.h==="忌")?.star||""}化忌入${d.an.zw.daily.hua.find(x=>x.h==="忌")?.pal||"—"}</span>`:""}</div>`:""}<div class="bar"><span style="width:${(d.total/5*100).toFixed(0)}%"></span></div></div><div class="mono mute" style="font-size:11.5px;text-align:right">${d.gz}<br>${d.moonLon!=null?"月"+SIGN_SHORT[Math.floor(d.moonLon/30)]:""}</div></div>`).join("")}</div>`;
+  el.appendChild(aiBlock("生成本週計劃",()=>prompt(`為使用者寫本週（${ymd(days[0].date)} 至 ${ymd(days[6].date)}）的運勢與行動計劃。每日資料：${days.map(d=>`${ymd(d.date)} ${d.gz}日 ${d.tg}，月亮${d.moonLon!=null?SIGNS[Math.floor(d.moonLon/30)]:""}座${d.an?`，綜合分${d.an.dayScore.toFixed(1)}/5，旺${d.an.power.map(a=>a.n).join("、")}，忌${(d.an.trouble[0]||{n:"—"}).n}，主要行運${d.an.transits.filter(t=>t.tb!=="Moon").slice(0,2).map(t=>t.tp+t.asp+t.np).join("、")||"無"}${d.an.zw?`，紫微流日${d.an.zw.daily.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("、")}`:""}`:""}`).join("；")}。先一段本週總結，然後逐日一句重點與建議。`,chart),{local:()=>localWeek(chart,days)}));
 }
 function fcMonth(el){
   const now=new Date();const L=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar();
@@ -2310,7 +2312,7 @@ function fcMonth(el){
   const lead=first.getDay();
   el.innerHTML=`<div class="stack"><span class="eyebrow">流月 · ${mgz}</span><h2>${tg}月：${esc(TG[tg].kw)}為主，${esc(TG[tgz].kw)}為輔</h2><p>${esc(TG[tg].life)}</p></div>
   <div class="stack"><span class="eyebrow">未來 30 日能量</span>
-  <div class="cal">${[..."日一二三四五六"].map(x=>`<div class="h">${x}</div>`).join("")}${"<div class=\"empty\"></div>".repeat(lead)}${cells.map((d,i)=>{const l=Math.round(d.total),k=d.lvl||(l>=4?"good":l===3?"mid":"low");return `<div data-l="${l}" data-k="${k}" class="${i===0?"today":""}" title="${ymd(d.date)} ${d.tg} · ${k==="good"?"順日":k==="mid"?"平穩":"宜靜"}${d.an?` · 旺${d.an.power[0].n} · 忌${d.an.trouble[0].n}`:""}"><b>${d.date.getDate()}</b><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div>`}).join("")}</div>
+  <div class="cal">${[..."日一二三四五六"].map(x=>`<div class="h">${x}</div>`).join("")}${"<div class=\"empty\"></div>".repeat(lead)}${cells.map((d,i)=>{const l=Math.round(d.total),k=d.lvl||(l>=4?"good":l===3?"mid":"low");return `<div data-l="${l}" data-k="${k}" class="${i===0?"today":""}" title="${ymd(d.date)} ${d.tg} · ${k==="good"?"順日":k==="mid"?"平穩":"宜靜"}${d.an?` · 旺${(d.an.power[0]||{n:"—"}).n} · 忌${(d.an.trouble[0]||{n:"—"}).n}`:""}"><b>${d.date.getDate()}</b><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div>`}).join("")}</div>
   <div class="legend"><span data-k="good"><i>☀︎</i>順日 · 適合主動</span><span data-k="mid"><i>◐</i>平穩 · 照常進行</span><span data-k="low"><i>☾</i>宜靜 · 休息低調</span></div></div>`;
   el.appendChild(aiBlock("生成一個月計劃",()=>prompt(`為使用者寫未來一個月（由 ${ymd(first)} 起）的運勢與行動計劃。流月干支 ${mgz}，對日主為${tg}（地支藏${tgz}）。最順的日子：${cells.filter(c=>c.total>=4).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}；宜靜的日子：${cells.filter(c=>c.total<2.6).slice(0,6).map(c=>ymd(c.date)).join("、")||"無特別"}。分「本月主題」「感情」「事業財運」「健康」「每週行動計劃（4週）」。`,chart),{local:()=>localMonth(chart)}));
 }
@@ -2324,8 +2326,8 @@ function fcYear(el){
   const age=now.getFullYear()-Number(profile.date.slice(0,4));
   el.innerHTML=`<div class="stack"><span class="eyebrow">流年 · ${ygz}年 · 虛歲 ${age+1}</span><h2>今年係你嘅「${tg}」年</h2><p>${esc(TG[tg].life)}</p><p>地支藏${tgz}：${esc(TG[tgz].life)}</p>${jup?`<p>${esc(jup)}</p>`:""}</div>${majorTransitsHTML(chart)}
   <div class="stack"><span class="eyebrow">未來 12 個月</span><div class="mlist">${months.map((m,i)=>{const a=m.an,k=m.lvl||"mid",yl=m.an&&m.an.bz?m.an.bz.layers.find(x=>x.label==="流月"):null,zl=a&&a.zw?a.zw.monthly:null,lu=zl&&zl.hua.find(x=>x.h==="祿"),ji=zl&&zl.hua.find(x=>x.h==="忌");
-    return `<div class="mrow ${i===0?"now":""}" data-k="${k}"><div class="mr-d"><span class="mono">${m.d.getFullYear()%100}/${m.d.getMonth()+1}</span><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div><div class="mr-x"><p><b>${m.g}月 · ${m.tg}</b>${yl?`<span class="chip">${yl.fav>0?"喜用":yl.fav<0?"忌神":"中性"}</span>`:""}</p>${a?`<p class="mr-a">☀️ 旺 ${a.power.slice(0,2).map(x=>x.n).join("、")}　🌑 忌 ${a.trouble[0].n}</p>`:""}${zl?`<p class="mr-z">紫微流月：${lu?`${lu.star}化祿入${lu.pal}`:""}${ji?`；${ji.star}化忌入${ji.pal}`:""}</p>`:""}</div></div>`}).join("")}</div></div>`;
-  el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${m.an.trouble[0].n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart),{local:()=>localYear(chart)}));
+    return `<div class="mrow ${i===0?"now":""}" data-k="${k}"><div class="mr-d"><span class="mono">${m.d.getFullYear()%100}/${m.d.getMonth()+1}</span><i>${k==="good"?"☀︎":k==="mid"?"◐":"☾"}</i></div><div class="mr-x"><p><b>${m.g}月 · ${m.tg}</b>${yl?`<span class="chip">${yl.fav>0?"喜用":yl.fav<0?"忌神":"中性"}</span>`:""}</p>${a?`<p class="mr-a">☀️ 旺 ${a.power.slice(0,2).map(x=>x.n).join("、")}　🌑 忌 ${(a.trouble[0]||{n:"—"}).n}</p>`:""}${zl?`<p class="mr-z">紫微流月：${lu?`${lu.star}化祿入${lu.pal}`:""}${ji?`；${ji.star}化忌入${ji.pal}`:""}</p>`:""}</div></div>`}).join("")}</div></div>`;
+  el.appendChild(aiBlock("生成一年計劃",()=>prompt(`為使用者寫未來一年的運勢與年度計劃。今年流年 ${ygz}，對日主為${tg}（地支藏${tgz}）。${jup} 未來12個月：${months.map(m=>`${m.d.getFullYear()}/${m.d.getMonth()+1} ${m.g}(${m.tg})${m.an?` 綜合${m.an.dayScore.toFixed(1)}/5 旺${m.an.power.map(a=>a.n).join("/")} 忌${(m.an.trouble[0]||{n:"—"}).n}${m.an.zw?` 紫微流月${m.an.zw.monthly.hua.map(x=>x.star+"化"+x.h+"入"+x.pal).join("/")}`:""}`:""}`).join("；")}。紫微格局：${(chart._pats||[]).map(p=>p.n).join("、")||"無"}。分「年度主題」「感情」「事業」「財運」「健康」「每季重點與行動計劃（Q1-Q4）」。`,chart),{local:()=>localYear(chart)}));
 }
 function fcDecade(el){
   const b=chart.bazi, now=new Date().getFullYear();const cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0];
@@ -2917,7 +2919,6 @@ function renderMe(el){
     <button type="button" id="setEdit"><span>出生資料</span><span class="mute">修改 →</span></button>
     ${chart.asc?`<button type="button" id="setHouse"><span>宮制</span><span class="mute">${HOUSE_SYS==="placidus"?"Placidus":"整宮制"} · 切換 →</span></button>`:""}
     <button type="button" id="setTheme"><span>外觀</span><span class="mute">${isLight()?"淺色":"深色"} · 切換 →</span></button>
-    ${profile.demo?"":`<button type="button" id="reset"><span>回到示範命盤</span><span class="mute">→</span></button>`}
     ${fbUser?`<div class="set-row"><span>帳戶<br><small class="mute">${esc(fbUser.email||fbUser.displayName||"")} · ${tierLabel()}</small></span><button class="btn small" type="button" id="logout">登出</button></div>`:""}
   </div>
   <details class="set-about"><summary>${BRAND.zh}包含啲咩</summary>
@@ -2930,7 +2931,6 @@ function renderMe(el){
   {const sh=$("#setHouse",body);if(sh)sh.onclick=()=>{HOUSE_SYS=HOUSE_SYS==="placidus"?"whole":"placidus";store("soluna.houses",HOUSE_SYS);chart._deep=null;toastMsg(HOUSE_SYS==="placidus"?"已轉用 Placidus 宮制":"已轉用整宮制");renderMe(el)}}
   $("#setTheme",body).onclick=()=>{const t=$("#themeBtn");if(t)t.click();renderMe(el)};
   const lo=$("#logout",body);if(lo)lo.onclick=()=>signOutAll();
-  const r=$("#reset",body);if(r)r.onclick=()=>{profile={...DEMO};store("xuanjing.profile.v1",profile);recompute();route()};
 }
 function avatarHTML(){const a=store("soluna.avatar");return a&&/^data:image\/(jpeg|png|webp);base64,/.test(a)?`<img class="av-img" src="${a}" alt="">`:esc((profile.demo?"示":(profile.name||"我")).slice(0,1))}
 function pickAvatar(done){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";

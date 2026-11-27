@@ -377,6 +377,12 @@ label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu
 .rune.rev .glyph{transform:rotate(180deg)}
 .dropzone{border:1px dashed var(--fg);padding:22px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
 .dropzone img{max-height:220px;width:auto;max-width:100%}
+.fp-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.fp-btns .btn{display:inline-flex;align-items:center;gap:8px}.fp-btns .ic{width:18px;height:18px}
+.fp-live{margin-top:14px}.fp-view{position:relative;overflow:hidden;border-radius:14px;background:#000;aspect-ratio:3/4;max-height:70vh;margin:0 auto}
+.fp-view video{width:100%;height:100%;object-fit:cover;display:block}.fp-view video.mirror{transform:scaleX(-1)}
+.fp-guide{position:absolute;inset:6% 10%;width:80%;height:88%;fill:none;stroke:rgba(255,255,255,.85);stroke-width:1.4;stroke-dasharray:5 6}.fp-guide .fg-f{stroke-width:.8;opacity:.5}
+.fp-tip{position:absolute;left:0;right:0;bottom:10px;margin:0;text-align:center;font-size:12.5px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.fp-ctl{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.fp-shut{width:64px;height:64px;border-radius:50%;border:3px solid var(--fg);background:transparent;padding:0;position:relative;cursor:pointer}.fp-shut::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--fg)}
 .fp-fig{position:relative;margin:14px 0 6px;line-height:0;background:#000;overflow:hidden}
 .fp-fig img{width:100%;height:auto;display:block}
 .fp-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 1.5px rgba(0,0,0,.75))}
@@ -890,13 +896,13 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 .ve>span{position:absolute;display:block;background-repeat:no-repeat;background-size:100% 100%}
 .ve-back{left:-14px;top:-14px;width:328px;height:228px;background-image:var(--env-back)}
 .ve-front{z-index:3;left:-14px;top:-14px;width:328px;height:228px;background-image:var(--env-front);pointer-events:none}
-.ve-card{z-index:2;left:16px;top:10px;width:268px;height:178px;background:var(--env-paper) 0 0/256px,#f4eddd;box-shadow:0 0 0 .5px rgba(90,70,40,.18),0 1px 3px rgba(0,0,0,.16);filter:brightness(.82);transition:transform 1s cubic-bezier(.3,.7,.2,1) .75s,filter .6s ease .5s}
+.ve-card{z-index:2;left:16px;top:10px;width:268px;height:178px;background:var(--env-paper) 0 0/256px,#f4eddd;box-shadow:0 0 0 .5px rgba(90,70,40,.18),0 1px 3px rgba(0,0,0,.16);filter:brightness(.82);will-change:transform;transition:transform .8s cubic-bezier(.3,.7,.2,1) .42s,filter .4s ease .3s}
 :root[data-theme="dark"] .ve-card{background-color:#e2e0dc;filter:brightness(.4)}
 .venv.opening .ve-card{filter:brightness(1)}
-.ve-flap{z-index:4;left:-14px;top:-126px;width:328px;height:126px;background-image:var(--env-flap);transform-origin:50% 100%;transform:rotateX(180deg);transition:transform .8s cubic-bezier(.5,0,.3,1),z-index 0s linear .4s}
-.ve-seal{z-index:5;left:118px;top:38px;width:64px;height:64px;background-image:var(--env-seal);transition:opacity .3s,transform .3s}
-.venv.opening{animation:envOut .5s ease 1.6s forwards}
-.venv.opening .ve{animation:none}
+.ve-flap{z-index:4;left:-14px;top:-126px;width:328px;height:126px;background-image:var(--env-flap);transform-origin:50% 100%;transform:rotateX(180deg);will-change:transform;backface-visibility:visible;transition:transform .55s cubic-bezier(.4,0,.25,1) .05s,z-index 0s linear .3s}
+.ve-seal{z-index:5;left:118px;top:38px;width:64px;height:64px;background-image:var(--env-seal);transition:opacity .18s,transform .18s}
+.venv.opening{animation:envOut .4s ease 1.15s forwards}
+.venv.opening .ve{animation-play-state:paused}
 .venv.opening .ve-seal{transform:scale(1.08) translateY(-4px);opacity:0}
 .venv.opening .ve-flap{transform:rotateX(0deg);z-index:1}
 .venv.opening .ve-card{transform:translateY(-122px)}
@@ -1766,7 +1772,7 @@ function orrerySVG(date){
   return s+"</svg>";
 }
 function dots(n){return `<span class="dots" aria-label="${n} / 5">${[1,2,3,4,5].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`}
-const ICON={sparkle:'<path d="M12 2.8c.8 5.1 2.1 6.4 7.2 7.2-5.1.8-6.4 2.1-7.2 7.2-.8-5.1-2.1-6.4-7.2-7.2C9.9 9.2 11.2 7.9 12 2.8Z"/>',moon:'<path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/>',orbit:'<circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(30 12 12)"/>',heart:'<path d="M20.8 5.8c-2.7-2.7-6.9-1.3-8.8 1.4-1.9-2.7-6.1-4.1-8.8-1.4-5.3 5.3 5.3 12.3 8.8 14.6 3.5-2.3 14.1-9.3 8.8-14.6Z"/>',arrow:'<path d="M5 12h14"/><path d="m14 7 5 5-5 5"/>',close:'<path d="m6 6 12 12"/><path d="m18 6-12 12"/>'};
+const ICON={camera:'<path d="M3.5 8.2c0-1 .8-1.7 1.7-1.7h2.4l1.6-2.2h5.6l1.6 2.2h2.4c1 0 1.7.8 1.7 1.7v9.6c0 1-.8 1.7-1.7 1.7H5.2c-1 0-1.7-.8-1.7-1.7Z"/><circle cx="12" cy="13" r="3.6"/>',image:'<rect x="3.5" y="4.5" width="17" height="15" rx="1.8"/><circle cx="9" cy="9.6" r="1.6"/><path d="m4 17.5 5-5 4 4 2.5-2.5 5 5"/>',sparkle:'<path d="M12 2.8c.8 5.1 2.1 6.4 7.2 7.2-5.1.8-6.4 2.1-7.2 7.2-.8-5.1-2.1-6.4-7.2-7.2C9.9 9.2 11.2 7.9 12 2.8Z"/>',moon:'<path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/>',orbit:'<circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(30 12 12)"/>',heart:'<path d="M20.8 5.8c-2.7-2.7-6.9-1.3-8.8 1.4-1.9-2.7-6.1-4.1-8.8-1.4-5.3 5.3 5.3 12.3 8.8 14.6 3.5-2.3 14.1-9.3 8.8-14.6Z"/>',arrow:'<path d="M5 12h14"/><path d="m14 7 5 5-5 5"/>',close:'<path d="m6 6 12 12"/><path d="m18 6-12 12"/>'};
 ICON.thumb='<path d="M7 11v9H4v-9h3Z"/><path d="M7 11l4-7c1.5 0 2.5 1 2.2 2.6L12.6 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>';ICON.thumbd='<path d="M7 13V4H4v9h3Z"/><path d="M7 13l4 7c1.5 0 2.5-1 2.2-2.6L12.6 14H19a2 2 0 0 0 2-2.3l-1.2-6A2 2 0 0 0 17.8 4H7"/>';
 const ic=n=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 /* real star positions (Yale Bright Star Catalogue via d3-celestial, BSD-3), gnomonic projection, north up / east left; mag ≤ 5.6 */
@@ -1953,24 +1959,26 @@ function openLetter(id){const a=lettersAll();const L=a.find(x=>x.id===id);if(!L)
 function openMood(after,day){
   const d=day||ymd(new Date());const sh=$("#sheet");const prev=moodOf(store(moodKey(d)))||{};let pick=prev.m||"";let q=prev.q||null;let note=prev.note||"";let seed=prev.s!=null?prev.s:Math.floor(Math.random()*6);
   const isToday=d===ymd(new Date());
+  const hasLetter=!!(prev.lid&&lettersAll().some(x=>x.id===prev.lid));
   const draw=()=>{sh.innerHTML=`<section class="panel" role="dialog" aria-modal="true" aria-labelledby="mt" style="text-align:center;align-items:stretch">
    <div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose" aria-label="關閉">${ic("close")}</button></div>
    <div class="modal-moon">${ic("moon")}</div><p class="kicker">A moment for you · 留一刻畀自己</p><h2 id="mt" style="font-size:28px">${isToday?"而家心入面係咩感覺？":`${esc(d)} 嗰日係咩感覺？`}</h2>
    <p class="mute">唔使解釋得清楚，揀最接近嗰個就得。</p>
    <div class="mood-grid">${MOODS.map(m=>`<button type="button" aria-pressed="${pick===m}" data-m="${m}"><span class="mg-e" aria-hidden="true">${moodIc(m)}</span>${m}</button>`).join("")}</div>
-   ${pick?`<p class="mute ml-hint">記錄之後，會有一封寫畀你嘅信寄到你嘅信箱。</p>`:""}
+   ${pick?`<p class="mute ml-hint">${hasLetter?"每日只有一封信。今日嘅信已經喺你嘅信箱，改心情唔會再寄新信。":"記錄之後，會有一封寫畀你嘅信寄到你嘅信箱。每日只有一封。"}</p>`:""}
    ${pick?`<label class="f" for="mnote" style="text-align:left">想寫低幾句？（可以留空）<textarea id="mnote" maxlength="600" rows="3" placeholder="今日發生咗咩、諗緊咩⋯">${esc(note)}</textarea></label>`:""}
    <button class="btn solid" type="button" id="msave" ${pick?"":"disabled"} style="border-radius:0;padding:14px">記住呢一刻</button>
    <small class="mute" style="font-size:11.5px">心情會記入你嘅日記月曆 · 亦會影響今日解讀嘅語氣</small></section>`;
    sh.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const n=$("#mnote");if(n)note=n.value;pick=b.dataset.m;q=pickQuote(pick);seed=Math.floor(Math.random()*6);draw()});
    $("#mclose").onclick=()=>{sh.hidden=true};
    $("#msave").onclick=()=>{const n=$("#mnote");if(n)note=n.value.trim();
+     if(hasLetter){store(moodKey(d),{...prev,m:pick,q,note,t:Date.now()});sh.hidden=true;toastMsg("心情已經更新。今日嘅信仍然喺你嘅信箱 ✦");after&&after();return}
      const L=composeLetter(pick,q,note);L.d=d;L.read=true;store(LETTER_K,[L,...lettersAll()].slice(0,400));
      store(moodKey(d),{m:pick,q,note,lid:L.id,t:Date.now()});
      sh.innerHTML=`<section class="panel ml-stage" role="dialog" aria-modal="true" aria-label="寫畀你嘅信"><div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose2" aria-label="關閉">${ic("close")}</button></div>
        <button type="button" class="env venv" id="envOpen" aria-label="打開你嘅信"><span class="ve"><span class="ve-back"></span><span class="ve-card"></span><span class="ve-front"></span><span class="ve-flap"></span><span class="ve-seal"></span></span><span class="kicker">A letter for you · 你有一封信</span><span class="mute env-tap">輕輕撳一下打開</span></button>
        <div class="ml-reveal" hidden>${letterHTML(L)}<button class="btn solid" type="button" id="mdone" style="border-radius:0;padding:14px;width:100%;margin-top:12px">收入信箱</button></div></section>`;
-     $("#envOpen",sh).onclick=()=>{const e=$("#envOpen",sh);e.classList.add("opening");Promise.all([new Promise(k=>setTimeout(k,RM?0:2100)),Promise.race([HAND_FONT,new Promise(k=>setTimeout(k,3000))])]).then(()=>{e.hidden=true;const r=$(".ml-reveal",sh);r.hidden=false;r.classList.add("show")})};
+     $("#envOpen",sh).onclick=()=>{const e=$("#envOpen",sh);e.classList.add("opening");Promise.all([new Promise(k=>setTimeout(k,RM?0:1450)),Promise.race([HAND_FONT,new Promise(k=>setTimeout(k,3000))])]).then(()=>{e.hidden=true;const r=$(".ml-reveal",sh);r.hidden=false;r.classList.add("show")})};
      bindLetter(sh);updInboxDot();const fin=()=>{sh.hidden=true;after&&after()};$("#mclose2").onclick=fin;$("#mdone").onclick=fin;sh.onclick=e=>{if(e.target===sh)fin()}};};
   draw();sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
 }
@@ -2733,7 +2741,7 @@ function ziweiGrid(z,o){
 const ORICON={"tarot": "<svg viewBox=\"0 0 40 40\"><rect x=\"9\" y=\"5\" width=\"16\" height=\"27\" rx=\"1\" transform=\"rotate(-10 17 18)\"/><rect x=\"15\" y=\"8\" width=\"16\" height=\"27\" rx=\"1\"/><path d=\"M23 15 L25 20 L23 25 L21 20Z\" class=\"f\"/></svg>", "shin": "<svg viewBox=\"0 0 40 40\"><path d=\"M20 6 V10 M13 24 C13 14 27 14 27 24 L29 28 H11 Z\"/><circle cx=\"20\" cy=\"31\" r=\"2\" class=\"f\"/><ellipse cx=\"9\" cy=\"35\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"31\" cy=\"34\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"25\" cy=\"37\" rx=\"1.6\" ry=\".8\" class=\"f\"/></svg>", "dream": "<svg viewBox=\"0 0 40 40\"><path d=\"M25 6 A14 14 0 1 0 34 26 A11 11 0 1 1 25 6Z\"/><path d=\"M30 9 L31 11 L33 12 L31 13 L30 15 L29 13 L27 12 L29 11Z\" class=\"f\"/></svg>", "face": "<svg viewBox=\"0 0 40 40\"><path d=\"M13 30 C9 22 10 8 20 8 C30 8 31 22 27 30 C24 34 16 34 13 30Z\"/><path d=\"M15 18 H18 M22 18 H25 M20 19 V24 H18 M17 28 C19 29 21 29 23 28\"/></svg>", "ifa": "<svg viewBox=\"0 0 40 40\"><path d=\"M8 8 C14 12 14 30 8 34 M32 8 C26 12 26 30 32 34 M8 8 Q20 2 32 8\"/><ellipse cx=\"12\" cy=\"14\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"12\" cy=\"24\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"14\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"24\" rx=\"2.4\" ry=\"3.4\"/></svg>", "runes": "<svg viewBox=\"0 0 40 40\"><path d=\"M10 34 V14 C10 6 30 6 30 14 V34 Z\"/><path d=\"M20 12 V30 M20 16 L26 12 M20 22 L26 18\"/></svg>"};
 let orTab=store("xuanjing.or")||"tarot";if(orTab==="dream")orTab="tarot";
 function renderOracle(el){
-  const tabs=[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom I Ching"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]].filter(([k])=>k!=="face"||IN_CLAUDE);
+  const tabs=[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom I Ching"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]];
   el.innerHTML=`<a class="back-link" href="#me">${ic("arrow")} 返回我的</a><div class="stack"><span class="eyebrow">占卜</span><h1>問一個問題<span class="lat">ask, then listen</span></h1></div>
   <div class="tiles" role="group" aria-label="占卜方法">${tabs.map(([k,n,e])=>`<button type="button" data-k="${k}" aria-pressed="${orTab===k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div><div id="orBody" class="stack" style="gap:22px"></div>`;
   el.querySelectorAll(".tiles button").forEach(b=>b.onclick=()=>{orTab=b.dataset.k;store("xuanjing.or",orTab);renderOracle(el)});
@@ -3140,11 +3148,32 @@ function fpReport(kind,R){
   const lines=kind==="palm"?`<ol class="fp-list lines">${R.lines.map(l=>`<li><b>${l.n}</b>${l.t}</li>`).join("")}</ol>`:"";
   return head+lines+`<ol class="fp-list">${R.pts.map(o=>`<li><b>${o.n}</b>${o.t}</li>`).join("")}</ol><p class="note">定位由相片自動量度；掌紋位置係按手形推算嘅標示，深淺同分叉要睇清晰相片。只供參考同娛樂，唔涉及健康判斷。</p>`;
 }
+let fpStream=null;
+function fpStop(){if(fpStream){fpStream.getTracks().forEach(t=>t.stop());fpStream=null}}
+async function fpCamera(el,kind,setFile){
+  const live=$("#fpLive",el),fb=()=>{const i=$("#fiCam",el);i.setAttribute("capture",kind==="face"?"user":"environment");i.click()};
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){fb();return}
+  let facing=kind==="face"?"user":"environment";
+  const start=async()=>{fpStop();fpStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1920},height:{ideal:1920}},audio:false});const v=$("video",live);v.srcObject=fpStream;v.classList.toggle("mirror",facing==="user");await v.play()};
+  live.innerHTML=`<div class="fp-view"><video playsinline muted autoplay></video><svg class="fp-guide" viewBox="0 0 300 400" aria-hidden="true">${kind==="face"?'<ellipse cx="150" cy="190" rx="92" ry="124"/><path d="M90 160h120M80 245h140" class="fg-f"/>':'<path d="M108 372c-30-46-46-92-40-146l-26-70c-6-18 18-26 26-10l28 58 0-118c0-20 26-20 26 0v106l8-130c2-20 28-20 28 0l-2 132 18-118c4-20 28-16 26 4l-14 124 26-80c6-18 30-10 24 8l-38 134c-10 40-24 76-44 106z"/>'}</svg>
+   <p class="fp-tip">${kind==="face"?"正面望鏡頭，將塊面放入框內，光線要充足":"攤開手掌、掌心向鏡頭，放入框內"}</p></div>
+   <div class="fp-ctl"><button class="btn small" type="button" data-x>取消</button><button class="fp-shut" type="button" aria-label="影相"></button><button class="btn small" type="button" data-flip>轉鏡頭</button></div>`;
+  live.hidden=false;
+  try{await start()}catch(e){live.hidden=true;live.innerHTML="";fb();return}
+  live.scrollIntoView({behavior:"smooth",block:"center"});
+  $("[data-x]",live).onclick=()=>{fpStop();live.hidden=true;live.innerHTML=""};
+  $("[data-flip]",live).onclick=async()=>{facing=facing==="user"?"environment":"user";try{await start()}catch(e){}};
+  $(".fp-shut",live).onclick=()=>{const v=$("video",live),c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;const g=c.getContext("2d");
+    if(facing==="user"){g.translate(c.width,0);g.scale(-1,1)}g.drawImage(v,0,0);fpStop();live.hidden=true;live.innerHTML="";
+    c.toBlob(b=>{if(b)setFile(new File([b],kind==="face"?"面相.jpg":"手相.jpg",{type:"image/jpeg"}))},"image/jpeg",.92)};
+}
 function orFace(el){
   let file=null,kind="face",R=null;
-  el.innerHTML=`<p>上載一張清晰正面照或手掌照，會喺相片上標出三停、十二宮或掌紋同掌丘位置，再逐點解說。</p>
+  el.innerHTML=`<p>即場影一張或者揀一張清晰嘅正面照或手掌照，會喺相片上標出三停、十二宮或掌紋同掌丘位置，再逐點解說。</p>
   <div class="seg" role="group" aria-label="類別"><button type="button" data-k="face" aria-pressed="true">面相 관상</button><button type="button" data-k="palm" aria-pressed="false">手相 수상</button></div>
-  <div class="dropzone" id="dz"><span class="mute" id="dzt">揀選或拖放相片（JPG / PNG）</span><input type="file" accept="image/*" id="fi" style="width:auto;border:0"></div>
+  <div class="dropzone" id="dz"><div class="fp-btns"><button class="btn solid" type="button" id="fpCam">${ic("camera")}影相</button><button class="btn" type="button" id="fpLib">${ic("image")}由相簿揀</button></div>
+  <span class="mute" id="dzt">${(navigator.maxTouchPoints||0)>0?"用相機即影，或者揀一張舊相":"影相、揀相，或者將相片拖入嚟"}</span><input type="file" accept="image/*" id="fi" hidden><input type="file" accept="image/*" id="fiCam" hidden></div>
+  <div id="fpLive" class="fp-live" hidden></div>
   <p class="note">相片只喺你部機度分析，唔會上載或儲存。</p><div id="fpOut"></div><div id="fAI"></div>`;
   const out=$("#fpOut",el);
   const run=async()=>{if(!file)return;R=null;out.innerHTML='<p class="thinking">正在定位五官同掌紋 ⋯</p>';
@@ -3156,7 +3185,9 @@ function orFace(el){
     }catch(e){console.warn(e);out.innerHTML='<p class="note">定位功能未能載入，請檢查網絡之後再試。</p>'}};
   el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{kind=b.dataset.k;el.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));run()});
   const setFile=f=>{if(!f||!f.type.startsWith("image/"))return;file=f;$("#dzt",el).textContent=f.name;run()};
-  $("#fi",el).onchange=e=>setFile(e.target.files[0]);
+  $("#fi",el).onchange=e=>setFile(e.target.files[0]);$("#fiCam",el).onchange=e=>setFile(e.target.files[0]);
+  $("#fpLib",el).onclick=()=>$("#fi",el).click();
+  $("#fpCam",el).onclick=()=>fpCamera(el,kind,setFile);
   const dz=$("#dz",el);dz.ondragover=e=>e.preventDefault();dz.ondrop=e=>{e.preventDefault();setFile(e.dataTransfer.files[0])};
   $("#fAI",el).appendChild(aiBlock("面相手相深入解讀",()=>{if(!file||!R){$("#dzt",el).textContent="請先揀選一張相片";return null}
     const nums=R.pts.map((o,i)=>`${i+1}. ${o.n}`).join("；"),meas=Object.entries(R.m).map(([k,v])=>`${k} ${v}`).join("，");

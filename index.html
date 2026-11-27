@@ -379,6 +379,7 @@ label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu
 .dropzone img{max-height:220px;width:auto;max-width:100%}
 .tcat{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}.tcat .mute{font-size:12.5px;margin-right:4px;width:100%}.tcat button{font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:none;color:var(--mute2);cursor:pointer}.tcat button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .tread{margin-top:22px;display:flex;flex-direction:column;gap:6px}.tread .md h4{font-size:17px;margin:18px 0 6px;font-weight:500}.tread .md p{line-height:1.85;margin:0 0 8px}
+#main,#sheet>.panel,.toast{zoom:var(--fz,1)}html[data-fz="lg"] #main,html[data-fz="xl"] #main{overflow-x:clip}
 .fp-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.fp-btns .btn{display:inline-flex;align-items:center;gap:8px}.fp-btns .ic{width:18px;height:18px}
 .fp-live{margin-top:14px}.fp-view{position:relative;overflow:hidden;border-radius:14px;background:#000;aspect-ratio:3/4;max-height:70vh;margin:0 auto}
 .fp-view video{width:100%;height:100%;object-fit:cover;display:block}.fp-view video.mirror{transform:scaleX(-1)}
@@ -1820,7 +1821,7 @@ function localProduct(p){const c=chart;const z=c.ziwei;const D=deepPoints(c);
 
 /* ============ Accounts (Firebase Auth + Firestore) — standalone app only ============ */
 const FIREBASE_CONFIG=window.SOLUNA_FIREBASE||null;
-const FB_V="11.0.2",SYNC_KEY=k=>k==="xuanjing.profile.v1"||k==="soluna.dreams"||k==="soluna.saved"||k==="soluna.letters"||k==="soluna.people"||k==="soluna.avatar"||k==="soluna.theme"||k.startsWith("soluna.mood.")||k.startsWith("soluna.useful.");
+const FB_V="11.0.2",SYNC_KEY=k=>k==="xuanjing.profile.v1"||k==="soluna.dreams"||k==="soluna.saved"||k==="soluna.letters"||k==="soluna.people"||k==="soluna.avatar"||k==="soluna.theme"||k==="soluna.fontsize"||k.startsWith("soluna.mood.")||k.startsWith("soluna.useful.");
 const encK=k=>k.replace(/\./g,"~"),decK=k=>k.replace(/~/g,".");
 let FB=null;
 async function fbLoad(){
@@ -1928,7 +1929,7 @@ async function authGate(start){
     try{localStorage.setItem("soluna.signedIn","1")}catch(e){}
     document.body.classList.remove("locked");$("#main").innerHTML=`<p class="note" style="margin-top:40px;text-align:center">同步緊你嘅命盤⋯</p>`;
     await cloudDown(u.uid);
-    profile=store("xuanjing.profile.v1")||{...DEMO};applyTheme(store("soluna.theme")||document.documentElement.dataset.theme||"dark");
+    profile=store("xuanjing.profile.v1")||{...DEMO};applyFont();applyTheme(store("soluna.theme")||document.documentElement.dataset.theme||"dark");
     if(!started){started=true;start()}else{recompute();route()}
     if(IS_NATIVE)setTimeout(nativeSync,1500);
     greetToast(profile.demo?(u.displayName||""):profile.name);
@@ -2795,9 +2796,6 @@ function renderToday(el){
     <p>${esc(lc.why.join("；"))}。今日穿戴或用${lc.best[0]}色小物（衫、手機殼、飾物）最旺你。</p>
   </section>
   <section class="daily">
-    <div><p class="kicker">Your natal sky · 出生星盤</p><h2 style="font-family:var(--f-display);font-weight:300;font-size:26px;margin-top:10px">你出生嗰刻嘅天空</h2></div>
-    <div class="wheel-box">${wheelSVG(chart,di.moonLon)}</div>
-    <p class="note">實心圓點係你出世嗰陣嘅行星位置，空心圓係今日月亮嘅位置。${chart.asc?"左邊嗰條橫線係你嘅上升點。":"未有出生時間，星盤用太陽做起點。"}</p>
     ${mp?`<div class="stack"><p class="kicker">Moon phase · 今晚月相</p><h3 style="font-family:var(--f-display);font-size:22px">${mp.name}（${Math.round(mp.deg)}°）</h3><p class="mute">${esc(mp.ritual)}</p></div>`:""}
     <div id="todayAI"></div>
   </section>
@@ -3816,6 +3814,7 @@ function renderMe(el){
     <button type="button" id="setEdit"><span>出生資料</span><span class="mute">修改 →</span></button>
     ${chart.asc?`<button type="button" id="setHouse"><span>宮制</span><span class="mute">${HOUSE_SYS==="placidus"?"Placidus":"整宮制"} · 切換 →</span></button>`:""}
     <button type="button" id="setTheme"><span>外觀</span><span class="mute">${isLight()?"淺色":"深色"} · 切換 →</span></button>
+    <button type="button" id="setFont"><span>字體大小</span><span class="mute">${FONT_SZ[fontKey()][0]} · 切換 →</span></button>
     ${CAP("LocalNotifications")?`<div class="set-row"><span>每日信件提醒<br><small class="mute">${notifCfg().on?`每日 ${notifCfg().t} 提你記低心情`:"已關閉"}</small></span><span class="row" style="gap:8px"><input type="time" id="ntTime" value="${notifCfg().t}" style="width:auto"${notifCfg().on?"":" hidden"}><button class="btn small" type="button" id="ntOn">${notifCfg().on?"關閉":"開啟"}</button></span></div>`:""}
     ${fbUser?`<div class="set-row"><span>帳戶<br><small class="mute">${esc(fbUser.email||fbUser.displayName||"")} · ${tierLabel()}</small></span><button class="btn small" type="button" id="logout">登出</button></div><div class="set-row"><span>刪除帳戶<br><small class="mute">會永久刪除你嘅命盤、紀錄同已購買內容</small></span><button class="btn small" type="button" id="delAcc">刪除</button></div>`:""}
   </div>
@@ -3828,6 +3827,7 @@ function renderMe(el){
   $("#setEdit",body).onclick=openEditor;
   {const sh=$("#setHouse",body);if(sh)sh.onclick=()=>{HOUSE_SYS=HOUSE_SYS==="placidus"?"whole":"placidus";store("soluna.houses",HOUSE_SYS);chart._deep=null;toastMsg(HOUSE_SYS==="placidus"?"已轉用 Placidus 宮制":"已轉用整宮制");renderMe(el)}}
   $("#setTheme",body).onclick=()=>{const t=$("#themeBtn");if(t)t.click();renderMe(el)};
+  $("#setFont",body).onclick=()=>{const ks=Object.keys(FONT_SZ),n=ks[(ks.indexOf(fontKey())+1)%ks.length];store("soluna.fontsize",n);applyFont();toastMsg("字體大小："+FONT_SZ[n][0]);renderMe(el)};
   {const nb=$("#ntOn",body),nt=$("#ntTime",body);if(nb)nb.onclick=async()=>{const c=notifCfg();
       if(!c.on){const r=await CAP("LocalNotifications").requestPermissions().catch(()=>({}));if(r.display!=="granted"){toastMsg("請喺 iPhone「設定 › 通知 › 曜 Soluna」開啟通知。");return}}
       store(NOTIF_K,{...notifCfg(),on:!c.on,asked:true});await notifSync();renderMe(el)};
@@ -3881,6 +3881,10 @@ function route(){
 const THEME_IC={light:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',dark:'<svg class="ic" viewBox="0 0 24 24"><path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/></svg>'};
 const isLight=()=>document.documentElement.dataset.theme==="light";
 function applyTheme(t,save){document.documentElement.dataset.theme=t;const b=$("#themeBtn");if(b){b.innerHTML=THEME_IC[t==="light"?"dark":"light"];b.setAttribute("aria-label",t==="light"?"轉深色":"轉淺色")}if(save){store("soluna.theme",t);drawSkyBg()}}
+const FONT_SZ={std:["標準",1],lg:["大",1.12],xl:["特大",1.25]};
+const fontKey=()=>{const k=store("soluna.fontsize");return FONT_SZ[k]?k:"std"};
+function applyFont(){document.documentElement.style.setProperty("--fz",FONT_SZ[fontKey()][1]);document.documentElement.dataset.fz=fontKey()}
+applyFont();
 function boot(){
   const n=new Date();$("#hdrDate").innerHTML=`${n.getFullYear()}.${String(n.getMonth()+1).padStart(2,"0")}.${String(n.getDate()).padStart(2,"0")}<br>${window.Solar?Solar.fromDate(n).getLunar().getDayInGanZhi()+"日":""}`;
   if(!window.Solar){$("#main").innerHTML=`<p class="note" style="margin-top:24px">曆法程式庫未能載入，請檢查網絡後重新整理。</p>`;return}

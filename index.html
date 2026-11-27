@@ -1611,6 +1611,27 @@ async function cloudDown(uid){
 }
 function setEnt(d){ENT.tier=d.member===true||d.member==="sol"?"sol":d.member==="luna"?"luna":"";ENT.member=!!ENT.tier;ENT.credits=+d.credits||0;ENT.owned=Array.isArray(d.owned)?d.owned:[]}
 function entChanged(){if(!PAY.waiting)return;PAY.waiting=false;toastMsg("已經解鎖，多謝你嘅支持 ✦");const sh=$("#sheet");if(PAY.reopen&&sh&&!sh.hidden){const f=PAY.reopen;PAY.reopen=null;f()}else if(typeof route==="function")route()}
+/* ---- iOS: home-screen widget + daily letter reminder ---- */
+function nativeSync(){if(!IS_NATIVE||!chart)return;try{widgetSync()}catch(e){console.warn(e)}notifSync();notifListen()}
+function widgetSync(){const W=CAP("SolunaWidget");if(!W)return;const days=[],n=new Date();
+  for(let i=0;i<7;i++){const d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i,12);const an=analyzeDay(chart,d);if(!an)continue;
+    days.push({d:ymd(d),lv:an.level,h:an.headline,s:+(+an.dayScore).toFixed(1),up:(an.power[0]||{}).n||"",care:((an.trouble[0]||an.pressure[0])||{}).n||""})}
+  W.setDays({days:JSON.stringify(days),name:profile.name||""}).catch(()=>{})}
+const NOTIF_K="soluna.notif",NOTIF_LINES=["今日過成點？留一刻畀自己，記低心情，收一封寫畀你嘅信。","今晚嘅星空準備好喇。話我知你今日嘅感覺，我寫封信畀你。","辛苦晒。花半分鐘記低今日，會有一封信等你。","唔使解釋得清楚，揀一個最接近嘅心情就得。今日嘅信喺度等你。","一日將盡，同自己講聲晚安之前，記低今日嘅感覺。","你今日嘅信仲未寄出，等你話佢知你嘅心情。","慢慢嚟。記低今日，明日會更明白自己。"];
+const notifCfg=()=>({on:false,t:"21:00",asked:false,...(store(NOTIF_K)||{})});
+async function notifFirstAsk(){const c=notifCfg();if(c.asked)return;store(NOTIF_K,{...c,asked:true});const LN=CAP("LocalNotifications");if(!LN)return;
+  try{const r=await LN.requestPermissions();if(r.display==="granted"){store(NOTIF_K,{...notifCfg(),on:true});toastMsg("每晚 9 點會提你記低心情，可以喺設定改時間 ✦")}}catch(e){}}
+async function notifSync(){const LN=CAP("LocalNotifications");if(!LN)return;const c=notifCfg();
+  try{const pend=await LN.getPending();const mine=(pend.notifications||[]).filter(x=>x.id>=700&&x.id<720).map(x=>({id:x.id}));if(mine.length)await LN.cancel({notifications:mine});
+    if(!c.on)return;const perm=await LN.checkPermissions();if(perm.display!=="granted")return;
+    const [hh,mm]=c.t.split(":").map(Number),now=new Date(),list=[];const o=moodOf(store(moodKey()));const doneToday=!!(o&&o.lid);
+    for(let i=0;i<14&&list.length<10;i++){const at=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i,hh,mm);if(at<=now||(i===0&&doneToday))continue;
+      list.push({id:700+list.length,title:"曜 · Soluna",body:NOTIF_LINES[(at.getDate()+at.getMonth())%NOTIF_LINES.length],schedule:{at,allowWhileIdle:true},extra:{open:"mood"}})}
+    if(list.length)await LN.schedule({notifications:list})}catch(e){console.warn(e)}}
+let notifListening=false;
+function notifListen(){const LN=CAP("LocalNotifications");if(!LN||notifListening)return;notifListening=true;
+  LN.addListener("localNotificationActionPerformed",()=>{location.hash="#today";setTimeout(()=>{if(typeof openMood==="function")openMood(()=>route())},500)})}
+if(IS_NATIVE)document.addEventListener("visibilitychange",()=>{if(!document.hidden&&fbUser)setTimeout(nativeSync,800)});
 function greetWord(){const h=new Date().getHours();return h<5?"夜深了":h<12?"早晨":h<18?"午安":"晚安"}
 function birthFields(){return `<p class="kicker" style="margin-top:6px">你嘅出生資料</p><p class="mute" style="font-size:12.5px;margin-top:-6px">出生時間越準，上升星座、時柱同紫微命盤就越準。資料只會用嚟幫你排盤。</p>
   <div class="grid2"><label class="f" for="bd">出生日期<input id="bd" type="date" required min="1901-01-01" max="${ymd(new Date())}"></label>
@@ -1669,6 +1690,7 @@ async function authGate(start){
     await cloudDown(u.uid);
     profile=store("xuanjing.profile.v1")||{...DEMO};applyTheme(store("soluna.theme")||document.documentElement.dataset.theme||"dark");
     if(!started){started=true;start()}else{recompute();route()}
+    if(IS_NATIVE)setTimeout(nativeSync,1500);
     greetToast(profile.demo?(u.displayName||""):profile.name);
     if(profile.demo)setTimeout(()=>{if(typeof openEditor==="function")openEditor()},900);
   });
@@ -1974,7 +1996,7 @@ function openMood(after,day){
    $("#msave").onclick=()=>{const n=$("#mnote");if(n)note=n.value.trim();
      if(hasLetter){store(moodKey(d),{...prev,m:pick,q,note,t:Date.now()});sh.hidden=true;toastMsg("心情已經更新。今日嘅信仍然喺你嘅信箱 ✦");after&&after();return}
      const L=composeLetter(pick,q,note);L.d=d;L.read=true;store(LETTER_K,[L,...lettersAll()].slice(0,400));
-     store(moodKey(d),{m:pick,q,note,lid:L.id,t:Date.now()});
+     store(moodKey(d),{m:pick,q,note,lid:L.id,t:Date.now()});if(IS_NATIVE)setTimeout(async()=>{await notifFirstAsk();notifSync()},2500);
      sh.innerHTML=`<section class="panel ml-stage" role="dialog" aria-modal="true" aria-label="寫畀你嘅信"><div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose2" aria-label="關閉">${ic("close")}</button></div>
        <button type="button" class="env venv" id="envOpen" aria-label="打開你嘅信"><span class="ve"><span class="ve-back"></span><span class="ve-card"></span><span class="ve-front"></span><span class="ve-flap"></span><span class="ve-seal"></span></span><span class="kicker">A letter for you · 你有一封信</span><span class="mute env-tap">輕輕撳一下打開</span></button>
        <div class="ml-reveal" hidden>${letterHTML(L)}<button class="btn solid" type="button" id="mdone" style="border-radius:0;padding:14px;width:100%;margin-top:12px">收入信箱</button></div></section>`;
@@ -3550,6 +3572,7 @@ function renderMe(el){
     <button type="button" id="setEdit"><span>出生資料</span><span class="mute">修改 →</span></button>
     ${chart.asc?`<button type="button" id="setHouse"><span>宮制</span><span class="mute">${HOUSE_SYS==="placidus"?"Placidus":"整宮制"} · 切換 →</span></button>`:""}
     <button type="button" id="setTheme"><span>外觀</span><span class="mute">${isLight()?"淺色":"深色"} · 切換 →</span></button>
+    ${CAP("LocalNotifications")?`<div class="set-row"><span>每日信件提醒<br><small class="mute">${notifCfg().on?`每日 ${notifCfg().t} 提你記低心情`:"已關閉"}</small></span><span class="row" style="gap:8px"><input type="time" id="ntTime" value="${notifCfg().t}" style="width:auto"${notifCfg().on?"":" hidden"}><button class="btn small" type="button" id="ntOn">${notifCfg().on?"關閉":"開啟"}</button></span></div>`:""}
     ${fbUser?`<div class="set-row"><span>帳戶<br><small class="mute">${esc(fbUser.email||fbUser.displayName||"")} · ${tierLabel()}</small></span><button class="btn small" type="button" id="logout">登出</button></div><div class="set-row"><span>刪除帳戶<br><small class="mute">會永久刪除你嘅命盤、紀錄同已購買內容</small></span><button class="btn small" type="button" id="delAcc">刪除</button></div>`:""}
   </div>
   <details class="set-about"><summary>${BRAND.zh}包含啲咩</summary>
@@ -3561,6 +3584,10 @@ function renderMe(el){
   $("#setEdit",body).onclick=openEditor;
   {const sh=$("#setHouse",body);if(sh)sh.onclick=()=>{HOUSE_SYS=HOUSE_SYS==="placidus"?"whole":"placidus";store("soluna.houses",HOUSE_SYS);chart._deep=null;toastMsg(HOUSE_SYS==="placidus"?"已轉用 Placidus 宮制":"已轉用整宮制");renderMe(el)}}
   $("#setTheme",body).onclick=()=>{const t=$("#themeBtn");if(t)t.click();renderMe(el)};
+  {const nb=$("#ntOn",body),nt=$("#ntTime",body);if(nb)nb.onclick=async()=>{const c=notifCfg();
+      if(!c.on){const r=await CAP("LocalNotifications").requestPermissions().catch(()=>({}));if(r.display!=="granted"){toastMsg("請喺 iPhone「設定 › 通知 › 曜 Soluna」開啟通知。");return}}
+      store(NOTIF_K,{...notifCfg(),on:!c.on,asked:true});await notifSync();renderMe(el)};
+    if(nt)nt.onchange=async()=>{if(!nt.value)return;store(NOTIF_K,{...notifCfg(),t:nt.value});await notifSync();toastMsg("之後每日 "+nt.value+" 提你 ✦");renderMe(el)}}
   const lo=$("#logout",body);if(lo)lo.onclick=()=>signOutAll();
   {const da=$("#delAcc",body);if(da)da.onclick=async()=>{if(!da.dataset.sure){da.dataset.sure=1;da.textContent="再撳一次確認";setTimeout(()=>{da.textContent="刪除";delete da.dataset.sure},5000);return}
     try{const {F,db,A}=FB,u=fbUser;await F.deleteDoc(F.doc(db,"users",u.uid));await A.deleteUser(u);Object.keys(localStorage).filter(SYNC_KEY).forEach(k=>localStorage.removeItem(k));toastMsg("你嘅帳戶已經刪除。")}

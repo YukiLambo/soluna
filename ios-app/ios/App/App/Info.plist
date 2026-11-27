@@ -81,6 +81,12 @@
 				<string>com.googleusercontent.apps.REPLACE_ME</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>soluna</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

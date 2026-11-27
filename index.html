@@ -753,14 +753,22 @@ footer.s-foot .brand{color:#b6b1a9;font-size:11.5px}
 .ml-hint{font-size:13px;margin:4px 0 0}
 #mclose .ic,#mclose2 .ic{width:16px;height:16px;flex:none}#mclose,#mclose2{min-width:36px;min-height:36px}
 .ml-stage{text-align:center;align-items:stretch}
-.env{display:flex;flex-direction:column;align-items:center;gap:10px;margin:8px 0 4px;animation:envIn 1s ease both}
-.env svg{width:64px;height:44px;fill:none;stroke:var(--gold,var(--fg));stroke-width:1.4}
-.ml-reveal{opacity:0;animation:mlFade 1.6s ease .9s forwards}
-.ml-reveal .mood-letter{animation:none}
-#mdone{opacity:0;animation:mlFade .8s ease 2.2s forwards}
+.env{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;margin:12vh auto 14vh;padding:24px 30px;background:none;border:0;color:var(--fg);cursor:pointer;font:inherit;opacity:0;animation:envIn 1.4s ease .2s forwards}
+.env svg{width:96px;height:72px;overflow:visible;animation:envFloat 3.2s ease-in-out 1.6s infinite}
+.env .env-body{fill:color-mix(in srgb,var(--fg) 3%,var(--bg));stroke:var(--gold,var(--fg));stroke-width:1.3}
+.env .env-v{fill:none;stroke:var(--gold,var(--fg));stroke-width:1.1;opacity:.5}
+.env .env-flap{fill:color-mix(in srgb,var(--fg) 5%,var(--bg));stroke:var(--gold,var(--fg));stroke-width:1.3;stroke-linejoin:round;transform-origin:40px 16px;transform-box:view-box;transition:transform .7s cubic-bezier(.5,0,.3,1)}
+.env .env-seal{fill:var(--gold,var(--fg));transition:opacity .3s}
+.env-glow{position:absolute;top:18px;left:50%;width:150px;height:110px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--gold,#c9c7f4) 28%,transparent),transparent);animation:envGlow 3.2s ease-in-out 1.6s infinite;pointer-events:none}
+.env-tap{font-size:12.5px;opacity:0;animation:mlFade 1s ease 1.6s forwards}
+.env.opening{opacity:1;animation:envOut .45s ease .55s forwards}.env.opening svg,.env.opening .env-tap{animation:none}.env.opening .env-tap{opacity:1}.env.opening .env-flap{transform:scaleY(-1)}.env.opening .env-seal{opacity:0}
+.ml-reveal.show{animation:mlFade 1.4s ease both}
+@keyframes envFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes envGlow{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes envOut{to{opacity:0;transform:translateY(-8px) scale(.96)}}
 @keyframes envIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes mlFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.env,.ml-reveal,#mdone{animation:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.env,.env svg,.env-glow,.env-tap,.ml-reveal.show{animation:none;opacity:1}.env .env-flap{transition:none}}
 .inbox-btn{position:relative}.inbox-btn svg{width:16px;height:16px}
 .inbox-btn.has-new::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--gold,#c9c7f4)}
 .inbox{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
@@ -1835,8 +1843,9 @@ function openMood(after,day){
      const L=composeLetter(pick,q,note);L.d=d;L.read=true;store(LETTER_K,[L,...lettersAll()].slice(0,400));
      store(moodKey(d),{m:pick,q,note,lid:L.id,t:Date.now()});
      sh.innerHTML=`<section class="panel ml-stage" role="dialog" aria-modal="true" aria-label="寫畀你嘅信"><div class="row" style="justify-content:flex-end"><button class="btn small" type="button" id="mclose2" aria-label="關閉">${ic("close")}</button></div>
-       <div class="env" aria-hidden="true"><svg viewBox="0 0 64 44"><rect x="2" y="2" width="60" height="40" rx="3"/><path d="M2 5l30 21L62 5"/></svg><p class="kicker">A letter for you · 你有一封信</p></div>
-       <div class="ml-reveal">${letterHTML(L)}</div><button class="btn solid" type="button" id="mdone" style="border-radius:0;padding:14px">收入信箱</button></section>`;
+       <button type="button" class="env" id="envOpen" aria-label="打開你嘅信"><span class="env-glow" aria-hidden="true"></span><svg viewBox="0 0 80 60" aria-hidden="true"><rect class="env-body" x="4" y="14" width="72" height="42" rx="3"/><path class="env-v" d="M4 17l36 24 36-24"/><path class="env-flap" d="M4 16 40 40 76 16Z"/><circle class="env-seal" cx="40" cy="36" r="4.5"/></svg><span class="kicker">A letter for you · 你有一封信</span><span class="mute env-tap">輕輕撳一下打開</span></button>
+       <div class="ml-reveal" hidden>${letterHTML(L)}<button class="btn solid" type="button" id="mdone" style="border-radius:0;padding:14px;width:100%;margin-top:12px">收入信箱</button></div></section>`;
+     $("#envOpen",sh).onclick=()=>{const e=$("#envOpen",sh);e.classList.add("opening");setTimeout(()=>{e.hidden=true;const r=$(".ml-reveal",sh);r.hidden=false;r.classList.add("show")},RM?0:900)};
      bindLetter(sh);updInboxDot();const fin=()=>{sh.hidden=true;after&&after()};$("#mclose2").onclick=fin;$("#mdone").onclick=fin;sh.onclick=e=>{if(e.target===sh)fin()}};};
   draw();sh.hidden=false;sh.onclick=e=>{if(e.target===sh)sh.hidden=true};
 }

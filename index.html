@@ -1364,9 +1364,24 @@ function localZiwei(c){
   const o=zwHoro(z);if(o){const pal=z.palaces[(o.lv.index+2)%12];L.push(`## 所選${o.label}`,`${o.desc}：${o.label}命宮落本命${pal.name}，呢段時間嘅重心係「${pm(pal.name)}」。${o.label}四化：${o.lv.mutagen.map((n,i)=>{const p=zwStarPal(z,n);return `${n}化${HUA[i]}${p?`入${p.name}`:""}`}).join("、")}。${(()=>{const ji=zwStarPal(z,o.lv.mutagen[3]);const lu=zwStarPal(z,o.lv.mutagen[0]);return `${lu?`機會喺${lu.name}（${pm(lu.name)}）`:""}${ji?`；要小心${ji.name}（${pm(ji.name)}）`:""}。`})()}`)}
   return L.join("\n\n");
 }
+
+/* ---- 古典星盤要點：元素、模式、半球、角宮、年齡主星 ---- */
+const AGE_RULER=[[4,"月亮","童年由月亮主管：情感同安全感係成長嘅基礎。"],[14,"水星","求學期由水星主管：好奇、學習同溝通係呢段時間嘅主題。"],[22,"金星","青春期由金星主管：愛、美感同人際關係最重要。"],[41,"太陽","壯年由太陽主管：建立身份、事業同自我實現。"],[56,"火星","中年由火星主管：行動力同魄力，為自己相信嘅嘢奮鬥。"],[68,"木星","成熟期由木星主管：智慧、分享同回饋。"],[200,"土星","晚年由土星主管：沉澱、總結同傳承。"]];
+const EL_PLANE=["火象：你靠熱情同靈感推動人生","土象：你重實際同感官，一步一步建立","風象：你用思想同溝通理解世界","水象：你用感受同直覺生活"];
+const MODE_T=["基本宮（開創）：你主動、有開拓精神，鍾意帶頭","固定宮（堅持）：你意志堅定、可靠，認定咗就唔輕易放棄","變動宮（適應）：你靈活、適應力強，識得隨機應變"];
+function classicalNotes(c){if(!c.planets)return "";const P=c.planets.filter(p=>["太陽","月亮","水星","金星","火星","木星","土星"].includes(p.n));
+  const el=[0,0,0,0],md=[0,0,0];P.forEach(p=>{const s=Math.floor(p.lon/30);el[s%4]++;md[s%3]++});
+  const eM=el.indexOf(Math.max(...el)),mM=md.indexOf(Math.max(...md));
+  const L=[`- **元素**：七顆古典行星之中最多落${["火","土","風","水"][eM]}象（${el[eM]} 顆）。${EL_PLANE[eM]}。${el.some(x=>x===0)?`缺${["火","土","風","水"][el.indexOf(0)]}象，呢方面要後天有意識咁培養。`:""}`,`- **模式**：${MODE_T[mM]}。`];
+  if(c.asc){const hs=P.map(p=>houseOf(c,p.lon));const up=hs.filter(h=>h>=7).length,ang=hs.filter(h=>[1,4,7,10].includes(h)).length,cad=hs.filter(h=>[3,6,9,12].includes(h)).length;
+    L.push(`- **半球**：${up>=4?"行星多喺地平線之上，你嘅成就比較早、比較公開，亦要承擔較多責任":"行星多喺地平線之下，你屬於大器晚成，成就多數喺成熟之後或者建立家庭之後出現"}。`);
+    L.push(`- **角宮**：${ang>=3?`有 ${ang} 顆行星落角宮（1、4、7、10 宮），你天生容易被睇見，做嘢有存在感`:cad>=4?"行星多落果宮（3、6、9、12 宮），你適合幕後、研究或者服務型嘅角色，靠專業贏得尊重":"行星分佈平均，人生各方面都有發展空間"}。`)}
+  const age=new Date().getFullYear()-c.utc.getFullYear();const ar=AGE_RULER.find(x=>age<x[0]);L.push(`- **人生階段**：你而家 ${age} 歲，${ar[2]}`);
+  return "## 星盤結構\n"+L.join("\n")}
 function localChart(c){
   const b=c.bazi;const L=[];
   if(c.planets)L.push(`## 星盤\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。月亮${c.planets[1].sign}座，情緒需要${SIGN_KW[c.planets[1].sign]}。${c.asc?`上升${c.asc.sign}座，畀人第一印象係${SIGN_KW[c.asc.sign]}。`:""}${c.mc?`天頂${c.mc.sign}座：${MC_T[c.mc.sign]}`:""}`);
+  {const cn=classicalNotes(c);if(cn)L.push(cn)}
   const D=deepPoints(c);if(D)L.push(`北交點${SIGNS[Math.floor(D.nn/30)]}座：${NODE_T[SIGNS[Math.floor(D.nn/30)]]}`);
   if(b)L.push(`## 八字\n日主${b.dm}（${EL[ganEl(b.dm)]}），${b.strong?"身強":"身弱"}，${b.geju}。${DM_DESC[b.dm]}\n\n${b.gejuD}`);
   if(c.ziwei)L.push(localZiwei(c));

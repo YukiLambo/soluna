@@ -1273,7 +1273,7 @@ function prompt(task,c){
 
 今天日期：${ymd(new Date())}
 ${c?"使用者資料：\n"+profileContext(c)+"\n":""}
-${/運勢|計劃|規劃|行運/.test(task)?EB_RULES+"\n":""}${/事業|天賦|天職|工作/.test(task)?CAREER_RULES+"\n":""}任務：${task}`;
+${/運勢|計劃|規劃|行運/.test(task)?EB_RULES+"\n":""}${/事業|天賦|天職|工作/.test(task)?CAREER_RULES+"\n":""}${/紫微|大限|流年|命盤/.test(task)?ZW_RULES+"\n":""}任務：${task}`;
 }
 const SAVED_K="soluna.saved";
 const savedAll=()=>store(SAVED_K)||[];
@@ -1634,7 +1634,7 @@ function localZiwei(c){
   const bri=M.q.majorStars.map(s=>s.brightness?`${s.name}${s.brightness}`:"").filter(Boolean);if(bri.length)L.push(`主星亮度：${bri.join("、")}。${M.q.majorStars.some(s=>["廟","旺"].includes(s.brightness))?"主星廟旺，本質嘅優點容易發揮。":M.q.majorStars.some(s=>s.brightness==="陷")?"主星落陷，要靠後天修養同吉曜扶持。":""}`);
   L.push(`## 身宮\n身宮落${S.name}，代表你中年之後嘅重心會轉向「${pm(S.name)}」。`);
   L.push("## 生年四化",HUA.map((h,i)=>{const p=zwStarPal(z,z.sihua[i]);return p?`- ${z.sihua[i]}化${h}入${p.name}：${HUA_MEAN[h]}落喺「${pm(p.name)}」。`:""}).filter(Boolean).join("\n"));
-  L.push("## 飛化重點",zwFlyNotes(z).map(([t,b])=>`- **${t}**：${b}`).join("\n"));
+  L.push("## 飛星重點",[...zwFlyBook(z),...zwFlyNotes(z).filter(([t])=>!["命宮化祿","命宮化忌","生年化忌"].includes(t))].map(([t,b])=>`- **${t}**：${b}`).join("\n"));
   const ps=c._pats||zwPatterns(z);if(ps.length)L.push("## 格局",ps.map(p=>`- **${p.n}**（${p.good>0?"吉":"要留意"}）：${p.d}`).join("\n"));
   L.push("## 各宮",["夫妻","財帛","官祿","福德","疾厄"].map(n=>`- ${zwPalText(z,n)}`).join("\n"));
   const o=zwHoro(z);if(o){const pal=z.palaces[(o.lv.index+2)%12];L.push(`## 所選${o.label}`,`${o.desc}：${o.label}命宮落本命${pal.name}，呢段時間嘅重心係「${pm(pal.name)}」。${o.label}四化：${o.lv.mutagen.map((n,i)=>{const p=zwStarPal(z,n);return `${n}化${HUA[i]}${p?`入${p.name}`:""}`}).join("、")}。${(()=>{const ji=zwStarPal(z,o.lv.mutagen[3]);const lu=zwStarPal(z,o.lv.mutagen[0]);return `${lu?`機會喺${lu.name}（${pm(lu.name)}）`:""}${ji?`；要小心${ji.name}（${pm(ji.name)}）`:""}。`})()}`)}
@@ -1780,7 +1780,7 @@ function fcxYear(c){const now=new Date(),L=[];const pf=profection(c,now);
   const z=c.ziwei;if(z){const yp=zwFlowPal(c,now,"yearly"),ap=zwFlowPal(c,now,"age");const parts=[];
     if(yp)parts.push(`流年命宮落${zwPalBrief(z,yp)}：今年人生焦點喺「${pm(yp.name)}」。${zwStarsKw(yp,z)?zwStarsKw(yp,z)+"。":""}三方會${zwSanfang(z,yp).map(p=>zwPalBrief(z,p)).join("、")}。`);
     if(ap)parts.push(`小限落${zwPalBrief(z,ap)}：今年做事嘅方式同際遇，帶有「${pm(ap.name)}」嘅色彩。`);
-    if(parts.length)L.push(`## 紫微流年命宮同小限\n${parts.join("\n\n")}`)}
+    if(parts.length)L.push(`## 紫微流年命宮同小限\n${parts.join("\n\n")}`);{const f=zwFlowFly(z,yp,"流年");if(f.length)L.push("## 流年飛星相應\n"+f.map(x=>"- "+x).join("\n"))}}
   const L0=Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()).getLunar(),f=baziFlows(c,now),cl=bzClash(c,L0.getYearInGanZhiByLiChun(),"流年");
   const fl=[];if(f){if(f.taisui)fl.push("今年犯太歲（流年地支同你年支相沖或者相同），宜低調、多留意健康同人際");if(f.yearTKDC)fl.push("流年同日柱天剋地沖，大決定要三思");if(f.suiYun)fl.push("歲運並臨（流年同大運干支一樣），今年嘅事份量特別重")}
   if(cl||fl.length)L.push(`## 八字刑沖合\n${cl}${fl.length?fl.join("；")+"。":""}`);
@@ -1788,6 +1788,7 @@ function fcxYear(c){const now=new Date(),L=[];const pf=profection(c,now);
 function fcxDecade(c){const b=c.bazi,now=new Date().getFullYear(),cur=b.yun.find(x=>now>=x.startYear&&now<=x.endYear)||b.yun[0],L=[];
   const z=c.ziwei;if(z){const age=now-z.by+1,dp=z.palaces.find(p=>p&&age>=p.dx[0]&&age<=p.dx[1]);
     if(dp)L.push(`## 紫微大限命宮\n${z.by+dp.dx[0]-1} 至 ${z.by+dp.dx[1]-1} 年（${dp.dx[0]}–${dp.dx[1]} 歲），大限命宮行到${zwPalBrief(z,dp)}，呢十年嘅人生主軸係「${pm(dp.name)}」。${zwStarsKw(dp,z)?`坐守星曜：${zwStarsKw(dp,z)}。`:""}\n\n三方四正會${zwSanfang(z,dp).map(p=>zwPalBrief(z,p)).join("、")}，即係呢十年${zwSanfang(z,dp).map(p=>pm(p.name)).slice(0,2).join("同")}都會牽動住你。${(()=>{const nx=z.palaces.find(p=>p&&p.dx[0]===dp.dx[1]+1);return nx&&dp.dx[1]-age<5?`\n\n${z.by+nx.dx[0]-1} 年起轉入下一個大限，命宮行到${zwPalBrief(z,nx)}，主軸會轉去「${pm(nx.name)}」。${zwStarsKw(nx,z)?zwStarsKw(nx,z)+"。":""}`:""})()}`)}
+  if(z){const age=now-z.by+1,dp=z.palaces.find(p=>p&&age>=p.dx[0]&&age<=p.dx[1]);const f=zwFlowFly(z,dp,"大限");if(f.length)L.push("## 大限飛星相應\n"+f.map(x=>"- "+x).join("\n"))}
   const y0=now,y1=now+9;
   const ev=cycleEvents(c,y0,y1);if(ev.length)L.push(`## 西洋人生週期\n${ev.map(e=>`- **${e.y} 年 · ${e.n}**：${e.t}`).join("\n")}`);
   const pmv=progMoonPath(c,y0,y1);if(pmv.length)L.push(`## 推運月亮\n按「一日當一年」推運，推運月亮大約兩年半換一個星座，代表情感焦點嘅轉移：\n${pmv.map(x=>`- **${x.y} 年起**：${x.sg}座${x.h?`（第${x.h}宮，${HOUSE_THEME[x.h-1]}）`:""}，${SIGN_KW[x.sg].split("、").slice(0,2).join("、")}`).join("\n")}`);
@@ -1857,6 +1858,7 @@ function ebertinMonth(c,days){days=days||30;if(!c.planets||!window.Astronomy)ret
   if(par.length)L.push(`- **赤緯平行**：${par.join("；")}。平行嘅作用好似合相，會加強呢段時間嘅感受。`);
   return L.join("\n")}
 const EB_RULES="宇宙生物學原則：先睇本命盤，行運只係觸發本身已有嘅潛能；行運影響集中喺行運星推移約 1 度嘅期間；重視上升同天頂呢兩個個人點、中點同 45 度倍數嘅角度、赤緯平行；評估要分正面同負面傾向，唔好單憑相位名斷吉凶。";
+const ZW_RULES="紫微解盤原則：先明格局，次看眾星；先睇原局，再睇大限流年。飛星：生年祿係天生福份，生年忌（同被沖嘅對宮）係一生課題；命宮宮干四化代表個性（命祿＝主動善意，命忌＝最執著）；某宮忌入對宮即沖；祿轉忌、三宮交祿；任何宮忌入遷移沖命對我不利，忌入父母主冇面子或文書麻煩；自化代表氣化唔出去。大限流年宮干飛化重現本命祿忌就係相應，大限力量大過流年；吉星匯聚再被吉化沖起主吉，煞多再被化忌沖起主凶。";
 const CAREER_RULES="事業分析公式：先睇天頂同第十宮，再睇第十宮主落邊宮（追求目標嘅資源），然後睇十宮內行星（特別天賦）同佢哋主管嘅宮（額外資產）；成功亦包括第二宮（錢）同第六宮（日常工作）；用元素同相位微調，第十宮主同十宮內行星有和諧相位代表較順，六合要配合主動努力。";
 
 const fcxInsert=(txt,before,extra)=>{const i=txt.indexOf("\n\n## "+before);const add=extra.filter(Boolean).join("\n\n");if(!add)return txt;return i<0?txt+"\n\n"+add:txt.slice(0,i)+"\n\n"+add+txt.slice(i)};
@@ -2519,6 +2521,51 @@ function zwFlyNotes(z){
   if(!M.stars.length){const o=z.palaces[(z.ming+6)%12];out.push(["命無正曜",`命宮冇主星，借對宮${o.name}嘅${o.stars.join("、")||"星曜"}嚟睇：你嘅性格受環境影響大，可塑性強。`])}
   return out;
 }
+
+/* ===== 紫微飛星：生年祿忌、命祿忌、祿轉忌、三宮交祿、忌沖、相應（大限／流年） ===== */
+const ZW_SLU={命宮:"天生有福，聰明好相處，人緣好，容易自立，一生衣食無憂。",兄弟:"兄弟朋友係你嘅福；手頭現金同儲蓄運好，身體底子唔錯。",夫妻:"異性緣好，容易因婚姻得福；不過緣份太好，亦要守住界線。",子女:"同小朋友有緣，合作同外出運好，親密生活和諧。",財帛:"賺錢順，財來得自然，唔使太辛苦都有收入。",疾厄:"身體底子好，心態樂觀，工作環境舒服。",遷移:"出外得人幫，外面嘅世界對你好，適合向外發展。",交友:"朋友同人脈係你嘅福，周圍都遇到對你好嘅人。",官祿:"工作運順，容易遇到好機會，做嘢有成就感。",田宅:"家庭溫暖，有樓有庫，錢容易守得住。",福德:"天生識享受，心境開朗，精神生活豐富，晚運好。",父母:"得父母長輩疼愛，讀書、考試、文書同上司運都好。"};
+const ZW_SJI={命宮:"對自己要求高、容易執著，一生勞心；要學識放過自己。",兄弟:"容易為兄弟朋友或者現金流操心，借錢俾人要小心收唔返。",夫妻:"對感情好上心，亦容易受感情所困，婚姻要用心經營。",子女:"為子女或者合作關係付出多，外出要小心。",財帛:"賺錢比較辛苦、對錢執著，容易財來財去。",疾厄:"身體係要長期照顧嘅地方，壓力容易積喺身上。",遷移:"出外多波折，喺外面容易吃虧，宜穩紮穩打。",交友:"朋友人際容易有是非，付出多回報少，要揀朋友。",官祿:"對工作執著，事業路上多變動，要靠堅持。",田宅:"家庭或者置業有牽掛，守財要用心。",福德:"思慮多、難放鬆，要特別照顧精神健康。",父母:"同長輩緣份較薄或者有隔膜，文書手續要小心。"};
+const ZW_MLU={命宮:"樂觀通達、好相處，但情緒同承諾都容易變。",兄弟:"收入同工作容易提升，對兄弟朋友好。",夫妻:"對伴侶溫柔包容，亦容易多情。",子女:"鍾意小朋友，喜歡出外同同人合作。",財帛:"同錢有緣，唔使太拼都賺得唔錯。",疾厄:"重視舒服嘅工作環境，識照顧自己身體。",遷移:"喜歡出外、向外發展，喺外人面前人緣好。",交友:"對朋友體貼隨緣，所以人緣好。",官祿:"鍾意自己份工，做事投入有熱誠。",田宅:"顧家，鍾意屋企，有置業嘅心。",福德:"識享受，興趣多，心境平和。",父母:"孝順、尊重長輩，鍾意讀書學習。"};
+const ZW_MJI={命宮:"情緒起伏大，有時會半途而廢，但對得失睇得開，好大方。",兄弟:"好重兄弟朋友、肯為佢哋付出，亦好在乎儲蓄。",夫妻:"對伴侶痴情、願意付出，但亦容易因感情受傷。",子女:"好在乎子女，容易為佢哋操心；成日出外奔波。",財帛:"對錢好執著、努力賺錢，但要防為錢煩惱。",疾厄:"好拼搏，容易忽略身體，壓力大。",遷移:"鍾意往外跑，但喺外面容易吃虧。",交友:"好重朋友，但容易被朋友拖累。",官祿:"工作狂，對事業好執著。",田宅:"好顧家，為屋企付出，守財意識強。",福德:"思慮多，好在乎自己感受，容易鑽牛角尖。",父母:"孝順，亦好在乎面子同名聲。"};
+const zwPn=p=>p.name.replace("宮","")==="命"?"命宮":p.name.replace("宮","");
+const zwPal=(z,n)=>z.palaces.find(p=>p&&zwPn(p)===n);
+function zwDir(z){const b=zwPal(z,"兄弟");return b&&((b.b-z.ming+12)%12)===11?-1:1}
+function zwFlyTo(z,from,k){const st=SIHUA_T[from.stem][k];return {star:st,to:zwStarPal(z,st)}}
+// 以某宮做命宮重排（大限、流年）
+function zwRel(z,base,k){return z.palaces[((base.b+zwDir(z)*k)%12+12)%12]}
+function zwFlyBook(z){const out=[];const M=z.palaces[z.ming];
+  const sl=zwStarPal(z,z.sihua[0]),sj=zwStarPal(z,z.sihua[3]);
+  if(sl)out.push(["生年祿",`${z.sihua[0]}化祿喺${sl.name}：${ZW_SLU[zwPn(sl)]||""}呢份福氣唔使求都會嚟。`]);
+  if(sj){const op=z.palaces[(sj.b+6)%12];out.push(["生年忌",`${z.sihua[3]}化忌喺${sj.name}，沖對宮${op.name}：${ZW_SJI[zwPn(sj)]||""}「${pm(op.name)}」方面亦容易付出多、收返少。`])}
+  const ml=zwFlyTo(z,M,0),mj=zwFlyTo(z,M,3);
+  if(ml.to)out.push(["命祿（你嘅個性）",`命宮${M.stem}干化祿（${ml.star}）入${ml.to.name}：${ZW_MLU[zwPn(ml.to)]||""}個性可以後天調整，呢個係你先主動釋出嘅善意。`]);
+  if(mj.to)out.push(["命忌（你最執著嘅事）",`命宮化忌（${mj.star}）入${mj.to.name}：${ZW_MJI[zwPn(mj.to)]||""}`]);
+  if(sl&&ml.to&&sl.b===ml.to.b)out.push(["雙祿",`生年祿同命祿都落${sl.name}：「${pm(sl.name)}」雙倍得益，係你最順嘅範疇。`]);
+  if(sj&&mj.to&&sj.b===mj.to.b)out.push(["雙忌",`生年忌同命忌都落${sj.name}：「${pm(sj.name)}」雙倍牽掛，越想抓緊越辛苦，要學識放鬆。`]);
+  // 祿轉忌：生年祿所在宮嘅宮干化忌飛去邊
+  if(sl){const t=zwFlyTo(z,sl,3);if(t.to&&t.to!==sl){out.push(["祿轉忌",`生年祿嘅${sl.name}再化忌入${t.to.name}：「${pm(sl.name)}」帶嚟嘅福氣，最後會用喺、或者流向「${pm(t.to.name)}」。`]);
+    // 三宮交祿：另一宮化祿嘅星，同祿轉忌嘅星係同一粒
+    const r=z.palaces.find(p=>p&&p!==sl&&SIHUA_T[p.stem][0]===t.star);if(r)out.push(["三宮交祿",`${sl.name}（生年祿）轉忌，同${r.name}化祿嘅都係${t.star}，交會喺${t.to.name}：「${pm(sl.name)}」同「${pm(r.name)}」好有緣，一齊成就「${pm(t.to.name)}」。呢個係命盤入面好難得嘅福分。`])}}
+  if(mj.to&&mj.to!==M){const t=zwFlyTo(z,mj.to,3);if(t.to&&t.to!==mj.to)out.push(["忌轉忌",`命忌入${mj.to.name}，再轉忌入${t.to.name}：你對「${pm(mj.to.name)}」嘅執著，會連帶牽動「${pm(t.to.name)}」。`])}
+  // 忌入遷移沖命、忌入父母
+  const qy=zwPal(z,"遷移"),fm=zwPal(z,"父母");const toQ=[],toF=[];
+  z.palaces.forEach(p=>{if(!p)return;const t=zwFlyTo(z,p,3).to;if(!t||t===p)return;if(t===qy&&p!==qy)toQ.push(p.name);if(t===fm&&p!==fm)toF.push(p.name)});
+  if(toQ.length)out.push(["忌沖命宮",`${toQ.join("、")}化忌入遷移，沖你命宮：同呢${toQ.length>1?"幾":"一"}方面有關嘅事，容易對你不利，處理時要格外謹慎。`]);
+  if(toF.length)out.push(["忌入父母",`${toF.join("、")}化忌入父母宮：呢方面嘅事容易令你冇面子，或者有文書、手續上嘅麻煩。`]);
+  // 羊陀夾忌
+  if(sj){const a=z.palaces[(sj.b+1)%12],b=z.palaces[(sj.b+11)%12],has=(p,s)=>p&&p.minor.includes(s);if((has(a,"擎羊")&&has(b,"陀羅"))||(has(a,"陀羅")&&has(b,"擎羊")))out.push(["羊陀夾忌",`生年忌喺${sj.name}，兩邊被擎羊、陀羅夾住：呢方面嘅困難比較難化解，要預早準備、慢慢處理。`])}
+  return out}
+// 相應：大限／流年宮干飛化落入本命，同本命對照
+function zwFlowFly(z,base,label){if(!base)return [];const L=[];const M=base,names=["命宮","兄弟","夫妻","子女","財帛","疾厄","遷移","交友","官祿","田宅","福德","父母"];
+  const lu=zwFlyTo(z,M,0),ji=zwFlyTo(z,M,3);
+  if(lu.to)L.push(`${label}命宮（本命${M.name}）${M.stem}干化祿入本命${lu.to.name}：呢段時間「${pm(lu.to.name)}」最有緣份同收穫。`);
+  if(ji.to){const op=z.palaces[(ji.to.b+6)%12];L.push(`${label}命宮化忌入本命${ji.to.name}，沖${op.name}：心思會集中喺「${pm(ji.to.name)}」，「${pm(op.name)}」容易受影響。`)}
+  for(const k of [4,8,2]){const P=zwRel(z,M,k),nm=names[k],nat=zwPal(z,nm),j=zwFlyTo(z,P,3).to,l=zwFlyTo(z,P,0).to;
+    if(j&&nat&&(j.b+6)%12===nat.b)L.push(`${label}${nm}（本命${P.name}）化忌沖本命${nat.name}：呢段時間「${pm(nm)}」方面容易有損失或者波折${P!==nat?`，而且同「${pm(P.name)}」有關`:""}。`);
+    else if(l&&nat&&l.b===nat.b)L.push(`${label}${nm}（本命${P.name}）化祿入本命${nat.name}：「${pm(nm)}」方面有好嘅發展。`)}
+  const sj=zwStarPal(z,z.sihua[3]);if(sj&&M.b===sj.b)L.push(`${label}命宮正好踏正生年忌嘅${sj.name}：本命嘅課題會喺呢段時間浮面，力量特別大。`);
+  return L}
+
 /* 紫微星曜亮度係數 */
 const ZW_BRIGHT={廟:1.25,旺:1.15,得:1.05,利:1,平:.9,不:.85,陷:.75};
 function zwBright(z,star){if(!z)return 1;for(const p of z.palaces){if(!p)continue;const s=[...p.q.majorStars,...p.q.minorStars].find(t=>t.name===star);if(s)return ZW_BRIGHT[s.brightness]||1}return 1}
@@ -3841,15 +3888,17 @@ function electScan(purpK,days,lat,lon,tz,natal){const A=window.Astronomy,P=EL_PU
   const out=[];
   for(let hI=0;hI<days*24;hI++){const d=hI/24,t=+t0+hI*36e5,why=[],bad=[];let sc=0;
     const ml=tbLon(T,"月亮",d),sl=tbLon(T,"太陽",d),ms=hzSg(ml),elong=hzN(ml-sl),mspd=tbSpd(T,"月亮",d);
-    const nIng=ing.find(x=>x>d)||days+3,nxt=mev.find(e=>e.d>d&&e.d<nIng);
+    const nIng=ing.find(x=>x>d)||days+3;let nxt=null,missed=null;for(const e of mev){if(e.d<=d||e.d>=nIng)continue;if(hzSg(tbLon(T,e.q,e.d))!==hzSg(tbLon(T,e.q,d))){if(!missed)missed=e;continue}nxt=e;break}
+    if(missed&&(!nxt||missed.d<nxt.d)){sc-=2;bad.push(`錯失月亮相位（${missed.q}先換星座）`)}
     if(!nxt){sc-=12;bad.push("月亮空亡")}
     else{const good=["木星","金星"].includes(nxt.q)&&nxt.A!==90&&nxt.A!==180,harsh=["火星","土星"].includes(nxt.q)&&[0,90,180].includes(nxt.A);
-      if(good){sc+=4;why.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}else if(harsh){sc-=4;bad.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}
+      if(good){sc+=4;why.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}else if(harsh){sc-=4;bad.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}else if(nxt.A===90||nxt.A===180){sc-=2;bad.push(`月亮${HZ_ASP[nxt.A]}${nxt.q}`)}
       else if(nxt.q===P.pl&&nxt.A!==90&&nxt.A!==180){sc+=2;why.push(`月亮去接觸${P.pl}`)}}
     const ecl=ev.ecl.find(e=>Math.abs(e.t-t)<3*864e5);if(ecl){sc-=8;bad.push(`近${ecl.k}`)}
-    if(elong<12||elong>348){sc-=6;bad.push(elong<12?"新月前後、月亮焦傷":"月亮就快焦傷")}else if(Math.abs(elong-180)<10){sc-=3;bad.push("滿月前後")}
+    if(elong<8||elong>352){sc-=6;bad.push(elong<8?"新月前後、月亮焦傷":"月亮就快焦傷")}else if(elong<16||elong>344){sc-=3;bad.push("月亮喺日光下")}else if(elong>315){sc-=3;bad.push("消散月（月相週期尾段）")}else if(Math.abs(elong-180)<10){sc-=3;bad.push("滿月前後")}
     if(ml>=195&&ml<=225){sc-=4;bad.push("月亮喺燃燒之路")}
-    if(mspd<12.2){sc-=2;bad.push("月亮行得慢")}
+    if(mspd<12){sc-=2;bad.push("月亮行得慢")}
+    if(["火星","土星"].some(m=>hzSg(tbLon(T,m,d))===ms)){sc-=2;bad.push("月亮同凶星同一星座")}
     const wax=elong<180;if(P.moon==="wax"?wax:!wax){sc+=3;why.push(wax?"月亮漸盈（利開始同成長）":"月亮漸虧（利結束同放低）")}else{sc-=1}
     if(P.mod>=0){if(ms%3===P.mod){sc+=2;why.push(`月亮喺${hzMod(ms)}星座（${P.mod===1?"利長遠":"利快見效"}）`)}else if(ms%3===2){sc+=0}}
     if(P.merc&&mercR(d)){sc-=4;bad.push("水星逆行")}
@@ -3858,12 +3907,15 @@ function electScan(purpK,days,lat,lon,tz,natal){const A=window.Astronomy,P=EL_PU
     const ang=[cu[0],cu[3],cu[6],cu[9]];
     for(const m of ["火星","土星","天王星"]){const l=tbLon(T,m,d);const hit=ang.findIndex(a=>Math.abs(angDiff(l,a))<=5);if(hit>=0){sc-=5;bad.push(`${m}喺${["上升","天底","下降","天頂"][hit]}附近`)}else if(m!=="天王星"&&hzHouse(cu,l)===1){sc-=3;bad.push(`${m}喺第一宮`)}}
     for(const b of ["木星","金星"]){const l=tbLon(T,b,d),h=hzHouse(cu,l);if(h===1||h===10||Math.abs(angDiff(l,cu[0]))<=5||Math.abs(angDiff(l,cu[9]))<=5){sc+=3;why.push(`${b}喺${h===10?"第十宮":"第一宮"}`)}}
+    if(hzHouse(cu,ml)===9&&(ms===2||ms===11)){sc-=2;bad.push("月亮喺第九宮雙體星座")}
+    {const y=new Date(t).getUTCFullYear()-2000;for(const [nm,l0,g] of [["角宿一",203.83,1],["軒轅十四",149.83,1],["大陵五",56.17,-1]]){const L=l0+.01397*y;const hit=[cu[0],cu[9]].some(a=>Math.abs(angDiff(a,L))<=1.5);if(hit){if(g>0){sc+=3;why.push(`${nm}喺軸點`)}else{sc-=5;bad.push(`${nm}喺軸點`)}}}}
     const day=hzN(sl-cu[0])>=180;
+    if(hzHouse(cu,tbLon(T,SIGN_LORD[hzSg(cu[0])],d))===P.h&&P.h!==1){sc+=2;why.push("上升主星落喺件事嘅宮位")}
     const asl=SIGN_LORD[hzSg(cu[0])],ae=hzEss(asl,tbLon(T,asl,d),day);if(ae.sc>=4){sc+=2;why.push(`上升主${asl}有力`)}else if(ae.sc<0){sc-=2;bad.push(`上升主${asl}受制`)}
     if(asl!=="太陽"&&asl!=="月亮"&&tbSpd(T,asl,d)<0){sc-=2;bad.push(`上升主${asl}逆行`)}
     const hl=SIGN_LORD[hzSg(cu[P.h-1])];if(P.h!==1){const he=hzEss(hl,tbLon(T,hl,d),day);if(he.sc>=4){sc+=2;why.push(`第${P.h}宮主${hl}有力`)}else if(he.sc<0){sc-=1}}
     const pe=hzEss(P.pl,tbLon(T,P.pl,d),day);if(pe.sc>=4){sc+=1;why.push(`${P.pl}本身有力`)}
-    const hr=elHour(ev,t,tz);if(hr){if(hr===P.pl){sc+=2;why.push(`${hr}時（行星時）`)}else if(["木星","金星"].includes(hr)){sc+=1;why.push(`${hr}時（行星時）`)}else if(["火星","土星"].includes(hr)&&P.k!=="end"){sc-=1}}
+    const hr=elHour(ev,t,tz);if(hr){if(hr===P.pl){sc+=2;why.push(`${hr}時（行星時）`)}else if(["木星","金星"].includes(hr)){sc+=1;why.push(`${hr}時（行星時）`)}else if(hr==="土星"&&["travel","buy","health","start"].includes(P.k)){sc-=2;bad.push("土星時（唔宜出行、睇病、借錢）")}else if(hr==="火星"&&P.k!=="end"){sc-=1}}
     if(["太陽","木星","土星"].includes(P.pl)&&day||["月亮","金星","火星"].includes(P.pl)&&!day){sc+=1}
     if(natal){const y=elLocalYmd(t,tz),key=y.join("-");if(!(key in ymdCache)){let z=null;try{z=Solar.fromYmd(y[0],y[1],y[2]).getLunar().getDayZhi()}catch(e){}ymdCache[key]=z}
       const dz=ymdCache[key];if(dz&&natal.dz&&Math.abs(ZHI.indexOf(dz)-ZHI.indexOf(natal.dz))===6){sc-=3;bad.push(`${dz}日沖你嘅日支${natal.dz}`)}

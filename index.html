@@ -1656,7 +1656,8 @@ function lillyScore(c,p){const L=((p.lon%360)+360)%360,s=Math.floor(L/30),deg=L%
   if(TERMS[s].find(t=>deg<t[1])[0]===p.n){ess+=2;why.push("界")}if(FACE_ORD[Math.floor(L/10)%7]===p.n){ess+=1;why.push("面")}
   if(SIGN_LORD[(s+6)%12]===p.n){ess-=5;why.push("失勢")}if(EXALT[p.n]===(s+6)%12){ess-=4;why.push("落陷")}
   if(!why.some(w=>["入廟","擢升","三分","界","面"].includes(w))){ess-=5;why.push("遊走")}
-  let acc=0;if(c.asc){const h=houseOf(c,L);acc+=HOUSE_ACC[h]}
+  let acc=0;if(c.asc){const h=houseOf(c,L);acc+=HOUSE_ACC[h];if(HZ_JOY[p.n]===h){acc+=2;why.push("喜樂宮")}}
+  if(c.utc){const nn=hzNode(c.utc);if(Math.abs(angDiff(L,nn))<=3){acc+=4;why.push("合北交")}if(Math.abs(angDiff(L,nn+180))<=3){acc-=4;why.push("合南交")}}
   if(!["太陽","月亮"].includes(p.n)){acc+=p.retro?-5:4;if(p.retro)why.push("逆行");
     const ds=Math.abs(angDiff(L,c.planets[0].lon));if(ds<17/60){acc+=5;why.push("日心")}else if(ds<8.5){acc-=5;why.push("焦傷")}else if(ds<17){acc-=4;why.push("日光下")}}
   for(const q of c.planets)if(q!==p&&CLASSIC7.includes(q.n)&&Math.abs(angDiff(L,q.lon))<1){if(["木星","金星"].includes(q.n)){acc+=5;why.push(`合${q.n}`)}if(["火星","土星"].includes(q.n)){acc-=5;why.push(`合${q.n}`)}}
@@ -1669,6 +1670,8 @@ function lillyNotes(c){if(!c.planets)return "";const S=c.planets.filter(p=>CLASS
     L.push(`- **命主星**：上升${c.asc.sign}座，命主星係${lord}，落${lp.sign}座第 ${h} 宮（${ls.why.join("、")||"無特別尊貴"}，得分 ${ls.tot}）。${LORD1_H[h-1]}${ls.tot>=5?"命主星有力，你做事有底氣，容易得到想要嘅結果。":ls.tot<=-5?"命主星受制，你要比人付出多啲，但每一步都會令你更強。":"命主星力量中等，順逆視乎你點樣運用。"}`)}
   const top=S[0],low=S[S.length-1];
   L.push(`- **最有力嘅行星**：${top.n}（${top.why.filter(w=>!w.startsWith("合")).join("、")||"—"}，${top.tot} 分）。${PLANET_GIFT[top.n]}`);
+  {const C7=c.planets.filter(p=>CLASSIC7.includes(p.n)),day2=isDayChart(c)!==false;for(let i=0;i<C7.length;i++)for(let j=i+1;j<C7.length;j++){const a=C7[i],b=C7[j],ra=hzDignAt(a.n,b.lon,day2),rb=hzDignAt(b.n,a.lon,day2);
+    if(ra.some(x=>x==="入廟"||x==="擢升")&&rb.some(x=>x==="入廟"||x==="擢升"))L.push(`- **互容**：${a.n}同${b.n}互相落入對方嘅${rb.includes("入廟")?"廟":"旺"}位，兩股力量互相支持。遇到同${a.n}或者${b.n}有關嘅難題，可以借另一方嘅長處去化解。`)}}
   L.push(`- **最需要照顧嘅行星**：${low.n}（${low.why.join("、")||"—"}，${low.tot} 分）。${PLANET_LESSON[low.n]}`);
   return "## 古典判斷\n"+L.join("\n")}
 const PLANET_GIFT={太陽:"你嘅自信同領導力係最大本錢。",月亮:"你嘅感受力同照顧人嘅能力好突出。",水星:"你嘅頭腦、口才同學習力係天賦。",金星:"你有美感同人緣，關係同藝術方面容易得益。",火星:"你有行動力同勇氣，遇到挑戰反而更強。",木星:"你運氣好、心胸廣，容易遇到貴人。",土星:"你有耐性同紀律，可以建立長久嘅成就。"};
@@ -3001,11 +3004,11 @@ function ziweiGrid(z,o){
 const ORICON={"tarot": "<svg viewBox=\"0 0 40 40\"><rect x=\"9\" y=\"5\" width=\"16\" height=\"27\" rx=\"1\" transform=\"rotate(-10 17 18)\"/><rect x=\"15\" y=\"8\" width=\"16\" height=\"27\" rx=\"1\"/><path d=\"M23 15 L25 20 L23 25 L21 20Z\" class=\"f\"/></svg>", "shin": "<svg viewBox=\"0 0 40 40\"><path d=\"M20 6 V10 M13 24 C13 14 27 14 27 24 L29 28 H11 Z\"/><circle cx=\"20\" cy=\"31\" r=\"2\" class=\"f\"/><ellipse cx=\"9\" cy=\"35\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"31\" cy=\"34\" rx=\"1.6\" ry=\".8\" class=\"f\"/><ellipse cx=\"25\" cy=\"37\" rx=\"1.6\" ry=\".8\" class=\"f\"/></svg>", "dream": "<svg viewBox=\"0 0 40 40\"><path d=\"M25 6 A14 14 0 1 0 34 26 A11 11 0 1 1 25 6Z\"/><path d=\"M30 9 L31 11 L33 12 L31 13 L30 15 L29 13 L27 12 L29 11Z\" class=\"f\"/></svg>", "face": "<svg viewBox=\"0 0 40 40\"><path d=\"M13 30 C9 22 10 8 20 8 C30 8 31 22 27 30 C24 34 16 34 13 30Z\"/><path d=\"M15 18 H18 M22 18 H25 M20 19 V24 H18 M17 28 C19 29 21 29 23 28\"/></svg>", "ifa": "<svg viewBox=\"0 0 40 40\"><path d=\"M8 8 C14 12 14 30 8 34 M32 8 C26 12 26 30 32 34 M8 8 Q20 2 32 8\"/><ellipse cx=\"12\" cy=\"14\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"12\" cy=\"24\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"14\" rx=\"2.4\" ry=\"3.4\" class=\"f\"/><ellipse cx=\"28\" cy=\"24\" rx=\"2.4\" ry=\"3.4\"/></svg>", "runes": "<svg viewBox=\"0 0 40 40\"><path d=\"M10 34 V14 C10 6 30 6 30 14 V34 Z\"/><path d=\"M20 12 V30 M20 16 L26 12 M20 22 L26 18\"/></svg>"};
 let orTab=store("xuanjing.or")||"tarot";if(orTab==="dream")orTab="tarot";
 function renderOracle(el){
-  const tabs=[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom I Ching"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"]];
+  const tabs=[["tarot","塔羅","Tarot · 타로"],["meihua","梅花易數","Plum Blossom I Ching"],["shin","神占","Mudang · 신점"],["face","面相手相","Face & Palm"],["ifa","Ifá 占卜","Yorùbá Opele"],["runes","盧恩符文","Witch Runes"],["horary","卜卦占星","Horary"],["elect","擇日","Electional"]];
   el.innerHTML=`<a class="back-link" href="#me">${ic("arrow")} 返回我的</a><div class="stack"><span class="eyebrow">占卜</span><h1>問一個問題<span class="lat">ask, then listen</span></h1></div>
   <div class="tiles" role="group" aria-label="占卜方法">${tabs.map(([k,n,e])=>`<button type="button" data-k="${k}" aria-pressed="${orTab===k}">${ORICON[k]}<b>${n}</b><small>${e}</small></button>`).join("")}</div><div id="orBody" class="stack" style="gap:22px"></div>`;
   el.querySelectorAll(".tiles button").forEach(b=>b.onclick=()=>{orTab=b.dataset.k;store("xuanjing.or",orTab);renderOracle(el)});
-  (({tarot:orTarot,meihua:orMeihua,shin:orShin,face:orFace,ifa:orIfa,runes:orRunes})[orTab]||orTarot)($("#orBody",el));
+  (({tarot:orTarot,meihua:orMeihua,shin:orShin,face:orFace,ifa:orIfa,runes:orRunes,horary:orHorary,elect:orElect})[orTab]||orTarot)($("#orBody",el));
 }
 
 /* ===== 梅花易數（先天數起卦、體用生剋） ===== */
@@ -3485,6 +3488,400 @@ function orRunes(el){
     const q=$("#rq",el).value.trim();const ai=$("#rAI",el);ai.innerHTML="";
     ai.appendChild(aiBlock("解讀符文",()=>prompt(`使用者以 Elder Futhark 盧恩符文三女神牌陣占卜${q?`，問題：「${q}」`:""}。結果：${bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位 merkstave）":""}`).join("；")}。逐枚解讀並綜合，最後給一個英倫女巫風格的簡單小儀式（蠟燭、草藥或月相相關）。`,chart),{local:()=>localRunes(bag,pos,q),save:()=>({kind:"盧恩符文",title:"三女神牌陣",q,result:bag.map((b,i)=>`${pos[i]}：${b.r[1]}${b.rev?"（逆位）":""}`).join("　")})}));
   });
+}
+
+/* ===================== 卜卦占星（Horary）同擇日（Electional） =====================
+   提問嗰一刻、所在地起盤；Regiomontanus 分宮、傳統七星；本質／意外尊貴、接納、
+   托勒密相位（喺而家星座之內入相位成形）、禁止、挫折、退縮、傳光、集光、月亮空亡、
+   反照點、恆星（只計緊合）、時機。擇日：月亮狀態、空亡、蝕、行星時、凶星上軸、日夜派、本命。 */
+const HZ7=["太陽","月亮","水星","金星","火星","木星","土星"];
+const HZ_B={太陽:"Sun",月亮:"Moon",水星:"Mercury",金星:"Venus",火星:"Mars",木星:"Jupiter",土星:"Saturn",天王星:"Uranus",海王星:"Neptune",冥王星:"Pluto"};
+const HZ_MEAN={太陽:.9856,月亮:13.18,水星:1.383,金星:1.2,火星:.524,木星:.083,土星:.034};
+const HZ_ORB={太陽:15,月亮:12,水星:7,金星:7,火星:8,木星:9,土星:9};
+const HZ_JOY={水星:1,月亮:3,金星:5,火星:6,太陽:9,木星:11,土星:12};
+const HZ_ASP={0:"合相",60:"六合",90:"刑相",120:"拱相",180:"沖相"};
+const HZ_CHALD=["土星","木星","火星","太陽","金星","水星","月亮"];
+const HZ_WEEK=["太陽","月亮","火星","水星","木星","金星","土星"];
+const hzN=x=>((x%360)+360)%360;
+const hzSg=l=>Math.floor(hzN(l)/30)%12;
+const hzMod=s=>["基本","固定","變動"][s%3];
+const hzDeg=l=>{const L=hzN(l),d=L%30;return `${SIGNS[hzSg(L)]} ${Math.floor(d)}°${String(Math.floor((d%1)*60)).padStart(2,"0")}′`};
+function hzLon(n,t){const A=window.Astronomy;if(n==="月亮")return A.EclipticGeoMoon(t).lon;return A.Ecliptic(A.GeoVector(HZ_B[n],t,true)).elon}
+function hzNode(t){const T=((+t)/864e5+2440587.5-2451545)/36525;return hzN(125.0445479-1934.1362891*T)}
+// 星曆表：每半日一格，線性插值（月亮誤差約 0.03°）
+function hzTable(t0,back,fwd,names,step){step=step||.5;const n0=Math.round(back/step),n=Math.round((back+fwd)/step)+2,L={};
+  for(const p of names){const a=new Float64Array(n);for(let i=0;i<n;i++)a[i]=hzLon(p,new Date(+t0+(i-n0)*step*864e5));L[p]=a}
+  return {t0:+t0,n0,n,step,L,back,fwd}}
+function tbLon(T,p,d){const x=d/T.step+T.n0,i=Math.max(0,Math.min(T.n-2,Math.floor(x))),f=x-i,a=T.L[p][i];return hzN(a+angDiff(T.L[p][i+1],a)*f)}
+function tbSpd(T,p,d){return angDiff(tbLon(T,p,d+.5),tbLon(T,p,d-.5))}
+// Regiomontanus 宮頭
+function regioCusps(ramc,lat,eps){eps=(eps||23.4393)*Math.PI/180;const r=Math.PI/180,o=new Array(12);
+  const pole=k=>Math.atan(Math.tan(lat*r)*Math.sin(k*r));
+  const cusp=(R,ph)=>hzN(Math.atan2(Math.sin(R*r),Math.cos(R*r)*Math.cos(eps)-Math.tan(ph)*Math.sin(eps))/r);
+  o[9]=cusp(ramc,0);o[10]=cusp(ramc+30,pole(30));o[11]=cusp(ramc+60,pole(60));o[0]=cusp(ramc+90,lat*r);o[1]=cusp(ramc+120,pole(60));o[2]=cusp(ramc+150,pole(30));
+  for(let i=3;i<9;i++)o[i]=hzN(o[(i+6)%12]+180);return o}
+// 落宮（5 度規則：離下一宮頭 5° 內又同一星座，就當入下一宮）
+function hzHouse(cu,lon,raw){const L=hzN(lon);let h=0;for(let i=0;i<12;i++){const w=hzN(cu[(i+1)%12]-cu[i]),d=hzN(L-cu[i]);if(d<w){h=i;break}}
+  if(!raw){const nx=cu[(h+1)%12];if(hzN(nx-L)<=5&&hzSg(nx)===hzSg(L))h=(h+1)%12}return h+1}
+const hzAngular=h=>[1,4,7,10].includes(h),hzCadent=h=>[3,6,9,12].includes(h);
+// 本質尊貴
+function hzEss(p,lon,day){const L=hzN(lon),s=hzSg(L),deg=L%30,pos=[],neg=[];let sc=0;
+  if(SIGN_LORD[s]===p){pos.push("入廟");sc+=5}if(EXALT[p]===s){pos.push("擢升");sc+=4}
+  if(TRIP[s%4][day?0:1]===p){pos.push("三分");sc+=3}if(TERMS[s].find(t=>deg<t[1])[0]===p){pos.push("界");sc+=2}
+  if(FACE_ORD[Math.floor(L/10)%7]===p){pos.push("面");sc+=1}
+  if(SIGN_LORD[(s+6)%12]===p){neg.push("失勢");sc-=5}if(EXALT[p]===(s+6)%12){neg.push("落陷");sc-=4}
+  const pere=!pos.length;if(pere){neg.push("遊走");sc-=5}return {pos,neg,sc,pere}}
+// 喺某個位置有咩尊貴（接納用）
+function hzDignAt(p,lon,day){const L=hzN(lon),s=hzSg(L),deg=L%30,r=[];
+  if(SIGN_LORD[s]===p)r.push("入廟");if(EXALT[p]===s)r.push("擢升");if(TRIP[s%4][day?0:1]===p)r.push("三分");
+  if(TERMS[s].find(t=>deg<t[1])[0]===p)r.push("界");if(FACE_ORD[Math.floor(L/10)%7]===p)r.push("面");
+  if(SIGN_LORD[(s+6)%12]===p)r.push("失勢");if(EXALT[p]===(s+6)%12)r.push("落陷");return r}
+const HZ_REC_T={入廟:"好在乎，甚至想照顧或者掌控對方",擢升:"好欣賞，有啲將對方理想化",三分:"有好感，關係友善",界:"有少少興趣",面:"有少少興趣，但唔算投入",失勢:"其實唔太鍾意",落陷:"睇唔起，或者覺得對方唔夠好"};
+// 恆星（2000 年黃經，每年歲差 0.01397°）
+const HZ_STARS=[["軒轅十四 Regulus",149.83,1,"成功同地位，但要小心報復心，否則得而復失"],["角宿一 Spica",203.83,1,"非常幸運，好似有人送禮物"],["大陵五 Algol",56.17,-1,"壓力好大、容易失控，要特別冷靜"],["昴宿星團 Pleiades",59.98,-1,"可能有令人流淚嘅事"],["畢宿五 Aldebaran",69.78,1,"正直就會成功"],["貫索四 Alphecca",222.3,0,"有收穫，但要付出感情代價"],["太微左垣四 Vindemiatrix",189.93,-1,"小心失去身邊重要嘅人或者伴侶"]];
+function hzStarsOn(lon,t){const y=new Date(t).getUTCFullYear()-2000;return HZ_STARS.filter(s=>Math.abs(angDiff(lon,s[1]+.01397*y))<=1)}
+// 搵兩星喺而家星座之內嘅相位成形時間（dir=1 未來／-1 過去），單位：日
+function hzPerfect(T,p,q,dir){const lp=tbLon(T,p,0),lq=tbLon(T,q,0),sp=hzSg(lp),sq=hzSg(lq);
+  const dist=((sp-sq)%12+12)%12,sd=Math.min(dist,12-dist);if(![0,2,3,4,6].includes(sd))return null;const A=sd*30;
+  const s0=angDiff(lp,lq),sgn=s0>=0?1:-1;
+  const g=d=>{const s=angDiff(tbLon(T,p,d),tbLon(T,q,d));return A===0?s:A===180?angDiff(s,180):s-A*sgn};
+  const lim=(dir>0?T.fwd:T.back)-1,h=T.step;let prev=g(0),dp=0;
+  if(Math.abs(prev)<1e-6)return {d:0,A,orb:0};
+  for(let k=1;k*h<=lim;k++){const d=dir*k*h;if(hzSg(tbLon(T,p,d))!==sp||hzSg(tbLon(T,q,d))!==sq)return null;
+    const v=g(d);if(prev*v<=0&&Math.abs(prev-v)<40){const dd=dp+(d-dp)*prev/(prev-v);return {d:dd,A,orb:Math.abs(g(0))}}prev=v;dp=d}
+  return null}
+// 退縮（refranation）：照而家速度會成形，但其中一粒星喺成形前停留轉向
+function hzRefrain(T,p,q){const lp=tbLon(T,p,0),lq=tbLon(T,q,0),sp=hzSg(lp),sq=hzSg(lq);const dist=((sp-sq)%12+12)%12,sd=Math.min(dist,12-dist);
+  if(![0,2,3,4,6].includes(sd))return null;const A=sd*30,s0=angDiff(lp,lq),sgn=s0>=0?1:-1,vp=tbSpd(T,p,0),vq=tbSpd(T,q,0);
+  const g0=A===0?s0:A===180?angDiff(s0,180):s0-A*sgn,rel=vp-vq;if(!rel||g0*rel>=0)return null;const t=-g0/rel;
+  const exitP=vp>0?(30-lp%30)/vp:(lp%30)/-vp,exitQ=vq>0?(30-lq%30)/vq:(lq%30)/-vq;if(t>Math.min(exitP,exitQ,300))return null;
+  for(const x of [p,q]){const v0=tbSpd(T,x,0);for(let d=1;d<t;d+=1)if(tbSpd(T,x,d)*v0<0)return {who:x,t,A}}return null}
+// 起卜卦盤
+function castHorary(t,lat,lon){const A=window.Astronomy;t=new Date(t);
+  const T=hzTable(t,30,370,HZ7);const ramc=hzN(A.SiderealTime(t)*15+lon),cu=regioCusps(ramc,lat);
+  const day=hzN(hzLon("太陽",t)-cu[0])>=180;const nn=hzNode(t);const P={};
+  for(const n of HZ7){const l=hzLon(n,t),spd=angDiff(hzLon(n,new Date(+t+432e5)),hzLon(n,new Date(+t-432e5)));
+    P[n]={n,lon:l,spd,retro:spd<0,sg:hzSg(l),h:hzHouse(cu,l)};P[n].ess=hzEss(n,l,day)}
+  const outer=["天王星","海王星","冥王星"].map(n=>({n,lon:hzLon(n,t)}));
+  for(const n of HZ7)P[n].acc=hzAcc(P,n,nn,t);
+  return {t,lat,lon,cu,P,outer,nn,day,T}}
+// 意外尊貴
+function hzAcc(P,n,nn,t){const p=P[n],r=[];let sc=HOUSE_ACC[p.h];
+  r.push(`${p.h} 宮${hzAngular(p.h)?"（角宮，有力）":[6,8,12].includes(p.h)?"（弱宮）":hzCadent(p.h)?"（果宮，力弱）":""}`);
+  if(HZ_JOY[n]===p.h){sc+=2;r.push("喜樂宮")}
+  if(n!=="太陽"&&n!=="月亮"){if(p.retro){sc-=5;r.push("逆行")}}
+  const m=HZ_MEAN[n],a=Math.abs(p.spd);if(a<m*.15&&n!=="太陽"&&n!=="月亮"){sc-=3;r.push(p.retro?"停留（就嚟轉順）":"停留（就嚟轉逆）")}else if(a>m*1.05){sc+=2;r.push("行得快")}else if(a<m*.6){sc-=2;r.push("行得慢")}
+  if(n!=="太陽"){const ds=Math.abs(angDiff(p.lon,P.太陽.lon));if(ds<17/60){sc+=5;r.push("日心（cazimi，極有力）")}else if(ds<8.5){sc-=5;r.push("焦傷")}else if(ds<17.5){sc-=4;r.push("日光下")}}
+  const others=HZ7.filter(x=>x!==n).map(x=>({x,d:angDiff(P[x].lon,p.lon)}));
+  const ahead=others.filter(o=>o.d>0&&o.d<=15).sort((a,b)=>a.d-b.d)[0],behind=others.filter(o=>o.d<0&&o.d>=-15).sort((a,b)=>b.d-a.d)[0];
+  if(ahead&&behind){const S=new Set([ahead.x,behind.x]);if(S.has("火星")&&S.has("土星")){sc-=5;r.push("被火土圍攻")}if(S.has("木星")&&S.has("金星")){sc+=5;r.push("被吉星包圍")}}
+  for(const o of others)if(Math.abs(o.d)<=3){if(["木星","金星"].includes(o.x)){sc+=4;r.push(`合${o.x}`)}if(["火星","土星"].includes(o.x)){sc-=4;r.push(`合${o.x}`)}}
+  if(Math.abs(angDiff(p.lon,nn))<=3){sc+=4;r.push("合北交（增益）")}if(Math.abs(angDiff(p.lon,nn+180))<=3){sc-=4;r.push("合南交（減損）")}
+  if(n==="月亮"){const e=hzN(p.lon-P.太陽.lon);if(e<180){sc+=2;r.push("月亮漸盈")}else{sc-=1;r.push("月亮漸虧")}if(p.lon>=195&&p.lon<=225){sc-=2;r.push("燃燒之路")}}
+  for(const s of hzStarsOn(p.lon,t)){sc+=s[2]*4;r.push(`合${s[0].split(" ")[0]}`)}
+  return {sc,r}}
+// 月亮空亡：離開而家星座之前唔再同七星成任何相位
+function hzVOC(T,dFrom){dFrom=dFrom||0;const lm=tbLon(T,"月亮",dFrom),sm=hzSg(lm),v=tbSpd(T,"月亮",dFrom),exit=(30-lm%30)/v;let next=null;
+  for(const q of HZ7){if(q==="月亮")continue;const L0=tbLon(T,q,dFrom);
+    for(const A of [0,60,-60,90,-90,120,-120,180]){let prev=angDiff(angDiff(lm,L0),A),dp=dFrom;
+      for(let d=dFrom+.125;d<=dFrom+exit+.01;d+=.125){const v2=angDiff(angDiff(tbLon(T,"月亮",d),tbLon(T,q,d)),A);
+        if(prev*v2<=0&&Math.abs(prev-v2)<40&&hzSg(tbLon(T,"月亮",d))===sm){const dd=dp+(d-dp)*prev/(prev-v2);if(!next||dd<next.d)next={d:dd,q,A:Math.abs(A)};break}prev=v2;dp=d}}}
+  return {voc:!next,next,exit}}
+
+/* ---------- 卜卦判斷 ---------- */
+const HZ_CATS=[
+ {k:"love",n:"感情：佢會唔會同我一齊／復合",h:7},
+ {k:"career",n:"工作：會唔會請我、升職",h:10},
+ {k:"money",n:"錢：我會唔會攞到呢筆錢",h:2},
+ {k:"salary",n:"人工、花紅、意外之財",h:11},
+ {k:"loan",n:"借錢、對方嘅錢、投資回報",h:8},
+ {k:"deal",n:"合作、簽約、對手、官司",h:7},
+ {k:"property",n:"買樓、租屋、搬屋",h:4},
+ {k:"lost",n:"搵失物",h:2},
+ {k:"pet",n:"寵物",h:6},
+ {k:"travel",n:"遠行、移民、讀書、考試",h:9},
+ {k:"news",n:"消息、傳聞係咪真",h:3},
+ {k:"wish",n:"願望會唔會成真、朋友",h:11},
+ {k:"health",n:"健康（只作參考）",h:6}];
+const HZ_WHO=[{k:"self",n:"我自己",h:1},{k:"partner",n:"伴侶",h:7},{k:"friend",n:"朋友",h:11},{k:"sib",n:"兄弟姊妹",h:3},{k:"mother",n:"媽媽",h:10},{k:"father",n:"爸爸",h:4},{k:"child",n:"子女",h:5},{k:"boss",n:"老闆、上司",h:10}];
+const HZ_HN=["","你","錢同財物","兄弟、消息、短途","屋企、家庭、地產","戀愛、子女、娛樂","工作、健康、寵物","伴侶、對手、對方","對方嘅錢、借貸","遠行、學問、信仰","事業、地位、上司","朋友、願望、收入","隱藏嘅事、大型動物"];
+const HZ_PL_PERSON={太陽:"有權威、光明磊落嘅人",月亮:"溫柔、情緒化、多變嘅人",水星:"醒目、口才好、年輕嘅人",金星:"溫柔、有魅力嘅人",火星:"衝動、直接、好勝嘅人",木星:"大方、有學問、樂觀嘅人",土星:"沉實、謹慎、年紀較大嘅人"};
+const hzLord=(H,h)=>SIGN_LORD[hzSg(H.cu[h-1])];
+const hzTurn=(base,h)=>((base-1)+(h-1))%12+1;
+function hzFaster(H,a,b){return Math.abs(H.P[a].spd)>=Math.abs(H.P[b].spd)?a:b}
+function hzTiming(H,app,orb,days){const p=H.P[app],m=[0,2,1][p.sg%3],hs=hzAngular(p.h)?2:hzCadent(p.h)?0:1,sum=m+hs;
+  const U=["日","日","星期","星期","個月"],unit=U[sum],alt=U[Math.max(0,sum-2)];const n=Math.max(1,Math.round(orb));
+  return {n,unit,days,txt:`大約 ${n} ${unit}${alt!==unit?`（如果唔合情理，可以睇做 ${n} ${alt}）`:""}；計法：${app}喺${hzMod(p.sg)}星座、${hzAngular(p.h)?"角宮":hzCadent(p.h)?"果宮":"續宮"}，相差 ${orb.toFixed(1)}°`}}
+function judgeHorary(H,catK,whoK,gender){
+  const C=HZ_CATS.find(x=>x.k===catK)||HZ_CATS[0],W=HZ_WHO.find(x=>x.k===whoK)||HZ_WHO[0];
+  const qh=hzTurn(W.h,C.h),La=hzLord(H,W.h),Lb=hzLord(H,qh),self=W.k==="self";
+  const qs=[La];if(self&&La!=="月亮")qs.push("月亮");
+  let nat=null;if(C.k==="love"&&self){nat=gender==="M"?"太陽":"金星";if(!qs.includes(nat)&&nat!==Lb)qs.push(nat);else nat=null}
+  const R={C,W,qh,La,Lb,qs,nat,links:[],blocks:[],trans:[],coll:[],refr:[],notes:[],rec:[]};
+  const T=H.T,fwd={};const pf=(a,b)=>{const k=[a,b].sort().join();if(!(k in fwd))fwd[k]=hzPerfect(T,a,b,1);return fwd[k]};
+  // 直接成形
+  for(const a of qs){if(a===Lb){R.links.push({type:"same",a,b:Lb});continue}
+    const x=pf(a,Lb);if(x)R.links.push({type:"perf",a,b:Lb,...x});else{const rf=hzRefrain(T,a,Lb);if(rf)R.refr.push({a,b:Lb,...rf})}}
+  // 禁止／挫折 vs 傳光
+  for(const L of R.links.filter(l=>l.type==="perf")){for(const c of HZ7){if(c===L.a||c===L.b)continue;
+      const ca=pf(c,L.a),cb=pf(c,L.b);
+      if(ca&&cb&&ca.d<L.d&&cb.d>ca.d)continue;// c 先後接觸兩邊＝傳光，唔算阻
+      const first=[ca&&ca.d<L.d?{w:L.a,d:ca.d,A:ca.A}:null,cb&&cb.d<L.d?{w:L.b,d:cb.d,A:cb.A}:null].filter(Boolean).sort((x,y)=>x.d-y.d)[0];
+      if(first)L.block={c,...first,kind:first.w===L.b?"挫折":"禁止"}}}
+  // 傳光：較快嘅星啱啱離開一方，再去接觸另一方
+  const sigs=[...new Set([...qs.filter(x=>x!==Lb)])];
+  for(const a of sigs){for(const c of HZ7){if(c===a||c===Lb)continue;const fc=Math.abs(H.P[c].spd);if(fc<=Math.abs(H.P[a].spd)||fc<=Math.abs(H.P[Lb].spd))continue;
+      for(const [x,y] of [[a,Lb],[Lb,a]]){const back=hzPerfect(T,c,x,-1),fx=pf(c,x),fy=pf(c,y);
+        const sepOk=back&&back.orb<=(HZ_ORB[c]+HZ_ORB[x])/2;
+        if(fy&&((sepOk&&!fx)||(fx&&fx.d<fy.d)))R.trans.push({c,from:x,to:y,d:fy.d,A:fy.A,orb:fy.orb})}}}
+  // 集光：兩方都去接觸一粒較慢嘅星
+  for(const a of sigs){for(const c of HZ7){if(c===a||c===Lb)continue;const sc=Math.abs(H.P[c].spd);if(sc>=Math.abs(H.P[a].spd)||sc>=Math.abs(H.P[Lb].spd))continue;
+      const fa=pf(a,c),fb=pf(Lb,c);if(fa&&fb){const rcv=hzDignAt(c,H.P[a].lon,H.day).some(x=>["入廟","擢升","三分"].includes(x))||hzDignAt(c,H.P[Lb].lon,H.day).some(x=>["入廟","擢升","三分"].includes(x));R.coll.push({c,a,d:Math.max(fa.d,fb.d),rcv})}}}
+  // 接納
+  for(const [x,y] of [[La,Lb],[Lb,La]])if(x!==y){const d=hzDignAt(x,H.P[y].lon,H.day);if(d.length)R.rec.push({x,y,d})}
+  const mutual=R.rec.length===2&&R.rec.every(r=>r.d.some(z=>["入廟","擢升"].includes(z)));
+  // 月亮
+  R.moon=hzVOC(T,0);
+  // 結論
+  const good=R.links.find(l=>l.type==="same")||R.links.filter(l=>l.type==="perf"&&!l.block).sort((a,b)=>a.d-b.d)[0];
+  const tr=R.trans.sort((a,b)=>a.d-b.d)[0],co=R.coll.sort((a,b)=>a.d-b.d)[0];
+  let v,vt,key=null;
+  if(good){key=good;if(good.type==="same"){v="yes";vt="會成"}else if(good.A===180){v="mixed";vt="會成，但未必如你所願"}else if(good.A===90){v="mixed";vt="會成，但要經過一番波折"}else{v="yes";vt="會成"}}
+  else if(tr){v="yes";vt="會成，靠第三者幫手";key={type:"trans",...tr}}
+  else if(co){v=co.rcv?"yes":"mixed";vt=co.rcv?"會成，有人從中撮合":"有機會成，要靠中間人";key={type:"coll",...co}}
+  else if(R.refr.length){v="no";vt="暫時唔會成，有一方會退縮"}
+  else if(R.links.some(l=>l.block)){v="no";vt="中途會有阻滯，暫時難成"}
+  else{v="no";vt="暫時未見會成"}
+  if(v==="no"&&mutual){vt+="（不過雙方有心）"}
+  if(v==="no"&&R.moon.voc&&!["金牛","巨蟹","射手","雙魚"].includes(SIGNS[H.P.月亮.sg]))R.notes.push("月亮空亡：離開而家星座之前唔再同任何行星成相位，通常代表件事唔會有大進展，或者擔心嘅事唔會發生。");
+  // 時機
+  if(key&&key.type==="perf"){const app=hzFaster(H,key.a,key.b);R.timing=hzTiming(H,app,key.orb,key.d)}
+  else if(key&&key.type==="trans"){R.timing=hzTiming(H,key.c,key.orb,key.d)}
+  else if(key&&key.type==="coll"){R.timing={days:key.d,txt:`按星曆大約 ${Math.max(1,Math.round(key.d))} 日內兩方先後同${key.c}成相位`}}
+  // 考慮事項
+  const asc=H.cu[0]%30;if(asc<3)R.notes.push("上升星座仲喺好早嘅度數：事情仲未成形，可能問得早咗，遲啲情況會更清楚。");
+  if(asc>27)R.notes.push("上升星座喺最尾幾度：事情其實差唔多有定案，或者已經太遲改變。");
+  if(H.P.土星.h===1)R.notes.push("土星喺第一宮：你而家心情比較沉重、顧慮多，答案可能比你想像中好。");
+  if(H.P.土星.h===7)R.notes.push("土星喺第七宮：判斷容易受到限制，要加多一份謹慎。");
+  const mL=H.P.月亮.lon;if(mL>=195&&mL<=225)R.notes.push("月亮喺燃燒之路（天秤 15° 至天蠍 15°）：情緒同局面都比較混亂，結果容易出意外。");
+  // 外行星：只計緊貼宮頭或者同徵象星準確相位
+  for(const o of H.outer){const on=[1,4,7,10,qh].filter((h,i,a)=>a.indexOf(h)===i).find(h=>Math.abs(angDiff(o.lon,H.cu[h-1]))<=2);
+    const ex=[La,Lb].find(s=>[0,90,180].some(A=>Math.abs(Math.abs(angDiff(o.lon,H.P[s].lon))-A)<=1));
+    const mean={天王星:"突如其來、意料之外嘅變化",海王星:"迷霧、誤會、將事情理想化，要睇清楚",冥王星:"好大、好難抗拒嘅力量"}[o.n];
+    if(on)R.notes.push(`${o.n}緊貼第 ${on} 宮宮頭：${mean}。`);else if(ex)R.notes.push(`${o.n}同${ex}成準確相位：${mean}。`)}
+  // 反照點
+  for(const [x,y] of [[La,Lb],...qs.filter(z=>z!==La&&z!==Lb).map(z=>[z,Lb])]){if(x===y)continue;const an=hzN(180-H.P[x].lon),ca=hzN(360-H.P[x].lon);
+    if(Math.abs(angDiff(an,H.P[y].lon))<=1.5)R.notes.push(`${x}嘅反照點同${y}合相：雙方有暗中嘅聯繫，可能有啲事未講出口。`);
+    if(Math.abs(angDiff(ca,H.P[y].lon))<=1.5)R.notes.push(`${x}嘅反照點同${y}對沖：暗中有對立或者唔講出口嘅不滿。`)}
+  // 恆星
+  for(const s of [...new Set([La,Lb,"月亮"])])for(const st of hzStarsOn(H.P[s].lon,H.t))R.notes.push(`${s}合恆星${st[0].split(" ")[0]}：${st[3]}。`);
+  R.v=v;R.vt=vt;R.key=key;R.mutual=mutual;return R}
+
+/* ---------- 文字 ---------- */
+function hzPlLine(H,n){const p=H.P[n];return `${n}喺${hzDeg(p.lon)}，第 ${p.h} 宮`}
+function hzCond(H,n){const p=H.P[n],s=p.ess.sc+p.acc.sc;return s>=6?"狀態好好":s>=0?"狀態一般":s>=-8?"狀態偏弱":"狀態好弱"}
+function hzLinkTxt(H,R){const k=R.key;if(!k)return "";
+  if(k.type==="same")return `代表你嘅星同代表件事嘅星係同一粒（${k.a}），即係你同件事本身已經連埋一齊。`;
+  if(k.type==="perf")return `${k.a}同${k.b}正喺入相位，${hzFaster(H,k.a,k.b)}主動靠近，將會成${HZ_ASP[k.A]}。${k.A===120||k.A===60?"呢個係順暢嘅相位，過程相對容易。":k.A===0?"合相代表直接走埋一齊。":k.A===90?"刑相代表會成，但要克服困難。":"沖相代表會成，但結果可能有遺憾，或者得到之後唔係你想像中咁好。"}`;
+  if(k.type==="trans")return `${k.from}同${k.to}本身冇直接相遇，但${k.c}行得快，先接觸${k.from}，再將佢嘅「光」帶去${k.to}。即係有第三者（${HZ_PL_PERSON[k.c]}）幫你哋搭橋。`;
+  if(k.type==="coll")return `兩方都冇直接相遇，但兩方都去接觸行得慢嘅${k.c}，即係有一個${HZ_PL_PERSON[k.c]}將兩方拉埋一齊。${k.rcv?"而且佢肯接納雙方，所以幫得到手。":""}`;return ""}
+const HZ_LOST_EL=["近熱源、廚房、電器或者光猛嘅地方","低處、地板、近地面或者埋喺其他嘢下面","高處、近窗、通風嘅位置或者書架","近水、廁所、廚房鋅盤、潮濕嘅地方"];
+const HZ_LOST_H={1:"就喺你身邊，或者你成日用嘅地方",2:"同你嘅錢包、銀包或者貴重物品放埋一齊",3:"車上、附近、或者兄弟姊妹度",4:"屋企入面",5:"娛樂場所、小朋友嘅地方",6:"工作地方、寵物附近、雜物房",7:"另一個人手上",8:"收埋咗、或者同其他人嘅嘢放埋一齊",9:"遠啲嘅地方、旅行或者讀書嘅地方",10:"公司、當眼位",11:"朋友度",12:"好隱蔽嘅地方、或者已經好難搵返"};
+function hzCatAdvice(H,R){const L=[],Lb=R.Lb,p=H.P[Lb];
+  if(R.C.k==="lost"){L.push(`- **件嘢喺邊**：代表件嘢嘅${Lb}喺第 ${p.h} 宮，${HZ_LOST_H[p.h]}；位置多數係${HZ_LOST_EL[p.sg%4]}。`);
+    if(p.h===1||hzAngular(p.h))L.push("- 代表件嘢嘅星喺角宮或者第一宮，搵返嘅機會幾大。");if(H.P.月亮.h===2||H.P.月亮.h===1)L.push("- 月亮喺第一或者第二宮，件嘢未走遠。")}
+  if(R.C.k==="property"){const L4=hzLord(H,4),L10=hzLord(H,10);L.push(`- **層樓本身**：第四宮主${L4}${hzCond(H,L4)}${H.P[L4].ess.sc>=3?"，物業質素唔錯":H.P[L4].ess.sc<0?"，要留意隱藏嘅問題，例如漏水或者維修":""}。`);
+    L.push(`- **價錢**：第十宮主${L10}${H.P[L10].ess.sc>=3?"有力，價錢偏高但物有所值":H.P[L10].ess.sc<0?"偏弱，價錢有傾談空間":"一般，價錢合理"}。`)}
+  if(["money","salary","loan"].includes(R.C.k)){const pf=hzN(H.day?H.cu[0]+H.P.月亮.lon-H.P.太陽.lon:H.cu[0]+H.P.太陽.lon-H.P.月亮.lon),ph=hzHouse(H.cu,pf);
+    L.push(`- **幸運點**喺${hzDeg(pf)}，第 ${ph} 宮：財運嘅焦點喺「${HZ_HN[ph]}」。`);if(p.h===1)L.push("- 代表錢嘅星走入你嘅第一宮：錢會自己走埋嚟。")}
+  if(R.C.k==="news"){const m=H.P.月亮,fx=m.sg%3===1||H.P[Lb].sg%3===1,an=hzAngular(m.h)||hzAngular(p.h);
+    L.push(`- **消息真唔真**：${fx&&an?"月亮或者第三宮主喺固定星座兼角宮，消息多數係真。":hzCadent(p.h)||H.P[Lb].sg%3===2?"代表消息嘅星喺果宮或者變動星座，消息多數誇大，或者唔係全部屬實。":"消息有部分屬實，等多陣先下結論。"}`)}
+  if(R.C.k==="pet"){L.push(`- **寵物狀況**：第六宮主${Lb}${hzCond(H,Lb)}。${H.P[Lb].ess.sc<0?"要多啲留意牠嘅身體。":"牠整體狀態唔錯。"}`)}
+  if(R.C.k==="health"){L.push(`- 第一宮主${R.La}${hzCond(H,R.La)}，第六宮主${Lb}${hzCond(H,Lb)}。${H.P[R.La].ess.sc+H.P[R.La].acc.sc>=H.P[Lb].ess.sc+H.P[Lb].acc.sc?"你嘅元氣比病氣強，休息好就會好返。":"病氣比你嘅元氣強，記得盡快睇醫生、好好休息。"}`);L.push("- 卜卦只作參考，身體唔舒服一定要睇醫生。")}
+  if(R.C.k==="love"){for(const r of R.rec){L.push(`- **${r.x===R.La?"你對佢":"佢對你"}**：${r.y}喺${r.x}嘅${r.d.join("、")}，${r.x===R.La?"你":"佢"}${HZ_REC_T[r.d[0]]}。`)}
+    if(!R.rec.length)L.push("- 雙方嘅星冇互相接納：而家彼此未算好在意對方，或者仲有好多未了解。")}
+  else for(const r of R.rec){L.push(`- **接納**：${r.y}喺${r.x}嘅${r.d.join("、")}，${r.x===R.La?"你對件事":"件事（或者對方）對你"}${HZ_REC_T[r.d[0]]}。`)}
+  if(R.mutual)L.push("- 雙方互相接納（互容）：彼此有心，就算有阻滯都容易搵到方法解決。");
+  return L}
+function horaryReport(H,R){const L=[];
+  L.push("## 你同件事");
+  L.push(`- **你**：第 ${R.W.h} 宮主${R.La}（${hzPlLine(H,R.La)}），${hzCond(H,R.La)}。${R.W.k==="self"?"月亮係你嘅副徵象星，代表你嘅心情。":`問嘅係${R.W.n}嘅事，所以由${R.W.n}嘅宮位轉盤。`}${R.nat?`感情問題亦會睇${R.nat}。`:""}`);
+  L.push(`- **件事**：${R.W.k==="self"?"":"由佢嘅宮位數起，"}第 ${R.qh} 宮（${HZ_HN[R.qh]}）主${R.Lb}（${hzPlLine(H,R.Lb)}），${hzCond(H,R.Lb)}。`);
+  L.push("## 雙方狀態");
+  for(const n of [...new Set([R.La,R.Lb,...R.qs])]){const p=H.P[n];L.push(`- **${n}**：${p.ess.pos.length?p.ess.pos.join("、"):"冇本質尊貴"}${p.ess.neg.length?"，"+p.ess.neg.join("、"):""}；${p.acc.r.join("、")}。${p.ess.sc>=4?"本身有質素，有實力。":p.ess.pere?"遊走星：冇根，容易隨波逐流。":p.ess.sc<0?"本身處於弱勢，力不從心。":""}`)}
+  L.push("## 心意同接納");L.push(...hzCatAdvice(H,R));
+  L.push("## 相位同結果");
+  L.push(`- **結論：${R.vt}**。${hzLinkTxt(H,R)}`);
+  for(const l of R.links.filter(l=>l.block))L.push(`- **${l.block.kind}**：${l.a}同${l.b}本來會成相位，但${l.block.c}喺佢哋相遇之前先同${l.block.w}成${HZ_ASP[l.block.A]}，即係有其他人或者事插入，打亂咗件事。`);
+  for(const r of R.refr)L.push(`- **退縮**：${r.a}同${r.b}本來會相遇，但${r.who}喺成形之前停留轉向，代表有一方臨陣退縮，或者改變主意。`);
+  if(!R.key&&!R.links.length&&!R.refr.length)L.push(`- 代表你嘅星同代表件事嘅星，喺而家星座之內都唔會相遇，亦冇第三粒星搭橋。`);
+  L.push("## 月亮");
+  L.push(`- 月亮喺${hzDeg(H.P.月亮.lon)}，第 ${H.P.月亮.h} 宮，${hzN(H.P.月亮.lon-H.P.太陽.lon)<180?"漸盈":"漸虧"}。${R.moon.voc?"離開呢個星座之前唔會再同任何行星成相位（空亡）。":`下一個相位係同${R.moon.next.q}成${HZ_ASP[R.moon.next.A]}（約 ${Math.max(1,Math.round(R.moon.next.d*24))} 小時後），${["木星","金星"].includes(R.moon.next.q)?"係好嘅發展。":["火星","土星"].includes(R.moon.next.q)?"接落嚟會有啲壓力。":"事情會繼續推進。"}`}`);
+  if(R.notes.length){L.push("## 特別留意");R.notes.forEach(n=>L.push("- "+n))}
+  if(R.timing){L.push("## 時機");L.push(`- ${R.timing.txt}。`);if(R.timing.days!=null)L.push(`- 按星曆計，相位喺大約 ${Math.max(1,Math.round(R.timing.days))} 日後成形，可以作參考。`)}
+  L.push("## 建議");
+  L.push(R.v==="yes"?"- 星象支持你，可以主動行多一步，把握時機。":R.v==="mixed"?"- 件事有機會成，但要有心理準備面對過程中嘅考驗，保持彈性。":"- 而家唔係最好嘅時候。與其勉強，不如先照顧好自己，等局面轉變。同一條問題唔好短時間內重複問。");
+  return L.join("\n")}
+const HZ_RULES=`卜卦占星規則（請跟從，但唔好引用書名）：以提問一刻同地點起盤，Regiomontanus 分宮，只用傳統七星；行星係人同事，星座係形容詞，相位係動詞。第一宮主同月亮代表問卦者，所問事情嘅宮主代表件事，問其他人就轉盤。外行星唔主宰星座，只喺緊貼宮頭或者同徵象星準確相位時先講。本質尊貴（廟、旺、三分、界、面；失勢、落陷、遊走）睇質素；意外尊貴（角宮、喜樂宮、順逆、速度、焦傷、日心、圍攻、交點）睇能唔能夠發揮。接納代表心意：廟＝愛或掌控，旺＝欣賞，三分＝友善，界面＝少少興趣，失勢落陷＝唔鍾意。只用托勒密相位，要喺而家星座內入相位成形先算；留意禁止、挫折、退縮、傳光、集光、月亮空亡。時機：相差度數配合星座（基本快、變動中、固定慢）同宮位（果宮快、續宮中、角宮慢）。`;
+function horaryPrompt(H,R,q){const pl=HZ7.map(n=>{const p=H.P[n];return `${n}${hzDeg(p.lon)}第${p.h}宮${p.retro?"逆":""}（${[...p.ess.pos,...p.ess.neg].join("、")||"—"}；${p.acc.r.join("、")}）`}).join("；");
+  return prompt(`${HZ_RULES}\n使用者問卜卦問題：「${q||R.C.n}」（範疇：${R.C.n}；關於：${R.W.n}）。起盤時間 ${new Date(H.t).toLocaleString("zh-HK")}，上升${hzDeg(H.cu[0])}，天頂${hzDeg(H.cu[9])}，${H.day?"日間盤":"夜間盤"}。行星：${pl}。問卦者徵象星${R.qs.join("、")}，事情徵象星${R.Lb}（第${R.qh}宮）。程式判斷：${R.vt}。${hzLinkTxt(H,R)} ${R.notes.join(" ")} ${R.timing?R.timing.txt:""}。請用溫暖、直接嘅語氣，先答「會唔會」，再講原因、時機同建議。`,null)}
+
+/* ---------- 擇日 ---------- */
+const EL_PURP=[
+ {k:"start",n:"開業、開新項目",h:10,pl:"木星",moon:"wax",mod:1},
+ {k:"contract",n:"簽約、合作",h:7,pl:"水星",moon:"wax",mod:1,merc:1},
+ {k:"love",n:"表白、約會、結婚",h:7,pl:"金星",moon:"wax",mod:1},
+ {k:"move",n:"搬屋、入伙",h:4,pl:"月亮",moon:"wax",mod:1},
+ {k:"job",n:"面試、見工、傾升職",h:10,pl:"太陽",moon:"wax",mod:0},
+ {k:"travel",n:"出行、旅行",h:9,pl:"木星",moon:"wax",mod:0},
+ {k:"buy",n:"買嘢、投資",h:2,pl:"木星",moon:"wax",mod:1,merc:1},
+ {k:"exam",n:"考試、交報告、發表",h:9,pl:"水星",moon:"wax",mod:0,merc:1},
+ {k:"end",n:"辭職、分手、斷捨離",h:1,pl:"土星",moon:"wane",mod:0},
+ {k:"health",n:"睇醫生、做療程",h:6,pl:"太陽",moon:"wane",mod:-1}];
+function elEvents(t0,days,lat,lon){const A=window.Astronomy,ev={rise:[],set:[],ecl:[]};
+  try{const ob=new A.Observer(lat,lon,0);let t=new Date(+t0-864e5);for(let i=0;i<days+3;i++){const r=A.SearchRiseSet(A.Body.Sun,ob,+1,t,2),s=A.SearchRiseSet(A.Body.Sun,ob,-1,t,2);if(r)ev.rise.push(+r.date);if(s)ev.set.push(+s.date);t=new Date(+t+864e5)}
+    ev.rise=[...new Set(ev.rise)].sort((a,b)=>a-b);ev.set=[...new Set(ev.set)].sort((a,b)=>a-b)}catch(e){}
+  try{let le=A.SearchLunarEclipse(new Date(+t0-4*864e5));for(let i=0;i<3;i++){ev.ecl.push({t:+le.peak.date,k:"月蝕"});le=A.NextLunarEclipse(le.peak)}
+    let se=A.SearchGlobalSolarEclipse(new Date(+t0-4*864e5));for(let i=0;i<3;i++){ev.ecl.push({t:+se.peak.date,k:"日蝕"});se=A.NextGlobalSolarEclipse(se.peak)}}catch(e){}
+  return ev}
+function elHour(ev,t,tz){const sr=ev.rise.filter(x=>x<=t).pop(),ss=ev.set.filter(x=>x<=t).pop();if(!sr||!ss)return null;
+  const dayTime=sr>ss;let start,end,idx,anchor=sr;
+  if(dayTime){start=sr;end=ev.set.find(x=>x>t);if(!end)return null;idx=Math.floor((t-start)/((end-start)/12))}
+  else{start=ss;end=ev.rise.find(x=>x>t);if(!end)return null;idx=12+Math.floor((t-start)/((end-start)/12))}
+  let wd;try{wd=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(new Intl.DateTimeFormat("en-US",{timeZone:tz,weekday:"short"}).format(new Date(anchor)))}catch(e){wd=new Date(anchor).getDay()}
+  const dr=HZ_WEEK[wd];return HZ_CHALD[(HZ_CHALD.indexOf(dr)+idx)%7]}
+function elLocalYmd(t,tz){try{const p=new Intl.DateTimeFormat("en-CA",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(t)).split("-").map(Number);return p}catch(e){const d=new Date(t);return [d.getFullYear(),d.getMonth()+1,d.getDate()]}}
+function electScan(purpK,days,lat,lon,tz,natal){const A=window.Astronomy,P=EL_PURP.find(x=>x.k===purpK)||EL_PURP[0];
+  const now=new Date();const t0=new Date(Math.ceil(+now/36e5)*36e5);
+  const names=[...HZ7,"天王星"],T=hzTable(t0,2,days+4,names);const ev=elEvents(t0,days,lat,lon);
+  // 月亮事件：入星座、同七星成相位
+  const mev=[],ing=[];let pl=tbLon(T,"月亮",0);
+  for(let d=.125;d<=days+3;d+=.125){const l=tbLon(T,"月亮",d);if(hzSg(l)!==hzSg(pl))ing.push(d);pl=l}
+  for(const q of HZ7){if(q==="月亮")continue;for(const Aa of [0,60,-60,90,-90,120,-120,180]){let prev=angDiff(angDiff(tbLon(T,"月亮",0),tbLon(T,q,0)),Aa);
+    for(let d=.125;d<=days+3;d+=.125){const v=angDiff(angDiff(tbLon(T,"月亮",d),tbLon(T,q,d)),Aa);if(prev*v<=0&&Math.abs(prev-v)<40)mev.push({d:d-.0625,q,A:Math.abs(Aa)});prev=v}}}
+  mev.sort((a,b)=>a.d-b.d);
+  const mercR=d=>tbSpd(T,"水星",d)<0;const ymdCache={};
+  const out=[];
+  for(let hI=0;hI<days*24;hI++){const d=hI/24,t=+t0+hI*36e5,why=[],bad=[];let sc=0;
+    const ml=tbLon(T,"月亮",d),sl=tbLon(T,"太陽",d),ms=hzSg(ml),elong=hzN(ml-sl),mspd=tbSpd(T,"月亮",d);
+    const nIng=ing.find(x=>x>d)||days+3,nxt=mev.find(e=>e.d>d&&e.d<nIng);
+    if(!nxt){sc-=12;bad.push("月亮空亡")}
+    else{const good=["木星","金星"].includes(nxt.q)&&nxt.A!==90&&nxt.A!==180,harsh=["火星","土星"].includes(nxt.q)&&[0,90,180].includes(nxt.A);
+      if(good){sc+=4;why.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}else if(harsh){sc-=4;bad.push(`月亮下一個相位係${nxt.q}${HZ_ASP[nxt.A]}`)}
+      else if(nxt.q===P.pl&&nxt.A!==90&&nxt.A!==180){sc+=2;why.push(`月亮去接觸${P.pl}`)}}
+    const ecl=ev.ecl.find(e=>Math.abs(e.t-t)<3*864e5);if(ecl){sc-=8;bad.push(`近${ecl.k}`)}
+    if(elong<12||elong>348){sc-=6;bad.push(elong<12?"新月前後、月亮焦傷":"月亮就快焦傷")}else if(Math.abs(elong-180)<10){sc-=3;bad.push("滿月前後")}
+    if(ml>=195&&ml<=225){sc-=4;bad.push("月亮喺燃燒之路")}
+    if(mspd<12.2){sc-=2;bad.push("月亮行得慢")}
+    const wax=elong<180;if(P.moon==="wax"?wax:!wax){sc+=3;why.push(wax?"月亮漸盈（利開始同成長）":"月亮漸虧（利結束同放低）")}else{sc-=1}
+    if(P.mod>=0){if(ms%3===P.mod){sc+=2;why.push(`月亮喺${hzMod(ms)}星座（${P.mod===1?"利長遠":"利快見效"}）`)}else if(ms%3===2){sc+=0}}
+    if(P.merc&&mercR(d)){sc-=4;bad.push("水星逆行")}
+    // 盤
+    const tt=new Date(t),ramc=hzN(A.SiderealTime(tt)*15+lon),cu=regioCusps(ramc,lat);
+    const ang=[cu[0],cu[3],cu[6],cu[9]];
+    for(const m of ["火星","土星","天王星"]){const l=tbLon(T,m,d);const hit=ang.findIndex(a=>Math.abs(angDiff(l,a))<=5);if(hit>=0){sc-=5;bad.push(`${m}喺${["上升","天底","下降","天頂"][hit]}附近`)}else if(m!=="天王星"&&hzHouse(cu,l)===1){sc-=3;bad.push(`${m}喺第一宮`)}}
+    for(const b of ["木星","金星"]){const l=tbLon(T,b,d),h=hzHouse(cu,l);if(h===1||h===10||Math.abs(angDiff(l,cu[0]))<=5||Math.abs(angDiff(l,cu[9]))<=5){sc+=3;why.push(`${b}喺${h===10?"第十宮":"第一宮"}`)}}
+    const day=hzN(sl-cu[0])>=180;
+    const asl=SIGN_LORD[hzSg(cu[0])],ae=hzEss(asl,tbLon(T,asl,d),day);if(ae.sc>=4){sc+=2;why.push(`上升主${asl}有力`)}else if(ae.sc<0){sc-=2;bad.push(`上升主${asl}受制`)}
+    if(asl!=="太陽"&&asl!=="月亮"&&tbSpd(T,asl,d)<0){sc-=2;bad.push(`上升主${asl}逆行`)}
+    const hl=SIGN_LORD[hzSg(cu[P.h-1])];if(P.h!==1){const he=hzEss(hl,tbLon(T,hl,d),day);if(he.sc>=4){sc+=2;why.push(`第${P.h}宮主${hl}有力`)}else if(he.sc<0){sc-=1}}
+    const pe=hzEss(P.pl,tbLon(T,P.pl,d),day);if(pe.sc>=4){sc+=1;why.push(`${P.pl}本身有力`)}
+    const hr=elHour(ev,t,tz);if(hr){if(hr===P.pl){sc+=2;why.push(`${hr}時（行星時）`)}else if(["木星","金星"].includes(hr)){sc+=1;why.push(`${hr}時（行星時）`)}else if(["火星","土星"].includes(hr)&&P.k!=="end"){sc-=1}}
+    if(["太陽","木星","土星"].includes(P.pl)&&day||["月亮","金星","火星"].includes(P.pl)&&!day){sc+=1}
+    if(natal){const y=elLocalYmd(t,tz),key=y.join("-");if(!(key in ymdCache)){let z=null;try{z=Solar.fromYmd(y[0],y[1],y[2]).getLunar().getDayZhi()}catch(e){}ymdCache[key]=z}
+      const dz=ymdCache[key];if(dz&&natal.dz&&Math.abs(ZHI.indexOf(dz)-ZHI.indexOf(natal.dz))===6){sc-=3;bad.push(`${dz}日沖你嘅日支${natal.dz}`)}
+      if(natal.pl){for(const [n,l] of natal.pl){for(const Aa of [0,90,180]){if(Math.abs(Math.abs(angDiff(ml,l))-Aa)<=3){if(["火星","土星"].includes(n)){sc-=2;bad.push(`月亮${HZ_ASP[Aa]}你本命${n}`)}}}
+        for(const Aa of [0,60,120]){if(Math.abs(Math.abs(angDiff(ml,l))-Aa)<=3&&["木星","金星"].includes(n)){sc+=1;why.push(`月亮${HZ_ASP[Aa]}你本命${n}`)}}}}}
+    out.push({t,sc,why,bad,asc:cu[0],hr,voc:!nxt,ms})}
+  const hrOk=t=>{let h;try{h=+new Intl.DateTimeFormat("en-GB",{timeZone:tz,hour:"numeric",hourCycle:"h23"}).format(new Date(t))}catch(e){h=new Date(t).getHours()}return h>=8&&h<=21};
+  const top=[];const sorted=[...out].filter(x=>x.t>+now&&hrOk(x.t)).sort((a,b)=>b.sc-a.sc);
+  for(const s of sorted){if(top.length>=6)break;if(top.some(x=>Math.abs(x.t-s.t)<12*36e5))continue;top.push(s)}
+  // 要避開
+  const vocSpans=[];let cur=null;for(const s of out){if(s.voc){if(!cur)cur={a:s.t,b:s.t};cur.b=s.t+36e5}else if(cur){vocSpans.push(cur);cur=null}}if(cur)vocSpans.push(cur);
+  const mr=[];for(let d=0;d<days;d+=.5)if(mercR(d)){mr.push(+t0+d*864e5)}
+  return {P,top,out,voc:vocSpans.filter(v=>v.b-v.a>=2*36e5),ecl:ev.ecl.filter(e=>e.t>=+t0-3*864e5&&e.t<=+t0+(days+3)*864e5),mercR:mr.length?[mr[0],mr[mr.length-1]]:null}}
+const elFmt=(t,tz,o)=>{try{return new Intl.DateTimeFormat("zh-HK",{timeZone:tz,...(o||{month:"numeric",day:"numeric",weekday:"short",hour:"numeric",minute:"2-digit"})}).format(new Date(t))}catch(e){return new Date(t).toLocaleString("zh-HK")}};
+function electReport(E,tz,all){const L=[];const list=all?E.top:E.top.slice(0,1);
+  L.push(`## ${all?"最好嘅時辰":"最好嘅一個時辰"}`);
+  list.forEach((s,i)=>{L.push(`- **${elFmt(s.t,tz)} 前後**（上升${SIGNS[hzSg(s.asc)]}${s.hr?`，${s.hr}時`:""}）：${s.why.slice(0,4).join("、")||"冇明顯阻滯"}${s.bad.length?`。要留意：${s.bad.slice(0,2).join("、")}`:""}。`)});
+  if(all){L.push("## 要避開");
+    if(E.voc.length)L.push(`- **月亮空亡**：${E.voc.slice(0,6).map(v=>`${elFmt(v.a,tz)} 至 ${elFmt(v.b,tz,elLocalYmd(v.a,tz).join()===elLocalYmd(v.b,tz).join()?{hour:"numeric",minute:"2-digit"}:undefined)}`).join("；")}。呢段時間開始嘅事，通常唔會有結果。`);
+    if(E.ecl.length)L.push(`- **蝕**：${E.ecl.map(e=>`${elFmt(e.t,tz,{month:"numeric",day:"numeric"})}${e.k}`).join("、")}，前後三日唔好開始重要嘅事。`);
+    if(E.mercR&&E.P.merc)L.push(`- **水星逆行**：${elFmt(E.mercR[0],tz,{month:"numeric",day:"numeric"})} 至 ${elFmt(E.mercR[1],tz,{month:"numeric",day:"numeric"})}，簽約、溝通、買電子產品要特別小心。`);
+    L.push("- 新月同滿月前後、月亮喺天秤 15° 至天蠍 15°、火星或土星貼近上升同天頂嘅時間，程式已經自動扣分。");
+    L.push("## 點樣用");L.push("- 先避開壞時間，再揀好時間。喺揀好嘅時間做第一個正式動作，例如簽名、交訂金、開門營業、出門。");
+    L.push("- 時辰係按你所在城市計，前後半個鐘都可以。如果配合埋你嘅本命盤（已經計入八字日支同本命火土），效果更好。")}
+  return L.join("\n")}
+
+/* ---------- 卜卦、擇日介面 ---------- */
+ORICON.horary='<svg viewBox="0 0 40 40"><rect x="7" y="7" width="26" height="26"/><path d="M7 7l26 26M33 7L7 33M20 7v26M7 20h26"/><circle cx="20" cy="20" r="3.2" class="f"/></svg>';
+ORICON.elect='<svg viewBox="0 0 40 40"><rect x="7" y="10" width="26" height="23" rx="1"/><path d="M7 16h26M13 6v7M27 6v7"/><path d="M23 21a5 5 0 1 0 3 7.5 4 4 0 1 1-3-7.5z" class="f"/></svg>';
+let hzLoc=null;
+function hzPlace(){if(hzLoc)return hzLoc;const c=(chart&&chart.city)||CITIES[0];return {name:c[0],lat:c[2],lon:c[3],tz:c[1]}}
+function hzLocRow(el,onChange){const box=document.createElement("div");box.className="row";box.style.cssText="justify-content:space-between;gap:10px;flex-wrap:wrap";
+  const draw=()=>{const p=hzPlace();box.innerHTML=`<span class="mute" style="font-size:13.5px">地點：${esc(p.name)}（${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°）</span><button type="button" class="linkbtn">${hzLoc?"改返用出生城市":"用我而家嘅位置"}</button>`;
+    $("button",box).onclick=()=>{if(hzLoc){hzLoc=null;draw();onChange&&onChange();return}
+      if(!navigator.geolocation){toastMsg("呢部機用唔到定位");return}
+      navigator.geolocation.getCurrentPosition(g=>{const c=(chart&&chart.city)||CITIES[0];hzLoc={name:"而家位置",lat:g.coords.latitude,lon:g.coords.longitude,tz:Intl.DateTimeFormat().resolvedOptions().timeZone||c[1]};draw();onChange&&onChange()},()=>toastMsg("未能取得位置，會用你嘅出生城市"),{timeout:8000,maximumAge:6e5})}};
+  draw();el.appendChild(box)}
+const hzLocalInput=d=>{const z=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`};
+function orHorary(el){
+  el.innerHTML=`<p class="mute" style="font-size:13.5px">卜卦占星係西方傳統嘅問事方法：喺你真心想知、第一次問一件事嘅嗰一刻起盤。盤上嘅行星代表人同事，睇佢哋會唔會相遇，就知道答案、原因同時間。</p>
+  <label class="f" for="hzc">問咩事<select id="hzc">${HZ_CATS.map(c=>`<option value="${c.k}">${c.n}</option>`).join("")}</select></label>
+  <label class="f" for="hzw">關於邊個<select id="hzw">${HZ_WHO.map(c=>`<option value="${c.k}">${c.n}</option>`).join("")}</select></label>
+  <label class="f" for="hzq">你嘅問題<input id="hzq" maxlength="200" placeholder="例如：佢會唔會主動搵返我？"></label>
+  <details class="hz-more"><summary class="mute" style="font-size:13.5px;cursor:pointer">提問時間同地點</summary><div class="stack" style="gap:10px;margin-top:10px">
+  <label class="f" for="hzt">提問時間（預設係而家；如果你係早前問人，可以改返嗰陣）<input id="hzt" type="datetime-local" value="${hzLocalInput(new Date())}"></label><div id="hzLoc"></div></div></details>
+  <p class="mute" style="font-size:13px">只問一條你真正關心、仲未知道答案嘅問題。同一條問題唔好短時間內重複問。</p>
+  <button class="btn solid" type="button" id="hzGo">起盤</button><div id="hzOut" class="stack"></div><div id="hzAI" class="stack"></div>`;
+  hzLocRow($("#hzLoc",el));
+  $("#hzGo",el).onclick=()=>{const tv=$("#hzt",el).value,t=tv?new Date(tv):new Date();if(isNaN(+t)){toastMsg("時間格式唔啱");return}
+    if(!window.Astronomy){toastMsg("星曆仲載入緊，請稍等");return}
+    dailyFree("horary","卜卦占星",()=>{
+      const pl=hzPlace(),cat=$("#hzc",el).value,who=$("#hzw",el).value,q=$("#hzq",el).value.trim();
+      const H=castHorary(t,pl.lat,pl.lon),R=judgeHorary(H,cat,who,profile.gender);
+      const vc=R.v==="yes"?"會":R.v==="mixed"?"有機會":"暫時唔會";
+      $("#hzOut",el).innerHTML=`<span class="eyebrow">${elFmt(H.t,pl.tz,{year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"2-digit"})} · ${esc(pl.name)} · 上升${hzDeg(H.cu[0])}</span>
+      ${q?`<p class="mute" style="font-size:14px">「${esc(q)}」</p>`:""}
+      <p class="headline" style="font-size:22px">${vc} · ${R.vt}</p>
+      <div class="deep-row"><b>點解</b><p>${esc(hzLinkTxt(H,R)||"代表你同代表件事嘅行星，喺而家嘅星座之內唔會相遇。")}</p></div>
+      ${R.timing?`<div class="deep-row"><b>幾時</b><p>${esc(R.timing.txt)}。</p></div>`:""}
+      <div class="deep-row"><b>你</b><p>${esc(hzPlLine(H,R.La))}，${hzCond(H,R.La)}</p></div>
+      <div class="deep-row"><b>件事</b><p>第 ${R.qh} 宮主${esc(hzPlLine(H,R.Lb))}，${hzCond(H,R.Lb)}</p></div>
+      <details><summary class="mute" style="font-size:13.5px;cursor:pointer">睇成個盤</summary><div class="stack" style="gap:6px;margin-top:8px">
+      ${HZ7.map(n=>{const p=H.P[n];return `<div class="deep-row"><b>${n}${p.retro&&n!=="太陽"&&n!=="月亮"?" ℞":""}</b><p>${hzDeg(p.lon)} · 第 ${p.h} 宮 · ${[...p.ess.pos,...p.ess.neg].join("、")||"—"}</p></div>`}).join("")}
+      <p class="mute" style="font-size:12.5px">宮頭（Regiomontanus）：${H.cu.map((c,i)=>`${i+1} ${hzDeg(c)}`).join("　")}</p></div></details>`;
+      const ai=$("#hzAI",el);ai.innerHTML="";
+      const sv=()=>({kind:"卜卦占星",title:R.C.n.split("：")[0],q,result:R.vt});
+      ai.appendChild(aiBlock("卜卦完整判斷",()=>horaryPrompt(H,R,q),{local:()=>horaryReport(H,R),save:sv}));
+      ai.appendChild(aiBlock("請解讀師再講多啲",()=>horaryPrompt(H,R,q)));
+    })};
+}
+let elPurp="start",elDays=14;
+function orElect(el){
+  el.innerHTML=`<p class="mute" style="font-size:13.5px">擇日：事情開始嗰一刻嘅星盤，會影響件事之後點發展。揀一個月亮狀態好、冇凶星壓住嘅時辰去做第一步，好似幫件事起一個好嘅命盤。</p>
+  <label class="f" for="elp">想做咩<select id="elp">${EL_PURP.map(c=>`<option value="${c.k}"${c.k===elPurp?" selected":""}>${c.n}</option>`).join("")}</select></label>
+  <div class="seg" role="group" aria-label="日子範圍">${[7,14,30].map(n=>`<button type="button" data-d="${n}" aria-pressed="${elDays===n}">未來 ${n} 日</button>`).join("")}</div>
+  <div id="elLoc"></div>
+  <button class="btn solid" type="button" id="elGo">搵好時辰</button><div id="elOut" class="stack"></div><div id="elAI"></div>`;
+  hzLocRow($("#elLoc",el));
+  $("#elp",el).onchange=e=>{elPurp=e.target.value};
+  el.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{elDays=+b.dataset.d;el.querySelectorAll("[data-d]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)))});
+  $("#elGo",el).onclick=()=>{if(!window.Astronomy){toastMsg("星曆仲載入緊，請稍等");return}
+    dailyFree("elect","擇日",()=>{
+      const out=$("#elOut",el);out.innerHTML='<span class="thinking">計緊未來每個鐘嘅星盤 ⋯</span>';
+      setTimeout(()=>{const pl=hzPlace();let natal=null;
+        if(chart){natal={dz:chart.bazi&&chart.bazi.pil&&chart.bazi.pil[2]?chart.bazi.pil[2][1]:null,pl:(chart.planets||[]).filter(p=>["火星","土星","木星","金星"].includes(p.n)).map(p=>[p.n,p.lon])}}
+        const E=electScan(elPurp,elDays,pl.lat,pl.lon,pl.tz,natal),b=E.top[0];
+        if(!b){out.innerHTML=`<p>呢段時間冇特別理想嘅時辰，可以試下揀長啲嘅日子範圍。</p>`;return}
+        out.innerHTML=`<span class="eyebrow">${esc(E.P.n)} · ${esc(pl.name)} · 未來 ${elDays} 日</span>
+        <p class="headline" style="font-size:22px">${elFmt(b.t,pl.tz)}</p>
+        <div class="deep-row"><b>好在</b><p>${esc(b.why.slice(0,4).join("、")||"冇明顯阻滯")}。</p></div>
+        ${b.bad.length?`<div class="deep-row"><b>留意</b><p>${esc(b.bad.slice(0,3).join("、"))}。</p></div>`:""}
+        <div class="deep-row"><b>避開</b><p>${E.voc.length?`呢段時間有 ${E.voc.length} 段月亮空亡`:"呢段時間冇長嘅月亮空亡"}${E.ecl.length?`，${E.ecl.map(e=>elFmt(e.t,pl.tz,{month:"numeric",day:"numeric"})+e.k).join("、")}前後要避開`:""}${E.mercR&&E.P.merc?"，期間有水星逆行":""}。</p></div>`;
+        const ai=$("#elAI",el);ai.innerHTML="";
+        ai.appendChild(aiBlock("睇晒所有好時辰同要避開嘅時間",()=>prompt(`${HZ_RULES}\n擇日規則：避開月亮空亡、蝕、新月滿月、月亮焦傷、燃燒之路、月亮慢行；凶星同天王星唔好喺四軸；利用入相位、月亮盈虧、行星時同日夜派；先減壞再加好，並配合本命盤。\n使用者想${E.P.n}，地點${pl.name}。程式揀出嘅時辰：${E.top.map(s=>`${elFmt(s.t,pl.tz)}（${s.why.join("、")}；留意：${s.bad.join("、")||"無"}）`).join("；")}。請溫暖咁解釋最好嘅兩三個時辰點解好、要點準備，同埋要避開嘅時間。`,chart),{local:()=>electReport(E,pl.tz,true)}));
+      },30)})};
 }
 
 /* ============ Me ============ */

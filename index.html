@@ -1273,7 +1273,7 @@ function prompt(task,c){
 
 今天日期：${ymd(new Date())}
 ${c?"使用者資料：\n"+profileContext(c)+"\n":""}
-任務：${task}`;
+${/運勢|計劃|規劃|行運/.test(task)?EB_RULES+"\n":""}${/事業|天賦|天職|工作/.test(task)?CAREER_RULES+"\n":""}任務：${task}`;
 }
 const SAVED_K="soluna.saved";
 const savedAll=()=>store(SAVED_K)||[];
@@ -1700,6 +1700,7 @@ function deepWesternMD(c){const h=deepWesternHTML(c);const out=[];const re=/<div
 function localChart(c){
   const b=c.bazi;const L=[];
   if(c.planets)L.push(`## 星盤\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。月亮${c.planets[1].sign}座，情緒需要${SIGN_KW[c.planets[1].sign]}。${c.asc?`上升${c.asc.sign}座，畀人第一印象係${SIGN_KW[c.asc.sign]}。`:""}${c.mc?`天頂${c.mc.sign}座：${MC_T[c.mc.sign]}`:""}`);
+  {const bp=blueprintNotes(c);if(bp)L.push(bp);const cb=careerBlueprint(c,true);if(cb)L.push(cb)}
   {const cn=classicalNotes(c);if(cn)L.push(cn);const ln=lillyNotes(c);if(ln)L.push(ln)}
   {const dw=deepWesternMD(c);if(dw)L.push(dw)}
   if(b){const mx=b.els.indexOf(Math.max(...b.els)),mn=b.els.indexOf(Math.min(...b.els));L.push(`## 八字\n日主${b.dm}（${EL[ganEl(b.dm)]}），${b.strong?"身強":"身弱"}，${b.geju}。${DM_DESC[b.dm]}\n\n月令${b.pil[1][1]}取${b.gejuTg}（${tenGod(b.dm,b.gejuTg)}）成${b.geju}：${b.gejuD}\n\n五行以${EL[mx]}最旺，${EL[mn]}最弱${b.els[mn]===0?"（缺"+EL[mn]+"）":""}，生活上可以多用${EL[mn]}嘅顏色、方位同習慣去平衡。`)}
@@ -1764,6 +1765,7 @@ function bzClash(c,gz,label){const b=c.bazi;if(!b)return "";const z=ZHI.indexOf(
   return `${label}${gz[1]}${hits.join("、")}：${hits.map(h=>`${h.startsWith("合")?"有助力":"有變動"}喺${T[h.slice(1)]}`).join("；")}。`}
 /* ---- 每段運勢加上嘅章節 ---- */
 function fcxMonth(c){const now=new Date(),L=[];const lu=lunationsIn(c,now,31);
+  try{const eb=ebertinMonth(c);if(eb)L.push(eb)}catch(e){console.warn(e)}
   if(lu.length)L.push(`## 本月月相同蝕\n${lu.map(x=>lunationLine(c,x)).join("\n")}`);
   if(c.planets&&window.Astronomy){const fast=["水星","金星","火星"].map(n=>{const l=geoLon(n,new Date(+now+12*864e5));return `${n}喺${sgOf(l)}座${c.asc?`（第${houseOf(c,l)}宮）`:""}：${PL_KW[n]}嘅焦點喺${c.asc?HOUSE_THEME[houseOf(c,l)-1]:SIGN_KW[sgOf(l)].split("、")[0]}`});
     L.push(`## 本月行星\n${fast.map(x=>"- "+x+"。").join("\n")}`)}
@@ -1793,6 +1795,70 @@ function fcxDecade(c){const b=c.bazi,now=new Date().getFullYear(),cur=b.yun.find
   if(c.planets&&window.Astronomy){const out=[];for(const n of ["木星","土星"]){const l=geoLon(n,new Date());out.push(`${n}而家喺${sgOf(l)}座${c.asc?`（你第${houseOf(c,l)}宮）`:""}`)}L.push(`## 慢行星位置\n${out.join("，")}。木星大約十二年行一圈，土星大約二十九年行一圈，佢哋經過你邊個宮，邊方面就係嗰幾年嘅機會同功課。`)}
   return L}
 
+
+/* ===== 事業同成就藍圖（天頂、十宮主、十宮內行星、二宮六宮、元素、相位）；宇宙藍圖（半球、焦點宮位）；
+   宇宙生物學行運（1 度規則、中點、45 度系統、赤緯平行、個人點） ===== */
+const EL4=["火","土","風","水"];
+const EL4_T={火:"創造力同熱忱：你需要有熱情、有舞台、可以帶頭嘅工作",土:"務實：你擅長將諗法變成實際成果，穩定累積",風:"理智同思維：你靠溝通、資訊同人脈發光",水:"情感：你嘅直覺同同理心係本錢，適合照顧人、創作或者療癒"};
+const CAREER_H=["靠你自己個人：你本人就係品牌，親力親為最有成績","靠你嘅才能同資源：專業技能同理財能力會帶你向上","靠溝通、寫作、學習同人脈網絡","靠家庭背景、地產，或者喺一個有歸屬感嘅地方發展","靠創意、表演、教小朋友或者娛樂相關嘅才華","靠日常嘅努力、專業技術同服務精神","靠合作夥伴、客戶，或者一對一嘅專業關係","靠處理別人嘅資源、投資、心理或者深入研究","靠學問、海外、出版、教育或者信仰","事業本身就係你嘅重心：你天生要喺社會上做出成績","靠朋友、團體、社群同長遠願景","靠幕後工作、靈性、醫療或者大機構"];
+const PL10_T={太陽:"天生有領導力，容易被睇見，適合做主導",月亮:"適合照顧人、面向大眾嘅工作，事業會有起伏但人緣好",水星:"靠頭腦同口才，適合溝通、寫作、教學、生意",金星:"靠美感同人緣，適合藝術、美容、設計、外交",火星:"有衝勁同競爭力，適合需要勇氣同行動力嘅工作",木星:"容易得到貴人同機會，適合教育、法律、出版、顧問",土星:"成就嚟得遲但穩，靠專業同耐力爬上高位",天王星:"適合創新、科技、自由業，唔鍾意傳統架構",海王星:"適合藝術、靈性、療癒、影像，事業方向需要時間沉澱",冥王星:"有影響力同改造能力，適合研究、危機處理、心理"};
+const cuspSg=(c,h)=>HOUSE_SYS==="placidus"&&c.cusps?sgOf(c.cusps[h-1]):SIGNS[(Math.floor(c.asc.lon/30)+h-1)%12];
+const rulesHouses=(c,n)=>[1,2,3,4,5,6,7,8,9,10,11,12].filter(h=>TRAD_RULER[cuspSg(c,h)]===n);
+function elementCount(c){const k=[0,0,0,0];for(const p of c.planets.filter(p=>CLASSIC7.includes(p.n)))k[SIGNS.indexOf(p.sign)%4]+=p.n==="太陽"||p.n==="月亮"?2:1;if(c.asc)k[SIGNS.indexOf(c.asc.sign)%4]+=2;if(c.mc)k[SIGNS.indexOf(c.mc.sign)%4]+=1;return k}
+function aspBetween(a,b){const s=Math.abs(angDiff(a,b));const x=[[0,"合",8],[60,"六合",5],[90,"刑",7],[120,"拱",7],[180,"沖",8]].find(([A,,o])=>Math.abs(s-A)<=o);return x?x[1]:null}
+function careerBlueprint(c,short){if(!c.planets||!c.asc||!c.mc)return "";const L=[];
+  const mcS=c.mc.sign,r10=TRAD_RULER[cuspSg(c,10)],rp=c.planets.find(p=>p.n===r10),rh=houseOf(c,rp.lon);
+  L.push(`## 事業同成就藍圖\n- **天頂${mcS}座**：${MC_T[mcS]}呢個就係你天生想發揮、亦最容易令你開心嘅方向。`);
+  L.push(`- **第十宮主${r10}落第 ${rh} 宮**：${CAREER_H[rh-1]}。${r10}喺${rp.sign}座，做事方式${SIGN_KW[rp.sign]}。`);
+  if(short)return L.join("\n");
+  const in10=c.planets.filter(p=>houseOf(c,p.lon)===10);
+  if(in10.length){L.push("## 第十宮入面嘅行星（特別天賦）");for(const p of in10){const rh2=CLASSIC7.includes(p.n)?rulesHouses(c,p.n):[];L.push(`- **${p.n}**：${PL10_T[p.n]}。${rh2.length?`${p.n}同時管你第 ${rh2.join("、")} 宮（${rh2.map(h=>HOUSE_THEME[h-1]).join("、")}），呢啲範疇亦係你事業嘅額外本錢。`:""}`)}}
+  else L.push(`- **第十宮冇行星**：唔代表冇事業運，而係重點睇十宮主${r10}，佢去邊度，你嘅機會就喺邊度。`);
+  const r2=TRAD_RULER[cuspSg(c,2)],p2=c.planets.find(p=>p.n===r2),r6=TRAD_RULER[cuspSg(c,6)],p6=c.planets.find(p=>p.n===r6);
+  L.push(`## 錢同日常工作\n- **第二宮主${r2}落第 ${houseOf(c,p2.lon)} 宮**：你累積金錢同資源，最好透過「${HOUSE_THEME[houseOf(c,p2.lon)-1]}」。\n- **第六宮主${r6}落第 ${houseOf(c,p6.lon)} 宮**：日常工作同健康嘅節奏，同「${HOUSE_THEME[houseOf(c,p6.lon)-1]}」連埋一齊。`);
+  const ek=elementCount(c),mx=ek.indexOf(Math.max(...ek)),mn=ek.indexOf(Math.min(...ek));
+  L.push(`## 元素微調\n你嘅盤${EL4[mx]}象最重，${EL4_T[EL4[mx]]}。${EL4[mn]}象最少，${{火:"記得俾自己多啲熱情同冒險",土:"記得將計劃落地，處理好細節同金錢",風:"記得多同人交流，聽多啲唔同意見",水:"記得照顧自己嘅感受，唔好只顧做嘢"}[EL4[mn]]}。`);
+  const asp=[];for(const p of [...in10,...c.planets.filter(x=>["木星","金星","土星","火星"].includes(x.n))]){if(p.n===r10)continue;const a=aspBetween(rp.lon,p.lon);if(a&&!asp.some(z=>z.n===p.n))asp.push({n:p.n,a})}
+  if(asp.length)L.push(`## 相位：好運同功課\n${asp.map(x=>`- 十宮主${r10}同${x.n}成${x.a}：${x.a==="拱"?`順風，${x.n==="木星"?"機會同貴人易嚟":x.n==="金星"?"人緣同美感幫到你":"天賦自然發揮"}`:x.a==="六合"?"有機會，但要你主動行一步先會變成實際成果":x.a==="合"?`${x.n}嘅特質直接融入你嘅事業`:`有壓力同挑戰，${x.n==="土星"?"成功嚟得慢，但每一步都扎實":x.n==="火星"?"容易有競爭同衝突，要學識引導衝勁":"要喺矛盾中搵平衡"}`}。`).join("\n")}`);
+  L.push("## 點樣用\n- 順住天頂同十宮主嘅方向去揀工作同發展，會更容易得到支持。成功唔止係職位，處理好錢（第二宮）同日常工作節奏（第六宮）都係成就嘅一部分。");
+  return L.join("\n")}
+function blueprintNotes(c){if(!c.planets||!c.asc)return "";const pl=c.planets.filter(p=>CLASSIC7.includes(p.n));const hs=pl.map(p=>houseOf(c,p.lon));
+  const up=hs.filter(h=>h>=7).length,east=hs.filter(h=>h>=10||h<=3).length,n=pl.length;
+  const cnt={};hs.forEach(h=>cnt[h]=(cnt[h]||0)+1);const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+  const L=["## 你嘅宇宙藍圖"];
+  L.push(`- **上下半球**：${up>n/2?`${up} 粒行星喺地平線之上，你嘅能量向外，自我意識強，人生好多課題喺社會同人前發生。`:up<n/2?`${n-up} 粒行星喺地平線之下，你嘅力量喺內在，靠直覺同潛意識，家庭同內心世界對你好重要。`:"上下平均，你懂得喺內在同外在之間平衡。"}`);
+  L.push(`- **東西半球**：${east>n/2?"行星集中喺東面，你習慣主動開創，自己嘅路自己揀。":east<n/2?"行星集中喺西面，你嘅機會多數透過人際同合作出現，懂得借力。":"東西平均，你可以獨立，亦可以合作。"}`);
+  if(top&&top[1]>=2)L.push(`- **人生焦點**：第 ${top[0]} 宮有 ${top[1]} 粒行星，「${HOUSE_THEME[top[0]-1]}」係你呢一世特別多經歷、亦特別多力量嘅地方。`);
+  L.push(`- **第一宮「我是」**：上升${c.asc.sign}座，你天然嘅自己係${SIGN_KW[c.asc.sign]}。順住呢份本質去生活，會覺得最自在。`);
+  return L.join("\n")}
+/* 宇宙生物學（Ebertin）行運 */
+const EB_PTS_T={太陽:"身體同自我",月亮:"情緒同身邊嘅女性",上升:"你身邊環境同人際",天頂:"人生目標同方向","太陽/月亮":"伴侶關係同婚姻","金星/火星":"愛慾同吸引力","天頂/上升":"你個人嘅核心","太陽/木星":"成功同快樂","木星/土星":"人生轉變"};
+const EB_TR_T={太陽:["±","受注目、精神同身體狀態會有感"],水星:["±","消息、傾談同決定"],金星:["+","愉快、感情同被欣賞"],火星:["±","衝勁、行動，但亦容易有摩擦"],木星:["+","擴展、好運、得到支持"],土星:["−","壓力、延遲、要負責任，亦可以令事情落地"]};
+function ebPoints(c){const P=n=>c.planets.find(p=>p.n===n);const mid=(a,b)=>{const d=angDiff(b,a);return n360(a+d/2)};const o=[];
+  for(const n of ["太陽","月亮"])o.push({n,lon:P(n).lon});if(c.asc)o.push({n:"上升",lon:c.asc.lon});if(c.mc)o.push({n:"天頂",lon:c.mc.lon});
+  o.push({n:"太陽/月亮",lon:mid(P("太陽").lon,P("月亮").lon)},{n:"金星/火星",lon:mid(P("金星").lon,P("火星").lon)},{n:"太陽/木星",lon:mid(P("太陽").lon,P("木星").lon)},{n:"木星/土星",lon:mid(P("木星").lon,P("土星").lon)});
+  if(c.asc&&c.mc)o.push({n:"天頂/上升",lon:mid(c.mc.lon,c.asc.lon)});return o}
+const decOf=(lon,lat)=>{const r=Math.PI/180,e=23.4393*r;return Math.asin(Math.sin((lat||0)*r)*Math.cos(e)+Math.cos((lat||0)*r)*Math.sin(e)*Math.sin(lon*r))/r};
+function ebertinMonth(c,days){days=days||30;if(!c.planets||!window.Astronomy)return "";const now=new Date(),pts=ebPoints(c),TR=["太陽","水星","金星","火星","木星","土星"],tab={};
+  for(const n of TR){tab[n]=[];for(let d=0;d<=days+1;d++)tab[n].push(geoLon(n,new Date(+now+d*864e5)))}
+  const hits=[];
+  for(const n of TR)for(const p of pts)for(let k=0;k<8;k++){const A=k*45;for(let d=0;d<days;d++){const a=angDiff(tab[n][d]-p.lon,A),b=angDiff(tab[n][d+1]-p.lon,A);
+    if(a*b<=0&&Math.abs(a-b)<20){const f=a/(a-b),dt=new Date(+now+(d+f)*864e5),spd=Math.abs(angDiff(tab[n][d+1],tab[n][d]))||.01;hits.push({n,p:p.n,A,dt,win:Math.max(.5,Math.min(20,.5/spd))});break}}}
+  if(!hits.length)return "";
+  const rank={木星:0,土星:1,火星:2,金星:3,太陽:4,水星:5};
+  hits.sort((x,y)=>x.dt-y.dt);const per={};const pick=hits.filter(h=>!(h.n==="水星"&&h.p.includes("/"))).sort((x,y)=>rank[x.n]-rank[y.n]).filter(h=>(per[h.n]=(per[h.n]||0)+1)<=3).slice(0,8).sort((x,y)=>x.dt-y.dt);
+  const aw=A=>A===0?"合":A===180?"沖":A===90||A===270?"刑":A%90===45?"半刑／八分之三刑":"";
+  const L=["## 宇宙生物學觸發日",`行運只會觸動你本命盤本身已有嘅潛能。影響主要集中喺行運星推移大約 1 度嘅時間，即係準確日子前後${"一兩日"}（慢行星會長啲）。`];
+  for(const h of pick){const t=EB_TR_T[h.n];L.push(`- **${fmtD(h.dt)}**：行運${h.n}${aw(h.A)}你嘅${h.p}（${EB_PTS_T[h.p]}）。${t[0]==="+"?"正面傾向：":t[0]==="−"?"挑戰傾向：":"中性，睇你點用："}${t[1]}${h.win>=2?`；影響大約持續 ${Math.round(h.win*2)} 日`:""}。`)}
+  // 赤緯平行
+  const par=[];const mid=new Date(+now+15*864e5);
+  for(const n of ["火星","木星","土星"]){const l=geoLon(n,mid),dT=decOf(l,0);for(const q of ["太陽","月亮"]){const p=c.planets.find(x=>x.n===q),dN=decOf(p.lon,p.lat);
+    if(Math.abs(dT-dN)<=1)par.push(`${n}同你本命${q}平行（赤緯 ${dN.toFixed(1)}°）`);else if(Math.abs(dT+dN)<=1)par.push(`${n}同你本命${q}反平行`)}}
+  if(par.length)L.push(`- **赤緯平行**：${par.join("；")}。平行嘅作用好似合相，會加強呢段時間嘅感受。`);
+  return L.join("\n")}
+const EB_RULES="宇宙生物學原則：先睇本命盤，行運只係觸發本身已有嘅潛能；行運影響集中喺行運星推移約 1 度嘅期間；重視上升同天頂呢兩個個人點、中點同 45 度倍數嘅角度、赤緯平行；評估要分正面同負面傾向，唔好單憑相位名斷吉凶。";
+const CAREER_RULES="事業分析公式：先睇天頂同第十宮，再睇第十宮主落邊宮（追求目標嘅資源），然後睇十宮內行星（特別天賦）同佢哋主管嘅宮（額外資產）；成功亦包括第二宮（錢）同第六宮（日常工作）；用元素同相位微調，第十宮主同十宮內行星有和諧相位代表較順，六合要配合主動努力。";
+
 const fcxInsert=(txt,before,extra)=>{const i=txt.indexOf("\n\n## "+before);const add=extra.filter(Boolean).join("\n\n");if(!add)return txt;return i<0?txt+"\n\n"+add:txt.slice(0,i)+"\n\n"+add+txt.slice(i)};
 function localMonth(c){let x=[];try{x=fcxMonth(c)}catch(e){console.warn(e)}return fcxInsert(localMonth0(c),"本月行動",x)}
 function localYear(c){let x=[];try{x=fcxYear(c)}catch(e){console.warn(e)}return fcxInsert(localYear0(c),"最旺月份",x)}
@@ -1815,7 +1881,7 @@ function localTransit(c,tr){const d=TR_DO[tr.tp]||["",""];return [`## ${tr.tp}${
 function localProduct(p){const c=chart;const z=c.ziwei;const D=deepPoints(c);
   const venus=c.planets&&c.planets.find(x=>x.n==="金星"),sat=c.planets&&c.planets.find(x=>x.n==="土星");
   const S={love:()=>[`## 你點樣去愛\n金星${venus.sign}座：你喺愛入面${SIGN_KW[venus.sign]}。`,z?`## 夫妻宮\n${zwPalText(z,"夫妻")}`:"",c.asc?`## 第七宮\n你嘅伴侶宮落${SIGNS[(Math.floor(c.asc.lon/30)+6)%12]}座，你會被${SIGN_KW[SIGNS[(Math.floor(c.asc.lon/30)+6)%12]]}嘅人吸引。`:"",`## 八字感情\n日支${c.bazi.pil[2][1]}係你嘅夫妻宮，${c.bazi.strong?"你身強，感情上較主導":"你身弱，感情上需要被照顧"}。`,`## 建議\n${LILITH_T[SIGNS[Math.floor(D.lil/30)]]}`],
-   career:()=>[c.mc?`## 你嘅天職\n${MC_T[c.mc.sign]}`:"",z?`## 官祿宮\n${zwPalText(z,"官祿")}`:"",`## 八字格局\n${c.bazi.geju}：${c.bazi.gejuD}`,`## 天賦\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。`],
+   career:()=>[careerBlueprint(c),z?`## 官祿宮\n${zwPalText(z,"官祿")}`:"",`## 八字格局\n${c.bazi.geju}：${c.bazi.gejuD}`,`## 天賦\n太陽${c.planets[0].sign}座：${SIGN_KW[c.planets[0].sign]}。`],
    money:()=>[z?`## 財帛宮\n${zwPalText(z,"財帛")}`:"",c.asc?`## 第二宮\n你嘅財帛宮落${SIGNS[(Math.floor(c.asc.lon/30)+1)%12]}座，賺錢方式偏向${SIGN_KW[SIGNS[(Math.floor(c.asc.lon/30)+1)%12]]}。`:"",`## 八字財星\n日主${c.bazi.dm}${c.bazi.strong?"身強能任財，宜主動求財":"身弱，財多身弱，宜穩健理財、借力合作"}。`],
    soul:()=>[`## 靈魂方向\n${NODE_T[SIGNS[Math.floor(D.nn/30)]]}`,c.asc?`## 冥王星\n${PLUTO_H[houseOf(c,c.planets.find(x=>x.n==="冥王星").lon)-1]}`:"",z?`## 福德宮\n${zwPalText(z,"福德")}`:"",`## 土星課題\n土星${sat.sign}座：你要喺「${SIGN_KW[sat.sign]}」呢方面學識承擔同成熟。`],
    year:()=>[localYear(c)],decade:()=>[localDecade(c)]};
@@ -3570,8 +3636,8 @@ function hzAcc(P,n,nn,t){const p=P[n],r=[];let sc=HOUSE_ACC[p.h];
   r.push(`${p.h} 宮${hzAngular(p.h)?"（角宮，有力）":[6,8,12].includes(p.h)?"（弱宮）":hzCadent(p.h)?"（果宮，力弱）":""}`);
   if(HZ_JOY[n]===p.h){sc+=2;r.push("喜樂宮")}
   if(n!=="太陽"&&n!=="月亮"){if(p.retro){sc-=5;r.push("逆行")}}
-  const m=HZ_MEAN[n],a=Math.abs(p.spd);if(a<m*.15&&n!=="太陽"&&n!=="月亮"){sc-=3;r.push(p.retro?"停留（就嚟轉順）":"停留（就嚟轉逆）")}else if(a>m*1.05){sc+=2;r.push("行得快")}else if(a<m*.6){sc-=2;r.push("行得慢")}
-  if(n!=="太陽"){const ds=Math.abs(angDiff(p.lon,P.太陽.lon));if(ds<17/60){sc+=5;r.push("日心（cazimi，極有力）")}else if(ds<8.5){sc-=5;r.push("焦傷")}else if(ds<17.5){sc-=4;r.push("日光下")}}
+  const m=HZ_MEAN[n],a=Math.abs(p.spd);if(a<m*.15&&n!=="太陽"&&n!=="月亮"){sc-=3;r.push(p.retro?"停留（就嚟轉順）":"停留（就嚟轉逆）")}else if(a>m*1.05&&n!=="土星"){sc+=2;r.push("行得快")}else if(a<m*.6){sc-=2;r.push("行得慢")}
+  if(n!=="太陽"){const ds=Math.abs(angDiff(p.lon,P.太陽.lon));if(ds<17/60){sc+=5;r.push("日心（cazimi，極有力）")}else if(ds<8.5&&hzSg(p.lon)===hzSg(P.太陽.lon)){sc-=5;r.push("焦傷")}else if(ds<17.5){sc-=4;r.push("日光下")}else if(ds>172){sc-=2;r.push("對沖太陽")}}
   const others=HZ7.filter(x=>x!==n).map(x=>({x,d:angDiff(P[x].lon,p.lon)}));
   const ahead=others.filter(o=>o.d>0&&o.d<=15).sort((a,b)=>a.d-b.d)[0],behind=others.filter(o=>o.d<0&&o.d>=-15).sort((a,b)=>b.d-a.d)[0];
   if(ahead&&behind){const S=new Set([ahead.x,behind.x]);if(S.has("火星")&&S.has("土星")){sc-=5;r.push("被火土圍攻")}if(S.has("木星")&&S.has("金星")){sc+=5;r.push("被吉星包圍")}}
@@ -3599,6 +3665,8 @@ const HZ_CATS=[
  {k:"property",n:"買樓、租屋、搬屋",h:4},
  {k:"lost",n:"搵失物",h:2},
  {k:"pet",n:"寵物",h:6},
+ {k:"lostpet",n:"搵走失嘅寵物（細過山羊）",h:6},
+ {k:"bigpet",n:"搵走失嘅大型動物（例如馬）",h:12},
  {k:"travel",n:"遠行、移民、讀書、考試",h:9},
  {k:"news",n:"消息、傳聞係咪真",h:3},
  {k:"wish",n:"願望會唔會成真、朋友",h:11},
@@ -3609,9 +3677,10 @@ const HZ_PL_PERSON={太陽:"有權威、光明磊落嘅人",月亮:"溫柔、情
 const hzLord=(H,h)=>SIGN_LORD[hzSg(H.cu[h-1])];
 const hzTurn=(base,h)=>((base-1)+(h-1))%12+1;
 function hzFaster(H,a,b){return Math.abs(H.P[a].spd)>=Math.abs(H.P[b].spd)?a:b}
-function hzTiming(H,app,orb,days){const p=H.P[app],m=[0,2,1][p.sg%3],hs=hzAngular(p.h)?2:hzCadent(p.h)?0:1,sum=m+hs;
-  const U=["日","日","星期","星期","個月"],unit=U[sum],alt=U[Math.max(0,sum-2)];const n=Math.max(1,Math.round(orb));
-  return {n,unit,days,txt:`大約 ${n} ${unit}${alt!==unit?`（如果唔合情理，可以睇做 ${n} ${alt}）`:""}；計法：${app}喺${hzMod(p.sg)}星座、${hzAngular(p.h)?"角宮":hzCadent(p.h)?"果宮":"續宮"}，相差 ${orb.toFixed(1)}°`}}
+const HZ_RANGE={lost:["日","星期"],lostpet:["日","星期"],bigpet:["日","星期"],news:["日","星期"],property:["個月","年"]};
+function hzTiming(H,app,orb,days,cat){const p=H.P[app],m=[0,2,1][p.sg%3],hs=hzAngular(p.h)?2:hzCadent(p.h)?0:1,sum=m+hs;
+  const U=HZ_RANGE[cat]||["星期","個月"],n=Math.max(1,Math.round(orb)),UD={日:1,星期:7,個月:30,年:365},cap=cat==="property"?1100:U[1]==="星期"?60:370;let unit=sum<=2?U[0]:U[1];if(n*UD[unit]>cap)unit=U[0];
+  return {n,unit,days,txt:`大約 ${n} ${unit}（呢類問題合理嘅時間係${U[0]}至${U[1]}；${app}喺${hzMod(p.sg)}星座、${hzAngular(p.h)?"角宮":hzCadent(p.h)?"果宮":"續宮"}，${sum<=2?"屬較快":"屬較慢"}，仲差 ${orb.toFixed(1)}° 到位）`}}
 function judgeHorary(H,catK,whoK,gender){
   const C=HZ_CATS.find(x=>x.k===catK)||HZ_CATS[0],W=HZ_WHO.find(x=>x.k===whoK)||HZ_WHO[0];
   const qh=hzTurn(W.h,C.h),La=hzLord(H,W.h),Lb=hzLord(H,qh),self=W.k==="self";
@@ -3646,7 +3715,7 @@ function judgeHorary(H,catK,whoK,gender){
   const good=R.links.find(l=>l.type==="same")||R.links.filter(l=>l.type==="perf"&&!l.block).sort((a,b)=>a.d-b.d)[0];
   const tr=R.trans.sort((a,b)=>a.d-b.d)[0],co=R.coll.sort((a,b)=>a.d-b.d)[0];
   let v,vt,key=null;
-  if(good){key=good;if(good.type==="same"){v="yes";vt="會成"}else if(good.A===180){v="mixed";vt="會成，但未必如你所願"}else if(good.A===90){v="mixed";vt="會成，但要經過一番波折"}else{v="yes";vt="會成"}}
+  if(good){key=good;if(good.type==="same"){v="yes";vt="會成"}else if(good.A===180){v="mixed";vt=R.C.k==="property"||R.C.k==="deal"?"會成，但要費力協商":"會成，但未必如你所願"}else if(good.A===90){v="mixed";vt=R.C.k==="property"||R.C.k==="deal"?"會成，但要經過一番討價還價":"會成，但要經過一番波折"}else{v="yes";vt="會成"}}
   else if(tr){v="yes";vt="會成，靠第三者幫手";key={type:"trans",...tr}}
   else if(co){v=co.rcv?"yes":"mixed";vt=co.rcv?"會成，有人從中撮合":"有機會成，要靠中間人";key={type:"coll",...co}}
   else if(R.refr.length){v="no";vt="暫時唔會成，有一方會退縮"}
@@ -3655,8 +3724,8 @@ function judgeHorary(H,catK,whoK,gender){
   if(v==="no"&&mutual){vt+="（不過雙方有心）"}
   if(v==="no"&&R.moon.voc&&!["金牛","巨蟹","射手","雙魚"].includes(SIGNS[H.P.月亮.sg]))R.notes.push("月亮空亡：離開而家星座之前唔再同任何行星成相位，通常代表件事唔會有大進展，或者擔心嘅事唔會發生。");
   // 時機
-  if(key&&key.type==="perf"){const app=hzFaster(H,key.a,key.b);R.timing=hzTiming(H,app,key.orb,key.d)}
-  else if(key&&key.type==="trans"){R.timing=hzTiming(H,key.c,key.orb,key.d)}
+  if(key&&key.type==="perf"){const app=hzFaster(H,key.a,key.b);R.timing=hzTiming(H,app,key.orb,key.d,C.k)}
+  else if(key&&key.type==="trans"){R.timing=hzTiming(H,key.c,key.orb,key.d,C.k)}
   else if(key&&key.type==="coll"){R.timing={days:key.d,txt:`按星曆大約 ${Math.max(1,Math.round(key.d))} 日內兩方先後同${key.c}成相位`}}
   // 考慮事項
   const asc=H.cu[0]%30;if(asc<3)R.notes.push("上升星座仲喺好早嘅度數：事情仲未成形，可能問得早咗，遲啲情況會更清楚。");
@@ -3688,9 +3757,12 @@ function hzLinkTxt(H,R){const k=R.key;if(!k)return "";
 const HZ_LOST_EL=["近熱源、廚房、電器或者光猛嘅地方","低處、地板、近地面或者埋喺其他嘢下面","高處、近窗、通風嘅位置或者書架","近水、廁所、廚房鋅盤、潮濕嘅地方"];
 const HZ_LOST_H={1:"就喺你身邊，或者你成日用嘅地方",2:"同你嘅錢包、銀包或者貴重物品放埋一齊",3:"車上、附近、或者兄弟姊妹度",4:"屋企入面",5:"娛樂場所、小朋友嘅地方",6:"工作地方、寵物附近、雜物房",7:"另一個人手上",8:"收埋咗、或者同其他人嘅嘢放埋一齊",9:"遠啲嘅地方、旅行或者讀書嘅地方",10:"公司、當眼位",11:"朋友度",12:"好隱蔽嘅地方、或者已經好難搵返"};
 function hzCatAdvice(H,R){const L=[],Lb=R.Lb,p=H.P[Lb];
-  if(R.C.k==="lost"){L.push(`- **件嘢喺邊**：代表件嘢嘅${Lb}喺第 ${p.h} 宮，${HZ_LOST_H[p.h]}；位置多數係${HZ_LOST_EL[p.sg%4]}。`);
-    if(p.h===1||hzAngular(p.h))L.push("- 代表件嘢嘅星喺角宮或者第一宮，搵返嘅機會幾大。");if(H.P.月亮.h===2||H.P.月亮.h===1)L.push("- 月亮喺第一或者第二宮，件嘢未走遠。")}
+  if(["lost","lostpet","bigpet"].includes(R.C.k)){L.push(`- **件嘢喺邊**：代表件嘢嘅${Lb}喺第 ${p.h} 宮，${HZ_LOST_H[p.h]}；位置多數係${HZ_LOST_EL[p.sg%4]}。`);
+    if(p.h===1||hzAngular(p.h))L.push("- 代表件嘢嘅星喺角宮或者第一宮，搵返嘅機會幾大。");if(H.P.月亮.h===2||H.P.月亮.h===1)L.push("- 月亮喺第一或者第二宮，件嘢未走遠。");
+    if(R.C.k==="lost"){const L4=hzLord(H,4);L.push(`- 如果件嘢可能俾其他嘢蓋住或者收埋咗，亦睇第四宮主${L4}：佢喺第 ${H.P[L4].h} 宮，${HZ_LOST_H[H.P[L4].h]}。`)}
+    L.push(`- 月亮係所有失物（特別係活物）嘅自然徵象：月亮喺${SIGNS[H.P.月亮.sg]}座第 ${H.P.月亮.h} 宮，${hzN(H.P.月亮.lon-H.P.太陽.lon)<180?"漸盈，光線充足，有利搵返":"漸虧，要主動啲去搵"}。冇明確證據之前，唔好輕易懷疑係人偷。`)}
   if(R.C.k==="property"){const L4=hzLord(H,4),L10=hzLord(H,10);L.push(`- **層樓本身**：第四宮主${L4}${hzCond(H,L4)}${H.P[L4].ess.sc>=3?"，物業質素唔錯":H.P[L4].ess.sc<0?"，要留意隱藏嘅問題，例如漏水或者維修":""}。`);
+    L.push(`- **房屋問題位**：第四宮主喺${["火","土","風","水"][H.P[L4].sg%4]}象星座，${["留意電線、爐具同過熱","留意地基、牆身同結構","留意屋頂、窗戶同通風","留意水喉、滲水同防潮"][H.P[L4].sg%4]}。`);
     L.push(`- **價錢**：第十宮主${L10}${H.P[L10].ess.sc>=3?"有力，價錢偏高但物有所值":H.P[L10].ess.sc<0?"偏弱，價錢有傾談空間":"一般，價錢合理"}。`)}
   if(["money","salary","loan"].includes(R.C.k)){const pf=hzN(H.day?H.cu[0]+H.P.月亮.lon-H.P.太陽.lon:H.cu[0]+H.P.太陽.lon-H.P.月亮.lon),ph=hzHouse(H.cu,pf);
     L.push(`- **幸運點**喺${hzDeg(pf)}，第 ${ph} 宮：財運嘅焦點喺「${HZ_HN[ph]}」。`);if(p.h===1)L.push("- 代表錢嘅星走入你嘅第一宮：錢會自己走埋嚟。")}
@@ -3709,6 +3781,7 @@ function horaryReport(H,R){const L=[];
   L.push(`- **件事**：${R.W.k==="self"?"":"由佢嘅宮位數起，"}第 ${R.qh} 宮（${HZ_HN[R.qh]}）主${R.Lb}（${hzPlLine(H,R.Lb)}），${hzCond(H,R.Lb)}。`);
   L.push("## 雙方狀態");
   for(const n of [...new Set([R.La,R.Lb,...R.qs])]){const p=H.P[n];L.push(`- **${n}**：${p.ess.pos.length?p.ess.pos.join("、"):"冇本質尊貴"}${p.ess.neg.length?"，"+p.ess.neg.join("、"):""}；${p.acc.r.join("、")}。${p.ess.sc>=4?"本身有質素，有實力。":p.ess.pere?"遊走星：冇根，容易隨波逐流。":p.ess.sc<0?"本身處於弱勢，力不從心。":""}`)}
+  L.push("## 星座描述");L.push(`- 代表件事嘅${R.Lb}喺${SIGNS[H.P[R.Lb].sg]}座：${hzSignDesc(H.P[R.Lb].sg,H.P[R.Lb].lon%30)}`);
   L.push("## 心意同接納");L.push(...hzCatAdvice(H,R));
   L.push("## 相位同結果");
   L.push(`- **結論：${R.vt}**。${hzLinkTxt(H,R)}`);
@@ -3718,10 +3791,14 @@ function horaryReport(H,R){const L=[];
   L.push("## 月亮");
   L.push(`- 月亮喺${hzDeg(H.P.月亮.lon)}，第 ${H.P.月亮.h} 宮，${hzN(H.P.月亮.lon-H.P.太陽.lon)<180?"漸盈":"漸虧"}。${R.moon.voc?"離開呢個星座之前唔會再同任何行星成相位（空亡）。":`下一個相位係同${R.moon.next.q}成${HZ_ASP[R.moon.next.A]}（約 ${Math.max(1,Math.round(R.moon.next.d*24))} 小時後），${["木星","金星"].includes(R.moon.next.q)?"係好嘅發展。":["火星","土星"].includes(R.moon.next.q)?"接落嚟會有啲壓力。":"事情會繼續推進。"}`}`);
   if(R.notes.length){L.push("## 特別留意");R.notes.forEach(n=>L.push("- "+n))}
-  if(R.timing){L.push("## 時機");L.push(`- ${R.timing.txt}。`);if(R.timing.days!=null)L.push(`- 按星曆計，相位喺大約 ${Math.max(1,Math.round(R.timing.days))} 日後成形，可以作參考。`)}
+  if(R.timing){L.push("## 時機");L.push(`- ${R.timing.txt}。`);if(R.timing.days!=null)L.push(`- 補充：天上兩粒星實際會喺大約 ${Math.max(1,Math.round(R.timing.days))} 日後到位。卜卦嘅時間係象徵計法，所以主要睇上面嗰個，呢個只作參考。`)}
   L.push("## 建議");
   L.push(R.v==="yes"?"- 星象支持你，可以主動行多一步，把握時機。":R.v==="mixed"?"- 件事有機會成，但要有心理準備面對過程中嘅考驗，保持彈性。":"- 而家唔係最好嘅時候。與其勉強，不如先照顧好自己，等局面轉變。同一條問題唔好短時間內重複問。");
   return L.join("\n")}
+function hzSignDesc(s,deg){const el=s%4,md=s%3,o=[];o.push(s%2===0?"陽性":"陰性");o.push(["火象（熱、乾）","土象（冷、乾）","風象（熱、濕）","水象（冷、濕）"][el]);
+  o.push(["基本星座：行動快，但難持久","固定星座：穩定、慢，對手唔易退讓"+(deg>=27?"（不過已經喺尾段度數，穩定嘅局面就快結束）":""),"變動星座：反覆、有雙重性，可能涉及兼職或者多過一個人"][md]);
+  if(el===3)o.push("多產（利生育同投資增長）、啞巴星座（唔多講）");if([2,4,5].includes(s))o.push("不孕星座（事情難有後續）");if([2,5,6].includes(s))o.push("有聲星座（會講出嚟）");
+  if(el===2||s===5)o.push("人性星座：處事講道理");else if([0,1,4,8,9].includes(s))o.push("獸性星座：處事比較直接甚至粗暴");return o.join("；")+"。"}
 const HZ_RULES=`卜卦占星規則（請跟從，但唔好引用書名）：以提問一刻同地點起盤，Regiomontanus 分宮，只用傳統七星；行星係人同事，星座係形容詞，相位係動詞。第一宮主同月亮代表問卦者，所問事情嘅宮主代表件事，問其他人就轉盤。外行星唔主宰星座，只喺緊貼宮頭或者同徵象星準確相位時先講。本質尊貴（廟、旺、三分、界、面；失勢、落陷、遊走）睇質素；意外尊貴（角宮、喜樂宮、順逆、速度、焦傷、日心、圍攻、交點）睇能唔能夠發揮。接納代表心意：廟＝愛或掌控，旺＝欣賞，三分＝友善，界面＝少少興趣，失勢落陷＝唔鍾意。只用托勒密相位，要喺而家星座內入相位成形先算；留意禁止、挫折、退縮、傳光、集光、月亮空亡。時機：相差度數配合星座（基本快、變動中、固定慢）同宮位（果宮快、續宮中、角宮慢）。`;
 function horaryPrompt(H,R,q){const pl=HZ7.map(n=>{const p=H.P[n];return `${n}${hzDeg(p.lon)}第${p.h}宮${p.retro?"逆":""}（${[...p.ess.pos,...p.ess.neg].join("、")||"—"}；${p.acc.r.join("、")}）`}).join("；");
   return prompt(`${HZ_RULES}\n使用者問卜卦問題：「${q||R.C.n}」（範疇：${R.C.n}；關於：${R.W.n}）。起盤時間 ${new Date(H.t).toLocaleString("zh-HK")}，上升${hzDeg(H.cu[0])}，天頂${hzDeg(H.cu[9])}，${H.day?"日間盤":"夜間盤"}。行星：${pl}。問卦者徵象星${R.qs.join("、")}，事情徵象星${R.Lb}（第${R.qh}宮）。程式判斷：${R.vt}。${hzLinkTxt(H,R)} ${R.notes.join(" ")} ${R.timing?R.timing.txt:""}。請用溫暖、直接嘅語氣，先答「會唔會」，再講原因、時機同建議。`,null)}
@@ -3832,7 +3909,7 @@ function orHorary(el){
   <label class="f" for="hzq">你嘅問題<input id="hzq" maxlength="200" placeholder="例如：佢會唔會主動搵返我？"></label>
   <details class="hz-more"><summary class="mute" style="font-size:13.5px;cursor:pointer">提問時間同地點</summary><div class="stack" style="gap:10px;margin-top:10px">
   <label class="f" for="hzt">提問時間（預設係而家；如果你係早前問人，可以改返嗰陣）<input id="hzt" type="datetime-local" value="${hzLocalInput(new Date())}"></label><div id="hzLoc"></div></div></details>
-  <p class="mute" style="font-size:13px">只問一條你真正關心、仲未知道答案嘅問題。同一條問題唔好短時間內重複問。</p>
+  <p class="mute" style="font-size:13px">按件嘢本身係咩去揀，例如鋼琴係財物（揀「錢」或者「搵失物」），唔係娛樂。只問一條你真正關心、仲未知道答案嘅問題。同一條問題唔好短時間內重複問。</p>
   <button class="btn solid" type="button" id="hzGo">起盤</button><div id="hzOut" class="stack"></div><div id="hzAI" class="stack"></div>`;
   hzLocRow($("#hzLoc",el));
   $("#hzGo",el).onclick=()=>{const tv=$("#hzt",el).value,t=tv?new Date(tv):new Date();if(isNaN(+t)){toastMsg("時間格式唔啱");return}
